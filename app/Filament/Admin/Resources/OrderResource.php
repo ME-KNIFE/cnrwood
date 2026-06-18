@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\OrderResource\Pages;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderItemsRelationManager;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderPaymentsRelationManager;
 use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderShipmentsRelationManager;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\Order;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = Order::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationLabel = 'Siparişler';
@@ -32,6 +35,21 @@ class OrderResource extends Resource
     protected static string | \UnitEnum | null $navigationGroup = 'Satış';
     protected static ?int $navigationSort = 1;
     protected static ?string $recordTitleAttribute = 'order_number';
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    // Manual order creation is intentionally disabled (orders are created
+    // by the checkout flow). $createRoles is empty AND canCreate() is hard
+    // overridden so that even super_admin cannot trigger a non-existent
+    // /create route from the UI.
+    protected static array $viewRoles   = ['sales_manager'];
+    protected static array $createRoles = [];
+    protected static array $editRoles   = ['sales_manager'];
+    protected static array $deleteRoles = [];
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -161,14 +179,5 @@ class OrderResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
-    }
-
-    /**
-     * Manual order creation from the admin panel is not supported yet —
-     * orders are created by the checkout flow.
-     */
-    public static function canCreate(): bool
-    {
-        return false;
     }
 }

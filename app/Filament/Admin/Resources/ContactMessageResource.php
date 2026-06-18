@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ContactMessageResource\Pages;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\ContactMessage;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -17,6 +18,8 @@ use Filament\Tables\Table;
 
 class ContactMessageResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = ContactMessage::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-envelope';
     protected static ?string $navigationLabel = 'İletişim Mesajları';
@@ -24,6 +27,14 @@ class ContactMessageResource extends Resource
     protected static ?string $pluralModelLabel = 'İletişim Mesajları';
     protected static string | \UnitEnum | null $navigationGroup = 'İletişim';
     protected static ?int $navigationSort = 1;
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    // Contact messages: support reads/marks-read; only super_admin can delete.
+    // No edit/create pages are registered on this resource.
+    protected static array $viewRoles   = ['support'];
+    protected static array $createRoles = [];
+    protected static array $editRoles   = [];
+    protected static array $deleteRoles = [];
 
     public static function form(Schema $schema): Schema
     {

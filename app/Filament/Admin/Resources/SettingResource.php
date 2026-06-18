@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\SettingResource\Pages;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\Setting;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -20,6 +21,8 @@ use Filament\Tables\Table;
 
 class SettingResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = Setting::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationLabel = 'Site Ayarları';
@@ -27,6 +30,13 @@ class SettingResource extends Resource
     protected static ?string $pluralModelLabel = 'Site Ayarları';
     protected static string | \UnitEnum | null $navigationGroup = 'Sistem';
     protected static ?int $navigationSort = 1;
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    // Super admin only — site settings affect the entire system.
+    protected static array $viewRoles   = [];
+    protected static array $createRoles = [];
+    protected static array $editRoles   = [];
+    protected static array $deleteRoles = [];
 
     public static function form(Schema $schema): Schema
     {

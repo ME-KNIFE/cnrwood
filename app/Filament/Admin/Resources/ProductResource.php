@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\ProductResource\Pages;
 use App\Filament\Admin\Resources\ProductResource\RelationManagers\ProductImagesRelationManager;
 use App\Filament\Admin\Resources\ProductResource\RelationManagers\ProductVariantsRelationManager;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Filament\Actions\BulkActionGroup;
@@ -34,6 +35,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = Product::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-cube';
     protected static ?string $navigationLabel = 'Ürünler';
@@ -41,6 +44,13 @@ class ProductResource extends Resource
     protected static ?string $pluralModelLabel = 'Ürünler';
     protected static string | \UnitEnum | null $navigationGroup = 'Ürün Yönetimi';
     protected static ?int $navigationSort = 1;
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    // super_admin is always allowed by the trait.
+    protected static array $viewRoles   = ['product_manager', 'sales_manager'];
+    protected static array $createRoles = ['product_manager'];
+    protected static array $editRoles   = ['product_manager'];
+    protected static array $deleteRoles = [];
 
     public static function form(Schema $schema): Schema
     {

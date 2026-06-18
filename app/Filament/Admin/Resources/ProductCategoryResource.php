@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ProductCategoryResource\Pages;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\ProductCategory;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductCategoryResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = ProductCategory::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationLabel = 'Kategoriler';
@@ -36,6 +39,12 @@ class ProductCategoryResource extends Resource
     protected static ?string $pluralModelLabel = 'Kategoriler';
     protected static string | \UnitEnum | null $navigationGroup = 'Ürün Yönetimi';
     protected static ?int $navigationSort = 2;
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    protected static array $viewRoles   = ['product_manager', 'sales_manager'];
+    protected static array $createRoles = ['product_manager'];
+    protected static array $editRoles   = ['product_manager'];
+    protected static array $deleteRoles = [];
 
     public static function form(Schema $schema): Schema
     {

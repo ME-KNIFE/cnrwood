@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\QuoteRequestResource\Pages;
 use App\Filament\Admin\Resources\QuoteRequestResource\RelationManagers\QuoteRequestItemsRelationManager;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Models\AdminUser;
 use App\Models\QuoteRequest;
 use Filament\Actions\BulkActionGroup;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class QuoteRequestResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = QuoteRequest::class;
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Teklif Talepleri';
@@ -32,6 +35,20 @@ class QuoteRequestResource extends Resource
     protected static string | \UnitEnum | null $navigationGroup = 'Satış';
     protected static ?int $navigationSort = 2;
     protected static ?string $recordTitleAttribute = 'reference_number';
+
+    // ── RBAC ─────────────────────────────────────────────────────────────────
+    // Created by customers via the public site; admin only triages.
+    // canCreate() is hard overridden so that even super_admin cannot
+    // trigger a non-existent /create route from the UI.
+    protected static array $viewRoles   = ['sales_manager', 'support'];
+    protected static array $createRoles = [];
+    protected static array $editRoles   = ['sales_manager', 'support'];
+    protected static array $deleteRoles = [];
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -200,14 +217,5 @@ class QuoteRequestResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
-    }
-
-    /**
-     * Quote requests are submitted by customers via the public site,
-     * not created from the admin panel.
-     */
-    public static function canCreate(): bool
-    {
-        return false;
     }
 }
