@@ -3,6 +3,9 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\OrderResource\Pages;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderItemsRelationManager;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderPaymentsRelationManager;
+use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderShipmentsRelationManager;
 use App\Models\Order;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\EditAction;
@@ -79,7 +82,10 @@ class OrderResource extends Resource
                 TextColumn::make('order_number')->label('Sipariş No')->searchable()->sortable(),
                 TextColumn::make('customer_name')->label('Müşteri')->searchable()->sortable(),
                 TextColumn::make('customer_email')->label('E-posta')->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
+                TextColumn::make('customer_phone')->label('Telefon')
+                    ->toggleable()
+                    ->default('—'),
                 BadgeColumn::make('status')->label('Durum')
                     ->colors([
                         'gray'    => 'beklemede',
@@ -109,7 +115,12 @@ class OrderResource extends Resource
                     }),
                 TextColumn::make('total')->label('Toplam')->money('TRY')->sortable(),
                 TextColumn::make('payment_method')->label('Ödeme Yöntemi')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'havale_eft'  => 'Havale/EFT',
+                        'kredi_karti' => 'Kredi Kartı',
+                        default       => $state,
+                    })
+                    ->toggleable(),
                 TextColumn::make('created_at')->label('Tarih')->dateTime('d.m.Y H:i')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
@@ -130,7 +141,14 @@ class OrderResource extends Resource
             ->bulkActions([BulkActionGroup::make([])]);
     }
 
-    public static function getRelations(): array { return []; }
+    public static function getRelations(): array
+    {
+        return [
+            OrderItemsRelationManager::class,
+            OrderPaymentsRelationManager::class,
+            OrderShipmentsRelationManager::class,
+        ];
+    }
 
     public static function getPages(): array
     {
@@ -143,5 +161,14 @@ class OrderResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    /**
+     * Manual order creation from the admin panel is not supported yet —
+     * orders are created by the checkout flow.
+     */
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }

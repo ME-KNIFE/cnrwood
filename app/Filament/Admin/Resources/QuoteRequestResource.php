@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\QuoteRequestResource\Pages;
+use App\Filament\Admin\Resources\QuoteRequestResource\RelationManagers\QuoteRequestItemsRelationManager;
 use App\Models\AdminUser;
 use App\Models\QuoteRequest;
 use Filament\Actions\BulkActionGroup;
@@ -58,6 +59,51 @@ class QuoteRequestResource extends Resource
                         ->content(fn ($record) => $record?->message ?? '—')
                         ->columnSpanFull(),
                 ])->columns(3),
+            Section::make('Sandık Hesaplama Bilgileri')
+                ->visible(fn ($record) => $record?->type === 'sandik' && $record?->sandikCalculation !== null)
+                ->schema([
+                    Placeholder::make('sandik_dimensions')->label('Ölçüler (U×G×Y / Ağırlık)')
+                        ->content(fn ($record) => $record?->sandikCalculation
+                            ? $record->sandikCalculation->getDimensionsSummary()
+                            : '—'),
+                    Placeholder::make('sandik_crate_type')->label('Sandık Tipi')
+                        ->content(fn ($record) => $record?->sandikCalculation?->getCrateTypeLabel() ?? '—'),
+                    Placeholder::make('sandik_quantity')->label('Adet')
+                        ->content(fn ($record) => $record?->sandikCalculation?->quantity ?? '—'),
+                    Placeholder::make('sandik_material')->label('Malzeme')
+                        ->content(fn ($record) => $record?->sandikCalculation?->material ?? '—'),
+                    Placeholder::make('sandik_shipping_type')->label('Sevkiyat')
+                        ->content(fn ($record) => match ($record?->sandikCalculation?->shipping_type) {
+                            'ic'      => 'İç (Yurtiçi)',
+                            'ihracat' => 'İhracat',
+                            default   => '—',
+                        }),
+                    Placeholder::make('sandik_destination')->label('Varış')
+                        ->content(fn ($record) => trim(implode(' / ', array_filter([
+                            $record?->sandikCalculation?->destination_city,
+                            $record?->sandikCalculation?->destination_country,
+                        ]))) ?: '—'),
+                    Placeholder::make('sandik_requirements')->label('Teknik Gereksinimler')
+                        ->content(function ($record) {
+                            if (! $record?->sandikCalculation) {
+                                return '—';
+                            }
+                            $flags = [];
+                            if ($record->sandikCalculation->requires_ispm15) {
+                                $flags[] = 'ISPM-15';
+                            }
+                            if ($record->sandikCalculation->requires_forklift) {
+                                $flags[] = 'Forklift';
+                            }
+                            if ($record->sandikCalculation->requires_crane) {
+                                $flags[] = 'Vinç';
+                            }
+                            return $flags ? implode(', ', $flags) : 'Yok';
+                        }),
+                    Placeholder::make('sandik_notes')->label('Sandık Notu')
+                        ->content(fn ($record) => $record?->sandikCalculation?->notes ?: '—')
+                        ->columnSpanFull(),
+                ])->columns(3),
             Section::make('Durum & Atama')
                 ->schema([
                     Select::make('status')->label('Durum')
@@ -88,7 +134,10 @@ class QuoteRequestResource extends Resource
                 TextColumn::make('reference_number')->label('Ref No')->searchable()->sortable(),
                 TextColumn::make('contact_name')->label('Ad Soyad')->searchable()->sortable(),
                 TextColumn::make('contact_email')->label('E-posta')->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
+                TextColumn::make('contact_phone')->label('Telefon')
+                    ->toggleable()
+                    ->default('—'),
                 BadgeColumn::make('type')->label('Tip')
                     ->colors(['info' => 'sandik', 'warning' => 'product', 'gray' => 'general'])
                     ->formatStateUsing(fn ($state) => match ($state) {
@@ -133,7 +182,12 @@ class QuoteRequestResource extends Resource
             ->bulkActions([BulkActionGroup::make([DeleteBulkAction::make()])]);
     }
 
-    public static function getRelations(): array { return []; }
+    public static function getRelations(): array
+    {
+        return [
+            QuoteRequestItemsRelationManager::class,
+        ];
+    }
 
     public static function getPages(): array
     {
@@ -146,5 +200,14 @@ class QuoteRequestResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    /**
+     * Quote requests are submitted by customers via the public site,
+     * not created from the admin panel.
+     */
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }
