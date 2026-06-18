@@ -3,6 +3,8 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ProductResource\Pages;
+use App\Filament\Admin\Resources\ProductResource\RelationManagers\ProductImagesRelationManager;
+use App\Filament\Admin\Resources\ProductResource\RelationManagers\ProductVariantsRelationManager;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Filament\Actions\BulkActionGroup;
@@ -151,7 +153,13 @@ class ProductResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array { return []; }
+    public static function getRelations(): array
+    {
+        return [
+            ProductImagesRelationManager::class,
+            ProductVariantsRelationManager::class,
+        ];
+    }
 
     public static function getPages(): array
     {
