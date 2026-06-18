@@ -27,7 +27,7 @@
             </nav>
 
             <div class="hidden md:flex items-center gap-2">
-                <a href="mailto:info@cnrwood.com"
+                <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded
                           text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
                     Teklif Al
@@ -47,7 +47,7 @@
                             {{ $link['label'] }}
                         </a>
                     @endforeach
-                    <a href="mailto:info@cnrwood.com"
+                    <a href="{{ route('public.quote.create') }}"
                        class="block mx-3 mt-2 px-3 py-2 text-sm text-center text-white bg-[#1F497D] hover:bg-[#173a64] rounded">
                         Teklif Al
                     </a>

@@ -28,7 +28,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
                 </a>
-                <a href="mailto:info@cnrwood.com?subject=Teklif%20Talebi"
+                <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded
                           bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-lg">
                     Teklif Al
@@ -127,7 +127,7 @@
             Ölçü, malzeme ve adetlerinize göre teklif hazırlayalım. ISPM 15 sertifikalı üretim, hızlı teslimat.
         </p>
         <div class="flex flex-wrap justify-center gap-3">
-            <a href="mailto:info@cnrwood.com?subject=Teklif%20Talebi"
+            <a href="{{ route('public.quote.create') }}"
                class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded
                       bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
                 Teklif Talep Et

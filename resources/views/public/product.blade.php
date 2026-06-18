@@ -150,7 +150,7 @@
                         Detaylı teklif için bizimle iletişime geçin.
                     </p>
 
-                    <a href="mailto:info@cnrwood.com?subject={{ $mailtoSubject }}"
+                    <a href="{{ route('public.quote.product.create', $product->slug) }}"
                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
                               bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
                         Teklif Al
