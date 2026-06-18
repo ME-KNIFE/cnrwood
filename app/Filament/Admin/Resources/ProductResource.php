@@ -91,7 +91,7 @@ class ProductResource extends Resource
                         ->label('Fiyat (₺)')->numeric()->minValue(0)
                         ->required(fn ($get) => $get('product_type') === 'buyable')
                         ->hidden(fn ($get) => $get('product_type') === 'quote_only')
-                        ->helperText('Buyable ürünler için zorunlu.'),
+                        ->helperText('Satılabilir ürünler için zorunludur.'),
                     TextInput::make('compare_at_price')
                         ->label('Karşılaştırma Fiyatı (₺)')->numeric()
                         ->hidden(fn ($get) => $get('product_type') === 'quote_only'),
@@ -103,7 +103,7 @@ class ProductResource extends Resource
                         ->hidden(fn ($get) => $get('product_type') === 'quote_only'),
                     Placeholder::make('quote_only_notice')
                         ->label('')
-                        ->content('Bu ürün quote_only tipindedir. Fiyat ve stok alanları uygulanmaz.')
+                        ->content('Bu ürün sadece teklif tipindedir. Fiyat ve stok alanları uygulanmaz.')
                         ->visible(fn ($get) => $get('product_type') === 'quote_only'),
                 ])->columns(2),
 

@@ -58,7 +58,7 @@ class ProductVariantsRelationManager extends RelationManager
                 ->label('Fiyat Farkı (₺)')
                 ->numeric()
                 ->default(0)
-                ->helperText('Ana ürün fiyatına eklenir. quote_only ürünlerde dikkate alınmaz.'),
+                ->helperText('Ana ürün fiyatına eklenir. Sadece teklif tipindeki ürünlerde dikkate alınmaz.'),
 
             TextInput::make('stock_quantity')
                 ->label('Stok Adedi')

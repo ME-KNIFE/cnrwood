@@ -155,7 +155,7 @@ class OrderResource extends Resource
                 SelectFilter::make('payment_status')->label('Ödeme Durumu')
                     ->options(['beklemede' => 'Beklemede', 'odendi' => 'Ödendi', 'basarisiz' => 'Başarısız']),
             ])
-            ->actions([EditAction::make()->label('Düzenle')])
+            ->actions([EditAction::make()])
             ->bulkActions([BulkActionGroup::make([])]);
     }
 
