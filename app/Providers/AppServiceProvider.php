@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Phase 7A: use Tailwind pagination on public Blade pages.
+        // (Filament uses its own pagination internally, so this is safe.)
+        Paginator::useTailwind();
     }
 }
