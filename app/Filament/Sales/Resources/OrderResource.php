@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Filament\Sales\Resources;
+
+use App\Filament\Sales\Resources\OrderResource\Pages;
+use App\Models\Order;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class OrderResource extends Resource
+{
+    protected static ?string $model = Order::class;
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationLabel = 'Siparişler';
+    protected static ?string $modelLabel = 'Sipariş';
+    protected static ?string $pluralModelLabel = 'Siparişler';
+    protected static string | \UnitEnum | null $navigationGroup = 'Satış';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $recordTitleAttribute = 'order_number';
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            Section::make('Sipariş Özeti')
+                ->schema([
+                    Placeholder::make('order_number')->label('Sipariş No')
+                        ->content(fn ($record) => $record?->order_number ?? '—'),
+                    Placeholder::make('customer_name')->label('Müşteri')
+                        ->content(fn ($record) => $record?->customer_name ?? '—'),
+                    Placeholder::make('total')->label('Toplam')
+                        ->content(fn ($record) => $record ? '₺' . number_format($record->total, 2) : '—'),
+                ])->columns(3),
+            Section::make('Durum Güncelle')
+                ->schema([
+                    Select::make('status')->label('Sipariş Durumu')
+                        ->options([
+                            'beklemede'        => 'Beklemede',
+                            'odeme_bekleniyor' => 'Ödeme Bekleniyor',
+                            'islemde'          => 'İşlemde',
+                            'kargoya_verildi'  => 'Kargoya Verildi',
+                            'teslim_edildi'    => 'Teslim Edildi',
+                        ])->required(),
+                    Textarea::make('admin_notes')->label('Not')->rows(2)->columnSpanFull(),
+                ])->columns(2),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('order_number')->label('Sipariş No')->searchable()->sortable(),
+                TextColumn::make('customer_name')->label('Müşteri')->searchable(),
+                BadgeColumn::make('status')->label('Durum')
+                    ->colors([
+                        'gray'    => 'beklemede',
+                        'warning' => ['odeme_bekleniyor', 'islemde'],
+                        'info'    => 'kargoya_verildi',
+                        'success' => 'teslim_edildi',
+                        'danger'  => ['iptal_edildi', 'iade_edildi'],
+                    ])
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'beklemede'        => 'Beklemede',
+                        'odeme_bekleniyor' => 'Ödeme Bekleniyor',
+                        'islemde'          => 'İşlemde',
+                        'kargoya_verildi'  => 'Kargoya Verildi',
+                        'teslim_edildi'    => 'Teslim Edildi',
+                        'iptal_edildi'     => 'İptal Edildi',
+                        'iade_edildi'      => 'İade Edildi',
+                        default            => $state,
+                    }),
+                TextColumn::make('total')->label('Toplam')->money('TRY')->sortable(),
+                TextColumn::make('created_at')->label('Tarih')->dateTime('d.m.Y H:i')->sortable(),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([
+                SelectFilter::make('status')->label('Durum')
+                    ->options([
+                        'beklemede'        => 'Beklemede',
+                        'odeme_bekleniyor' => 'Ödeme Bekleniyor',
+                        'islemde'          => 'İşlemde',
+                        'kargoya_verildi'  => 'Kargoya Verildi',
+                        'teslim_edildi'    => 'Teslim Edildi',
+                    ]),
+            ])
+            ->actions([EditAction::make()->label('Güncelle')])
+            ->bulkActions([BulkActionGroup::make([])]);
+    }
+
+    public static function getRelations(): array { return []; }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListOrders::route('/'),
+            'edit'  => Pages\EditOrder::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    public static function canCreate(): bool { return false; }
+}
