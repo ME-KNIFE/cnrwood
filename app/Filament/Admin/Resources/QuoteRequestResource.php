@@ -22,6 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class QuoteRequestResource extends Resource
 {
@@ -119,6 +120,24 @@ class QuoteRequestResource extends Resource
                         }),
                     Placeholder::make('sandik_notes')->label('Sandık Notu')
                         ->content(fn ($record) => $record?->sandikCalculation?->notes ?: '—')
+                        ->columnSpanFull(),
+                    Placeholder::make('sandik_attachment')->label('Ek Dosya')
+                        ->content(function ($record) {
+                            if (! $record?->file_path) {
+                                return new HtmlString('<span class="text-gray-400">Dosya yüklenmedi</span>');
+                            }
+                            $url  = route('admin.sandik.attachment.download', $record);
+                            $name = $record->file_name
+                                ? e(basename($record->file_name))
+                                : e(basename($record->file_path));
+                            return new HtmlString(
+                                '<a href="' . e($url) . '" '
+                                . 'class="inline-flex items-center gap-1 text-primary-600 hover:text-primary-800 underline underline-offset-2" '
+                                . 'download>'
+                                . '⬇ ' . $name
+                                . '</a>'
+                            );
+                        })
                         ->columnSpanFull(),
                 ])->columns(3),
             Section::make('Durum & Atama')

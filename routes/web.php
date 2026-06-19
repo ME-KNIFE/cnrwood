@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
@@ -42,6 +43,14 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.si
 Route::get('/kurumsal',         [PublicController::class, 'corporate'])->name('public.corporate');
 Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('public.about');
 Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
+// ─── Phase 9B — Secure admin file download (auth:admin required) ───────────
+// Protected by the 'admin' guard — only authenticated AdminUsers may access.
+// File path comes from DB (QuoteRequest model), never from request input.
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/admin-dl/sandik/{quoteRequest}', [SandikAttachmentController::class, 'download'])
+         ->name('admin.sandik.attachment.download');
+});
+
 // ─── Phase 9A — Sandık Hesaplama real form ─────────────────────────────────
 Route::get('/sandik-hesaplama', [SandikController::class, 'create'])->name('public.sandik');
 Route::middleware('throttle:5,1')->group(function () {

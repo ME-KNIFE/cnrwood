@@ -53,6 +53,7 @@
 
         {{-- ── FORM ──────────────────────────────────────────────────────────── --}}
         <form method="POST" action="{{ route('public.sandik.store') }}"
+              enctype="multipart/form-data"
               class="lg:col-span-2 space-y-8">
             @csrf
 
@@ -314,12 +315,36 @@
                 </div>
             </div>
 
-            {{-- ── SECTION 6: Notlar & Gönder ──────────────────────────────── --}}
+            {{-- ── SECTION 6: Dosya & Notlar & Gönder ──────────────────────── --}}
             <div class="bg-white border border-[#E6DFD2] rounded-lg p-6 sm:p-8">
                 <h2 class="text-lg font-semibold text-[#3E2006] mb-5 flex items-center gap-2">
                     <span class="w-7 h-7 rounded-full bg-[#3E2006] text-white text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
-                    Ekstra Notlar
+                    Dosya &amp; Ekstra Notlar
                 </h2>
+
+                {{-- File upload --}}
+                <div class="mb-5">
+                    <label for="attachment" class="block text-sm font-medium text-[#3E2006] mb-1.5">
+                        Teknik Çizim / Fotoğraf / Dosya
+                        <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                    </label>
+                    <input type="file" name="attachment" id="attachment"
+                           accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,.zip"
+                           class="w-full text-sm text-[#555555]
+                                  file:mr-3 file:py-2 file:px-4
+                                  file:rounded file:border file:border-[#E6DFD2]
+                                  file:text-sm file:font-medium
+                                  file:bg-[#F5F0E8] file:text-[#3E2006]
+                                  hover:file:bg-[#EDE7D8] cursor-pointer
+                                  @error('attachment') ring-1 ring-red-400 @enderror">
+                    <p class="text-xs text-[#555555] mt-1.5">
+                        PDF, görsel (JPG, PNG, WEBP), Word, Excel veya ZIP dosyası yükleyebilirsiniz. Maksimum 10 MB.
+                    </p>
+                    @error('attachment')
+                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div>
                     <label for="notes" class="block text-sm font-medium text-[#3E2006] mb-1.5">
                         Ek Bilgi / Özel İstek <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>

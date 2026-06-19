@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\QuoteRequest;
 use App\Models\SandikCalculationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 /**
- * Phase 9A — Public Sandık Hesaplama form controller.
+ * Phase 9A/9B — Public Sandık Hesaplama form controller.
  *
  * Strict scope:
  *   - Writes to quote_requests (type='sandik') + sandik_calculation_requests only.
- *   - NO email sending, NO PDF, NO file upload, NO customer login, NO payment.
+ *   - Optional file attachment stored on local (private) disk under sandik-attachments/.
+ *   - NO email sending, NO PDF, NO customer login, NO payment.
  *   - Reuses QuoteRequest::generateReference() and the existing thank-you route.
  */
 class SandikController extends Controller
@@ -40,7 +44,19 @@ class SandikController extends Controller
     {
         $data = $this->validateInput($request);
 
-        $quote = $this->persist($data);
+        // Upload file (if present) BEFORE the DB transaction.
+        // If the transaction later fails, we clean up the orphaned file.
+        [$storedPath, $originalName] = $this->handleUpload($request);
+
+        try {
+            $quote = $this->persist($data, $storedPath, $originalName);
+        } catch (\Throwable $e) {
+            // Roll back the uploaded file so nothing is orphaned.
+            if ($storedPath !== null) {
+                Storage::disk('local')->delete($storedPath);
+            }
+            throw $e;
+        }
 
         return redirect()->route('public.quote.thanks', ['ref' => $quote->reference_number]);
     }
@@ -48,6 +64,36 @@ class SandikController extends Controller
     // ─────────────────────────────────────────────────────────────────────────
     // Internals
     // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Store the uploaded attachment on the private local disk.
+     * Returns [storedPath, originalName] or [null, null] if no file was uploaded.
+     *
+     * @return array{string|null, string|null}
+     */
+    private function handleUpload(Request $request): array
+    {
+        if (! $request->hasFile('attachment') || ! $request->file('attachment')->isValid()) {
+            return [null, null];
+        }
+
+        /** @var UploadedFile $file */
+        $file = $request->file('attachment');
+
+        $ext        = strtolower($file->getClientOriginalExtension());
+        $uuid       = (string) Str::uuid();
+        $storedPath = $file->storeAs('sandik-attachments', $uuid . '.' . $ext, 'local');
+
+        // storeAs returns false on failure
+        if ($storedPath === false) {
+            throw new \RuntimeException('Dosya yüklenirken bir hata oluştu.');
+        }
+
+        // Keep original name only for display in admin; trim to safe length.
+        $originalName = mb_substr(trim($file->getClientOriginalName()), 0, 255);
+
+        return [$storedPath, $originalName];
+    }
 
     /** @return array<string,mixed> */
     private function validateInput(Request $request): array
@@ -84,6 +130,16 @@ class SandikController extends Controller
             // ── Notes ─────────────────────────────────────────────────────────
             'notes'   => ['nullable', 'string', 'max:4000'],
 
+            // ── Optional file attachment ──────────────────────────────────────
+            // Stored on private local disk (not public).
+            // Executables, scripts, and SVG rejected by mimes list.
+            'attachment' => [
+                'nullable',
+                'file',
+                'max:10240',                                          // 10 MB
+                'mimes:pdf,jpg,jpeg,png,webp,doc,docx,xls,xlsx,zip', // safe types only
+            ],
+
             // ── Honeypot — must stay empty ────────────────────────────────────
             'website' => ['nullable', 'size:0'],
         ], [
@@ -106,12 +162,15 @@ class SandikController extends Controller
             'quantity.required'       => 'Adet zorunludur.',
             'quantity.min'            => 'Adet en az 1 olmalıdır.',
             'website.size'            => 'Spam kontrolü başarısız.',
+            'attachment.file'         => 'Lütfen geçerli bir dosya seçiniz.',
+            'attachment.max'          => 'Dosya boyutu en fazla 10 MB olabilir.',
+            'attachment.mimes'        => 'Yalnızca PDF, görsel (JPG, PNG, WEBP), Word, Excel veya ZIP dosyası yükleyebilirsiniz.',
         ]);
     }
 
-    private function persist(array $data): QuoteRequest
+    private function persist(array $data, ?string $storedPath, ?string $originalName): QuoteRequest
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $storedPath, $originalName) {
             // Reference collision is extremely unlikely but we retry up to 3×.
             $quote = null;
             for ($attempt = 0; $attempt < 3; $attempt++) {
@@ -126,6 +185,9 @@ class SandikController extends Controller
                         'company_name'      => $data['company_name']      ?? null,
                         'preferred_contact' => $data['preferred_contact'] ?? 'email',
                         'message'           => $data['notes']             ?? null,
+                        // File path on private local disk (null if no file uploaded)
+                        'file_path'         => $storedPath,
+                        'file_name'         => $originalName,
                     ]);
                     break;
                 } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
