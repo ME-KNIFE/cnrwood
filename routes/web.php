@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SandikAttachmentController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
@@ -55,4 +56,17 @@ Route::middleware('auth:admin')->group(function () {
 Route::get('/sandik-hesaplama', [SandikController::class, 'create'])->name('public.sandik');
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/sandik-hesaplama', [SandikController::class, 'store'])->name('public.sandik.store');
+});
+
+// ─── Phase 8A — Public shopping cart (guest + authenticated) ────────────────
+// Static segments (ekle, temizle) are declared before the {item} parameter
+// so they are never captured as a route model binding value.
+Route::prefix('sepet')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::middleware('throttle:30,1')->group(function () {
+        Route::post('/ekle',               [CartController::class, 'add'])->name('add');
+        Route::post('/temizle',            [CartController::class, 'clear'])->name('clear');
+        Route::post('/{item}/guncelle',    [CartController::class, 'update'])->name('update');
+        Route::post('/{item}/sil',         [CartController::class, 'remove'])->name('remove');
+    });
 });

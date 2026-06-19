@@ -143,15 +143,77 @@
                         @endif
                     </div>
 
-                    <button type="button" disabled
-                            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
-                                   bg-[#2C5F2E] text-white opacity-50 cursor-not-allowed">
-                        Sipariş Ver
-                        <span class="text-xs font-normal">(Yakında)</span>
-                    </button>
+                    @if (session('cart_error'))
+                        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                            {{ session('cart_error') }}
+                        </div>
+                    @endif
+
+                    @if ($product->isInStock())
+                        <form method="POST" action="{{ route('cart.add') }}">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                            @if ($product->variants->isNotEmpty())
+                                <div class="mb-4">
+                                    <label for="product_variant_id"
+                                           class="block text-sm font-medium text-[#3E2006] mb-1">
+                                        Seçenek
+                                    </label>
+                                    <select id="product_variant_id"
+                                            name="product_variant_id"
+                                            class="w-full border border-[#E6DFD2] rounded px-3 py-2 bg-white text-[#3E2006] text-sm">
+                                        @foreach ($product->variants as $v)
+                                            @php
+                                                $vn = is_array($v->name) ? ($v->name['tr'] ?? '—') : ($v->name ?? '—');
+                                            @endphp
+                                            <option value="{{ $v->id }}">
+                                                {{ $vn }}
+                                                @if ($v->price_modifier && (float) $v->price_modifier !== 0.0)
+                                                    ({{ $v->price_modifier > 0 ? '+' : '' }}{{ number_format($v->price_modifier, 2, ',', '.') }} TL)
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            <div class="flex items-end gap-3 mb-4">
+                                <div>
+                                    <label for="quantity"
+                                           class="block text-sm font-medium text-[#3E2006] mb-1">
+                                        Adet
+                                    </label>
+                                    <input type="number" id="quantity" name="quantity"
+                                           value="1" min="1" max="99"
+                                           class="w-20 border border-[#E6DFD2] rounded px-3 py-2 bg-white
+                                                  text-[#3E2006] text-sm text-center">
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                    class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
+                                           text-base font-semibold rounded bg-[#2C5F2E] hover:bg-[#214a23]
+                                           text-white transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                Sepete Ekle
+                            </button>
+                        </form>
+                    @else
+                        <button type="button" disabled
+                                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
+                                       text-base font-semibold rounded bg-[#555555] text-white
+                                       opacity-50 cursor-not-allowed">
+                            Stokta Yok
+                        </button>
+                    @endif
+
                     <p class="text-xs text-[#555555] text-center mt-2">
-                        Online sipariş yakında aktif olacak. Şimdi sipariş için
-                        <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>.
+                        veya telefonla:
+                        <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
                     </p>
 
                 @else
@@ -179,25 +241,7 @@
 
             </div>
 
-            {{-- VARIANTS (read-only display) --}}
-            @if ($isBuyable && $product->variants->isNotEmpty())
-                <div class="mt-8">
-                    <h3 class="text-sm font-semibold uppercase tracking-wider text-[#3E2006] mb-3">Seçenekler</h3>
-                    <ul class="space-y-2">
-                        @foreach ($product->variants as $variant)
-                            @php $vname = is_array($variant->name) ? ($variant->name['tr'] ?? '—') : ($variant->name ?? '—'); @endphp
-                            <li class="flex items-center justify-between p-3 bg-white border border-[#E6DFD2] rounded text-sm">
-                                <span class="text-[#3E2006] font-medium">{{ $vname }}</span>
-                                @if ($variant->price_modifier && (float) $variant->price_modifier !== 0.0)
-                                    <span class="text-[#555555]">
-                                        {{ $variant->price_modifier > 0 ? '+' : '' }}{{ number_format($variant->price_modifier, 2, ',', '.') }} TL
-                                    </span>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            {{-- Variants are now selectable inside the add-to-cart form above --}}
         </div>
     </div>
 

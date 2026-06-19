@@ -31,6 +31,24 @@
             </nav>
 
             <div class="hidden md:flex items-center gap-2">
+                {{-- Cart icon with session-backed item count --}}
+                @php $cartCount = session('cart_count', 0); @endphp
+                <a href="{{ route('cart.index') }}"
+                   aria-label="Sepetim"
+                   class="relative inline-flex items-center p-2 rounded text-[#3E2006]
+                          hover:bg-[#F5F0E8] transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    @if ($cartCount > 0)
+                        <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center
+                                     text-[10px] font-bold bg-[#2C5F2E] text-white rounded-full px-1 leading-none">
+                            {{ $cartCount > 99 ? '99+' : $cartCount }}
+                        </span>
+                    @endif
+                </a>
+
                 <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded
                           text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
@@ -51,6 +69,16 @@
                             {{ $link['label'] }}
                         </a>
                     @endforeach
+                    <a href="{{ route('cart.index') }}"
+                       class="flex items-center justify-between mx-3 mt-2 px-3 py-2 text-sm text-[#3E2006] bg-[#F5F0E8] hover:bg-[#E6DFD2] rounded">
+                        <span>Sepetim</span>
+                        @if (session('cart_count', 0) > 0)
+                            <span class="min-w-[18px] h-[18px] flex items-center justify-center
+                                         text-[10px] font-bold bg-[#2C5F2E] text-white rounded-full px-1">
+                                {{ session('cart_count', 0) > 99 ? '99+' : session('cart_count', 0) }}
+                            </span>
+                        @endif
+                    </a>
                     <a href="{{ route('public.quote.create') }}"
                        class="block mx-3 mt-2 px-3 py-2 text-sm text-center text-white bg-[#1F497D] hover:bg-[#173a64] rounded">
                         Teklif Al
