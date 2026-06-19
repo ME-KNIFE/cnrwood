@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,10 @@ Route::get('/teklif-al/tesekkurler',    [QuoteRequestController::class, 'thankYo
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/teklif-al',             [QuoteRequestController::class, 'storeGeneral'])->name('public.quote.store');
     Route::post('/urun/{slug}/teklif-al', [QuoteRequestController::class, 'storeForProduct'])->name('public.quote.product.store');
+});
+
+// ─── Phase 7C — Public contact form ────────────────────────────────────────
+Route::get('/iletisim',  [ContactController::class, 'create'])->name('public.contact');
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/iletisim', [ContactController::class, 'store'])->name('public.contact.store');
 });

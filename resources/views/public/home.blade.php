@@ -1,5 +1,10 @@
 @extends('layouts.public')
 
+@php
+    $title           = 'CNRWOOD — Ahşap Sandık, İhracat Ambalajı ve Ahşap Yapı Çözümleri | Gebze';
+    $metaDescription = '1998’den beri Gebze’de ahşap sandık, ISPM 15 ısıl işlemli ihracat ambalajı, kapı sereni, kereste & levha ve ahşap yapı projelerinde profesyonel üretim. Hızlı teklif ve kaliteli işçilik.';
+@endphp
+
 @section('content')
 
 {{-- ── HERO ─────────────────────────────────────────────────────────────── --}}

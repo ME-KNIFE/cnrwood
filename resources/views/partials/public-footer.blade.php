@@ -20,6 +20,7 @@
                     <li><a href="{{ route('public.products') }}" class="text-[#F5F0E8]/80 hover:text-white transition-colors">Tüm Ürünler</a></li>
                     <li><a href="{{ route('public.products', ['tip' => 'quote_only']) }}" class="text-[#F5F0E8]/80 hover:text-white transition-colors">Teklif Verdiğimiz Ürünler</a></li>
                     <li><a href="{{ route('public.products', ['tip' => 'buyable']) }}" class="text-[#F5F0E8]/80 hover:text-white transition-colors">Mağaza Ürünleri</a></li>
+                    <li><a href="{{ route('public.contact') }}" class="text-[#F5F0E8]/80 hover:text-white transition-colors">İletişim</a></li>
                 </ul>
             </div>
 

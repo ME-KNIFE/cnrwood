@@ -22,6 +22,27 @@
     <meta property="og:site_name" content="CNRWOOD">
     <meta property="og:locale" content="tr_TR">
 
+    {{-- Minimal Organization + LocalBusiness JSON-LD (static, safe) --}}
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context'      => 'https://schema.org',
+        '@type'         => 'Organization',
+        'name'          => 'CNRWOOD',
+        'legalName'     => 'CNR Ahşap Sanayi ve Ticaret',
+        'url'           => url('/'),
+        'foundingDate'  => '1998',
+        'telephone'     => '+90 262 751 21 20',
+        'email'         => 'info@cnrwood.com',
+        'address'       => [
+            '@type'           => 'PostalAddress',
+            'streetAddress'   => 'Pelitli Mah. Pelitli Yolu Cad. No: 137/A',
+            'addressLocality' => 'Gebze',
+            'addressRegion'   => 'Kocaeli',
+            'addressCountry'  => 'TR',
+        ],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[#FDFCFA] text-[#1A1A1A] antialiased flex flex-col min-h-screen">

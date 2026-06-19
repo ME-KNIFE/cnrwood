@@ -2,6 +2,7 @@
     $navLinks = [
         ['label' => 'Anasayfa', 'url' => route('home'),             'active' => request()->routeIs('home')],
         ['label' => 'Ürünler', 'url' => route('public.products'),   'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
+        ['label' => 'İletişim', 'url' => route('public.contact'),   'active' => request()->routeIs('public.contact')],
     ];
 @endphp
 
