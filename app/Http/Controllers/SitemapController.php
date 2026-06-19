@@ -26,7 +26,11 @@ class SitemapController extends Controller
 
         $urls = [
             ['loc' => route('home'),                'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '1.0'],
+            ['loc' => route('public.corporate'),    'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('public.about'),        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => route('public.services'),     'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.8'],
             ['loc' => route('public.products'),     'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.9'],
+            ['loc' => route('public.sandik'),       'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
             ['loc' => route('public.contact'),      'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => route('public.quote.create'), 'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
         ];

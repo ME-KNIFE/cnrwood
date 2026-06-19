@@ -36,3 +36,9 @@ Route::middleware('throttle:5,1')->group(function () {
 // ─── Phase 7D — Public SEO ─────────────────────────────────────────────────
 // robots.txt is served as a static file from public/robots.txt.
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.sitemap');
+
+// ─── Phase 7E — Public content pages (read-only, no DB writes) ─────────────
+Route::get('/kurumsal',         [PublicController::class, 'corporate'])->name('public.corporate');
+Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('public.about');
+Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
+Route::get('/sandik-hesaplama', [PublicController::class, 'sandik'])->name('public.sandik');

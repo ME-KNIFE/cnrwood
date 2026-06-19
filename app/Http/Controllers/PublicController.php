@@ -146,4 +146,25 @@ class PublicController extends Controller
             'related' => $related,
         ]);
     }
+
+    // ── Phase 7E — Static content pages (read-only) ─────────────────────────
+    public function corporate()
+    {
+        return view('public.corporate');
+    }
+
+    public function about()
+    {
+        return view('public.about');
+    }
+
+    public function services()
+    {
+        return view('public.services');
+    }
+
+    public function sandik()
+    {
+        return view('public.sandik');
+    }
 }

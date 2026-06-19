@@ -1,8 +1,11 @@
 @php
     $navLinks = [
-        ['label' => 'Anasayfa', 'url' => route('home'),             'active' => request()->routeIs('home')],
-        ['label' => 'Ürünler', 'url' => route('public.products'),   'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
-        ['label' => 'İletişim', 'url' => route('public.contact'),   'active' => request()->routeIs('public.contact')],
+        ['label' => 'Anasayfa',         'url' => route('home'),             'active' => request()->routeIs('home')],
+        ['label' => 'Kurumsal',         'url' => route('public.corporate'), 'active' => request()->routeIs('public.corporate') || request()->routeIs('public.about')],
+        ['label' => 'Hizmetler',        'url' => route('public.services'),  'active' => request()->routeIs('public.services')],
+        ['label' => 'Ürünler',          'url' => route('public.products'),  'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
+        ['label' => 'Sandık Hesaplama', 'url' => route('public.sandik'),    'active' => request()->routeIs('public.sandik')],
+        ['label' => 'İletişim',         'url' => route('public.contact'),   'active' => request()->routeIs('public.contact')],
     ];
 @endphp
 

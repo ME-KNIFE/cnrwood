@@ -1,0 +1,21 @@
+{{-- Reusable bottom CTA band: Teklif Al (Steel Blue) + İletişim (Brown outline) --}}
+<section class="bg-gradient-to-br from-[#3E2006] to-[#6B3A1F] text-[#F5F0E8] mt-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-3">{{ $ctaTitle ?? 'Projeniz İçin Profesyonel Destek' }}</h2>
+        <p class="text-[#F5F0E8]/85 max-w-2xl mx-auto leading-relaxed mb-8">
+            {{ $ctaText ?? 'Ahşap sandık, ambalaj, kereste veya ahşap yapı ihtiyaçlarınız için CNRWOOD ekibine ulaşın. En geç 1 iş günü içinde size dönüş yapıyoruz.' }}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="{{ route('public.quote.create') }}"
+               class="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded
+                      text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
+                Teklif Al
+            </a>
+            <a href="{{ route('public.contact') }}"
+               class="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold rounded
+                      border border-[#F5F0E8]/40 text-[#F5F0E8] hover:bg-[#F5F0E8]/10 transition-colors">
+                İletişime Geç
+            </a>
+        </div>
+    </div>
+</section>
