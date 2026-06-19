@@ -2,6 +2,8 @@
 
 namespace App\Filament\Sales\Resources;
 
+use App\Filament\Admin\Resources\OrderResource\RelationManagers\OrderItemsRelationManager;
+use App\Filament\Concerns\AuthorizesByRole;
 use App\Filament\Sales\Resources\OrderResource\Pages;
 use App\Models\Order;
 use Filament\Actions\BulkActionGroup;
@@ -21,7 +23,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
+    use AuthorizesByRole;
+
     protected static ?string $model = Order::class;
+
+    protected static array $viewRoles   = ['store_manager'];
+    protected static array $createRoles = [];
+    protected static array $editRoles   = ['store_manager'];
+    protected static array $deleteRoles = [];
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationLabel = 'Siparişler';
     protected static ?string $modelLabel = 'Sipariş';
@@ -99,7 +108,10 @@ class OrderResource extends Resource
             ->bulkActions([BulkActionGroup::make([])]);
     }
 
-    public static function getRelations(): array { return []; }
+    public static function getRelations(): array
+    {
+        return [OrderItemsRelationManager::class];
+    }
 
     public static function getPages(): array
     {
