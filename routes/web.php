@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
+use App\Http\Controllers\SandikController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,4 +42,8 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.si
 Route::get('/kurumsal',         [PublicController::class, 'corporate'])->name('public.corporate');
 Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('public.about');
 Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
-Route::get('/sandik-hesaplama', [PublicController::class, 'sandik'])->name('public.sandik');
+// ─── Phase 9A — Sandık Hesaplama real form ─────────────────────────────────
+Route::get('/sandik-hesaplama', [SandikController::class, 'create'])->name('public.sandik');
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/sandik-hesaplama', [SandikController::class, 'store'])->name('public.sandik.store');
+});
