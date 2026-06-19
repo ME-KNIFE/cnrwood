@@ -28,6 +28,15 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function getTranslation(string $field, string $locale): ?string
+    {
+        $data = $this->$field;
+        if (is_array($data)) {
+            return $data[$locale] ?? $data['tr'] ?? null;
+        }
+        return $data;
+    }
+
     /**
      * Final price = parent product price + modifier.
      * Only valid for buyable products (product will never be quote_only if it has variants).

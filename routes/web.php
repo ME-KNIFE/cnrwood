@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
@@ -56,6 +57,18 @@ Route::middleware('auth:admin')->group(function () {
 Route::get('/sandik-hesaplama', [SandikController::class, 'create'])->name('public.sandik');
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/sandik-hesaplama', [SandikController::class, 'store'])->name('public.sandik.store');
+});
+
+// ─── Phase 8B — Checkout / Order creation (guest + authenticated) ───────────
+// Payment method is always havale_eft — never accepted from request.
+// Order creation is wrapped in OrderService::createFromCart (DB::transaction).
+// Success page uses session key checkout_order_id — no order id in URL.
+Route::prefix('siparis')->name('checkout.')->group(function () {
+    Route::get('/olustur',    [CheckoutController::class, 'index'])->name('index');
+    Route::get('/tesekkurler', [CheckoutController::class, 'success'])->name('success');
+    Route::middleware('throttle:5,1')->group(function () {
+        Route::post('/olustur', [CheckoutController::class, 'store'])->name('store');
+    });
 });
 
 // ─── Phase 8A — Public shopping cart (guest + authenticated) ────────────────

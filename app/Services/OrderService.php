@@ -20,7 +20,7 @@ class OrderService
     {
         return DB::transaction(function () use ($cart, $checkoutData) {
             // Load cart items with products
-            $cart->load('items.product', 'coupon');
+            $cart->load('items.product', 'items.variant', 'coupon');
 
             // Validate all items are still buyable and in stock
             foreach ($cart->items as $item) {

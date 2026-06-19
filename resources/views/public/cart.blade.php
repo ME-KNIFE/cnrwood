@@ -188,14 +188,17 @@
                     </div>
                     <p class="text-xs text-[#555555] mb-6">(Kargo hariç)</p>
 
-                    {{-- Checkout — Phase 8B+ --}}
-                    <button type="button" disabled
-                            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
-                                   text-base font-semibold rounded bg-[#2C5F2E] text-white
-                                   opacity-50 cursor-not-allowed mb-3">
+                    {{-- Checkout — Phase 8B --}}
+                    <a href="{{ route('checkout.index') }}"
+                       class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
+                              text-base font-semibold rounded bg-[#2C5F2E] hover:bg-[#214a23]
+                              text-white transition-colors mb-3">
                         Siparişi Tamamla
-                        <span class="text-xs font-normal">(Yakında)</span>
-                    </button>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
 
                     <a href="{{ route('public.products') }}"
                        class="w-full inline-flex items-center justify-center px-6 py-2.5
