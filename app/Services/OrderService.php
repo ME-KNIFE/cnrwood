@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    private const ALLOWED_TRANSITIONS = [
+        'beklemede'        => ['odeme_bekleniyor', 'islemde', 'iptal_edildi'],
+        'odeme_bekleniyor' => ['beklemede', 'islemde', 'iptal_edildi'],
+        'islemde'          => ['kargoya_verildi', 'iptal_edildi'],
+        'kargoya_verildi'  => ['teslim_edildi'],
+        'teslim_edildi'    => [],
+        'iptal_edildi'     => [],
+        'iade_edildi'      => [],
+    ];
+
     /**
      * Convert a cart to an order.
      * Called after user confirms checkout (before payment for havale/eft,
@@ -91,6 +101,32 @@ class OrderService
     }
 
     /**
+     * Advance order status through the allowed transition map.
+     * Routes iptal_edildi through cancelOrder() so stock is always restored.
+     */
+    public function transitionStatus(Order $order, string $newStatus): Order
+    {
+        $current = $order->status;
+
+        if ($current === $newStatus) {
+            return $order;
+        }
+
+        $allowed = self::ALLOWED_TRANSITIONS[$current] ?? [];
+        if (! in_array($newStatus, $allowed, true)) {
+            throw new \LogicException("Geçersiz durum geçişi: {$current} → {$newStatus}");
+        }
+
+        if ($newStatus === 'iptal_edildi') {
+            $this->cancelOrder($order);
+        } else {
+            $order->update(['status' => $newStatus]);
+        }
+
+        return $order->refresh();
+    }
+
+    /**
      * Confirm havale/EFT payment (admin manually confirms receipt).
      */
     public function confirmHavalePayment(Order $order): void
@@ -115,6 +151,7 @@ class OrderService
 
     /**
      * Cancel an order (only if not yet shipped).
+     * Stock restore and status update are atomic inside a DB transaction.
      */
     public function cancelOrder(Order $order, string $reason = ''): void
     {
@@ -122,18 +159,19 @@ class OrderService
             throw new \LogicException("Cannot cancel a shipped or delivered order (#{$order->order_number}).");
         }
 
-        // Restore stock
-        foreach ($order->items as $item) {
-            if ($item->product?->track_stock) {
-                $item->product->increment('stock_quantity', $item->quantity);
+        DB::transaction(function () use ($order, $reason) {
+            foreach ($order->items as $item) {
+                if ($item->product?->track_stock) {
+                    $item->product->increment('stock_quantity', $item->quantity);
+                }
             }
-        }
 
-        $order->update([
-            'status'       => 'iptal_edildi',
-            'cancelled_at' => now(),
-            'notes'        => trim(($order->notes ?? '') . "\nİptal: {$reason}"),
-        ]);
+            $order->update([
+                'status'       => 'iptal_edildi',
+                'cancelled_at' => now(),
+                'notes'        => trim(($order->notes ?? '') . "\nİptal: {$reason}"),
+            ]);
+        });
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

@@ -76,7 +76,68 @@ class OrderServiceTest extends TestCase
         (new OrderService)->cancelOrder($order);
     }
 
+    // ── transitionStatus ─────────────────────────────────────────────────────
+
+    public function test_transition_status_rejects_invalid_jump(): void
+    {
+        $order = $this->makeOrder(['status' => 'beklemede']);
+
+        $this->expectException(\LogicException::class);
+
+        (new OrderService)->transitionStatus($order, 'teslim_edildi');
+    }
+
+    public function test_transition_status_to_cancelled_restores_stock(): void
+    {
+        $product = Product::factory()->create([
+            'track_stock'    => true,
+            'stock_quantity' => 5,
+        ]);
+        $order = $this->makeOrder(['status' => 'islemde']);
+        $order->items()->create([
+            'product_id'   => $product->id,
+            'product_name' => $product->getTranslation('name', 'tr'),
+            'product_sku'  => $product->sku,
+            'quantity'     => 2,
+            'unit_price'   => '100.00',
+            'total_price'  => '200.00',
+        ]);
+
+        (new OrderService)->transitionStatus($order, 'iptal_edildi');
+
+        $this->assertEquals('iptal_edildi', $order->fresh()->status);
+        $this->assertEquals(7, $product->fresh()->stock_quantity);
+    }
+
     // ── createFromCart snapshot ───────────────────────────────────────────────
+
+    public function test_checkout_decrements_stock(): void
+    {
+        $user    = User::factory()->create();
+        $product = Product::factory()->buyable()->create([
+            'track_stock'    => true,
+            'stock_quantity' => 10,
+        ]);
+
+        $this->actingAs($user);
+
+        $this->post('/sepet/ekle', [
+            'product_id' => $product->id,
+            'quantity'   => 2,
+        ]);
+
+        $this->post('/siparis/olustur', [
+            'customer_name'  => 'Test Müşteri',
+            'customer_email' => 'test@example.com',
+            'customer_phone' => '05001234567',
+            'full_name'      => 'Test Müşteri',
+            'phone'          => '05001234567',
+            'address_line1'  => 'Test Sokak No: 1',
+            'city'           => 'İstanbul',
+        ]);
+
+        $this->assertEquals(8, $product->fresh()->stock_quantity);
+    }
 
     public function test_create_from_cart_preserves_customer_and_address_snapshot(): void
     {
