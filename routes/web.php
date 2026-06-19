@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\QuoteRequestController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Public website (Phase 7A) ─────────────────────────────────────────────
@@ -31,3 +32,7 @@ Route::get('/iletisim',  [ContactController::class, 'create'])->name('public.con
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/iletisim', [ContactController::class, 'store'])->name('public.contact.store');
 });
+
+// ─── Phase 7D — Public SEO ─────────────────────────────────────────────────
+// robots.txt is served as a static file from public/robots.txt.
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.sitemap');

@@ -22,6 +22,23 @@
 
 @section('content')
 
+{{-- BreadcrumbList JSON-LD (Phase 7D) — no price, no availability, safe for both product types --}}
+<script type="application/ld+json">
+@php
+    $crumbs = [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Anasayfa', 'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Ürünler',  'item' => route('public.products')],
+    ];
+    if ($catName && $product->category) {
+        $crumbs[] = ['@type' => 'ListItem', 'position' => 3, 'name' => $catName, 'item' => route('public.category', ['slug' => $product->category->slug])];
+        $crumbs[] = ['@type' => 'ListItem', 'position' => 4, 'name' => $name,    'item' => route('public.product',  ['slug' => $product->slug])];
+    } else {
+        $crumbs[] = ['@type' => 'ListItem', 'position' => 3, 'name' => $name,    'item' => route('public.product',  ['slug' => $product->slug])];
+    }
+@endphp
+{!! json_encode(['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => $crumbs], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <nav class="text-sm text-[#8B5A2B]">

@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /magaza-panel
+Disallow: /magaza-panel/
+Disallow: /login
+Disallow: /logout
+Disallow: /livewire/
+Disallow: /teklif-al/tesekkurler
+Disallow: /*?*
+
+Sitemap: https://cnrwood.com/sitemap.xml

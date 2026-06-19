@@ -3,6 +3,7 @@
 @php
     $title           = 'Teklif Talebiniz Alındı — CNRWOOD';
     $metaDescription = 'Teklif talebiniz başarıyla alındı. CNRWOOD ekibi en geç 1 iş günü içinde sizinle iletişime geçecektir.';
+    $noindex         = true;
 @endphp
 
 @section('content')

@@ -12,7 +12,7 @@
 
     <title>{{ $title ?? $defaultTitle }}</title>
     <meta name="description" content="{{ $metaDescription ?? $defaultDesc }}">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="{{ ($noindex ?? false) ? 'noindex, nofollow' : 'index, follow' }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <meta property="og:type" content="website">
