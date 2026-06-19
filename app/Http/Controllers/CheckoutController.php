@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Services\CartService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -24,11 +25,20 @@ class CheckoutController extends Controller
                 ->with('cart_error', 'Sepetiniz boş. Lütfen önce ürün ekleyin.');
         }
 
+        session(['checkout_token' => Str::random(40)]);
+
         return view('public.checkout', compact('cart'));
     }
 
     public function store(Request $request)
     {
+        // Validate and consume the one-time session token to prevent double-submit
+        $sessionToken = session()->pull('checkout_token');
+        if (! $sessionToken || $sessionToken !== $request->input('checkout_token')) {
+            return redirect()->route('checkout.index')
+                ->with('cart_error', 'Form süresi dolmuştur. Lütfen tekrar deneyin.');
+        }
+
         $validated = $request->validate([
             'customer_name'  => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email', 'max:255'],

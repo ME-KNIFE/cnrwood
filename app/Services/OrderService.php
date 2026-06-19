@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    private const ALLOWED_PAYMENT_TRANSITIONS = [
+        'beklemede'        => ['odeme_bekleniyor', 'odendi', 'basarisiz', 'iptal_edildi'],
+        'odeme_bekleniyor' => ['beklemede', 'odendi', 'basarisiz', 'iptal_edildi'],
+        'odendi'           => ['iade_edildi'],
+        'basarisiz'        => ['beklemede', 'odeme_bekleniyor'],
+        'iptal_edildi'     => [],
+        'iade_edildi'      => [],
+    ];
+
     private const ALLOWED_TRANSITIONS = [
         'beklemede'        => ['odeme_bekleniyor', 'islemde', 'iptal_edildi'],
         'odeme_bekleniyor' => ['beklemede', 'islemde', 'iptal_edildi'],
@@ -87,9 +96,17 @@ class OrderService
                     'total_price'        => $item->quantity * $item->unit_price,
                 ]);
 
-                // Decrement stock
+                // Atomic decrement: WHERE guard prevents oversell on concurrent checkouts
                 if ($item->product->track_stock) {
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                    $decremented = Product::where('id', $item->product_id)
+                        ->where('stock_quantity', '>=', $item->quantity)
+                        ->decrement('stock_quantity', $item->quantity);
+
+                    if ($decremented === 0) {
+                        throw new \RuntimeException(
+                            "Stok tükendi: {$item->product->getTranslation('name', 'tr')}"
+                        );
+                    }
                 }
             }
 
@@ -121,6 +138,33 @@ class OrderService
             $this->cancelOrder($order);
         } else {
             $order->update(['status' => $newStatus]);
+        }
+
+        return $order->refresh();
+    }
+
+    /**
+     * Advance payment_status through the allowed transition map.
+     * Routes odendi for havale/eft through confirmHavalePayment() so order status
+     * is also advanced to islemde in one atomic step.
+     */
+    public function transitionPaymentStatus(Order $order, string $newPaymentStatus): Order
+    {
+        $current = $order->payment_status;
+
+        if ($current === $newPaymentStatus) {
+            return $order;
+        }
+
+        $allowed = self::ALLOWED_PAYMENT_TRANSITIONS[$current] ?? [];
+        if (! in_array($newPaymentStatus, $allowed, true)) {
+            throw new \LogicException("Geçersiz ödeme durumu geçişi: {$current} → {$newPaymentStatus}");
+        }
+
+        if ($newPaymentStatus === 'odendi' && $order->isHavaleEft()) {
+            $this->confirmHavalePayment($order);
+        } else {
+            $order->update(['payment_status' => $newPaymentStatus]);
         }
 
         return $order->refresh();

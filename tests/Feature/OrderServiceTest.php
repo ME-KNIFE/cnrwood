@@ -10,6 +10,8 @@ use Tests\TestCase;
 
 class OrderServiceTest extends TestCase
 {
+    private const CHECKOUT_TOKEN = 'test-checkout-token';
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private function makeOrder(array $attrs = []): Order
@@ -109,7 +111,35 @@ class OrderServiceTest extends TestCase
         $this->assertEquals(7, $product->fresh()->stock_quantity);
     }
 
-    // ── createFromCart snapshot ───────────────────────────────────────────────
+    // ── transitionPaymentStatus ───────────────────────────────────────────────
+
+    public function test_payment_status_transition_odendi_sets_paid_and_processing(): void
+    {
+        $order = $this->makeOrder([
+            'status'         => 'beklemede',
+            'payment_status' => 'odeme_bekleniyor',
+            'payment_method' => 'havale_eft',
+        ]);
+
+        (new OrderService)->transitionPaymentStatus($order, 'odendi');
+
+        $fresh = $order->fresh();
+        $this->assertEquals('odendi', $fresh->payment_status);
+        $this->assertEquals('islemde', $fresh->status);
+    }
+
+    public function test_payment_status_transition_rejects_invalid_jump(): void
+    {
+        $order = $this->makeOrder([
+            'payment_status' => 'odendi',
+        ]);
+
+        $this->expectException(\LogicException::class);
+
+        (new OrderService)->transitionPaymentStatus($order, 'beklemede');
+    }
+
+    // ── createFromCart ────────────────────────────────────────────────────────
 
     public function test_checkout_decrements_stock(): void
     {
@@ -126,15 +156,8 @@ class OrderServiceTest extends TestCase
             'quantity'   => 2,
         ]);
 
-        $this->post('/siparis/olustur', [
-            'customer_name'  => 'Test Müşteri',
-            'customer_email' => 'test@example.com',
-            'customer_phone' => '05001234567',
-            'full_name'      => 'Test Müşteri',
-            'phone'          => '05001234567',
-            'address_line1'  => 'Test Sokak No: 1',
-            'city'           => 'İstanbul',
-        ]);
+        $this->withSession(['checkout_token' => self::CHECKOUT_TOKEN])
+            ->post('/siparis/olustur', $this->checkoutPayload());
 
         $this->assertEquals(8, $product->fresh()->stock_quantity);
     }
@@ -148,15 +171,16 @@ class OrderServiceTest extends TestCase
 
         $this->post('/sepet/ekle', ['product_id' => $product->id, 'quantity' => 1]);
 
-        $this->post('/siparis/olustur', [
-            'customer_name'  => 'Ahmet Yılmaz',
-            'customer_email' => 'ahmet@example.com',
-            'customer_phone' => '05559876543',
-            'full_name'      => 'Ahmet Yılmaz',
-            'phone'          => '05559876543',
-            'address_line1'  => 'Atatürk Cad. No:42',
-            'city'           => 'Ankara',
-        ]);
+        $this->withSession(['checkout_token' => self::CHECKOUT_TOKEN])
+            ->post('/siparis/olustur', array_merge($this->checkoutPayload(), [
+                'customer_name'  => 'Ahmet Yılmaz',
+                'customer_email' => 'ahmet@example.com',
+                'customer_phone' => '05559876543',
+                'full_name'      => 'Ahmet Yılmaz',
+                'phone'          => '05559876543',
+                'address_line1'  => 'Atatürk Cad. No:42',
+                'city'           => 'Ankara',
+            ]));
 
         $order = Order::first();
         $this->assertNotNull($order);
@@ -166,5 +190,21 @@ class OrderServiceTest extends TestCase
         $this->assertIsArray($order->shipping_address);
         $this->assertEquals('Ankara', $order->shipping_address['city']);
         $this->assertEquals('Atatürk Cad. No:42', $order->shipping_address['address_line1']);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private function checkoutPayload(): array
+    {
+        return [
+            'checkout_token' => self::CHECKOUT_TOKEN,
+            'customer_name'  => 'Test Müşteri',
+            'customer_email' => 'test@example.com',
+            'customer_phone' => '05001234567',
+            'full_name'      => 'Test Müşteri',
+            'phone'          => '05001234567',
+            'address_line1'  => 'Test Sokak No: 1',
+            'city'           => 'İstanbul',
+        ];
     }
 }

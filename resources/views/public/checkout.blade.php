@@ -42,6 +42,7 @@
 
     <form method="POST" action="{{ route('checkout.store') }}" novalidate>
         @csrf
+        <input type="hidden" name="checkout_token" value="{{ session('checkout_token') }}">
 
         <div class="lg:grid lg:grid-cols-3 lg:gap-8">
 
