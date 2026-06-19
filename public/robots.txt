@@ -8,6 +8,7 @@ Disallow: /login
 Disallow: /logout
 Disallow: /livewire/
 Disallow: /teklif-al/tesekkurler
+Disallow: /admin-dl
 Disallow: /*?*
 
 Sitemap: https://cnrwood.com/sitemap.xml
