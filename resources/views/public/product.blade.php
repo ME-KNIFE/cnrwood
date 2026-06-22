@@ -22,7 +22,7 @@
 
 @section('content')
 
-{{-- BreadcrumbList JSON-LD (Phase 7D) — no price, no availability, safe for both product types --}}
+{{-- BreadcrumbList JSON-LD (Phase 7D) --}}
 <script type="application/ld+json">
 @php
     $crumbs = [
@@ -37,6 +37,51 @@
     }
 @endphp
 {!! json_encode(['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => $crumbs], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+</script>
+
+{{-- Product JSON-LD (Phase 12C) ──────────────────────────────────────────────
+     buyable  → full Offer with price + availability (eligible for Google rich results)
+     quote_only → Product schema only, no Offer (avoids "missing price" penalty)
+─────────────────────────────────────────────────────────────────────────────── --}}
+<script type="application/ld+json">
+@php
+    $imageUrls = $gallery->pluck('url')->filter()->values()->all();
+
+    $jsonLd = [
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Product',
+        'name'        => $name,
+        'url'         => route('public.product', $product->slug),
+        'sku'         => $product->sku,
+        'brand'       => ['@type' => 'Brand', 'name' => 'CNRWOOD'],
+        'description' => $shortDesc
+            ? strip_tags(\Illuminate\Support\Str::limit($shortDesc, 500))
+            : ($description ? strip_tags(\Illuminate\Support\Str::limit($description, 500)) : $name),
+    ];
+
+    if (! empty($imageUrls)) {
+        $jsonLd['image'] = count($imageUrls) === 1 ? $imageUrls[0] : $imageUrls;
+    }
+
+    if ($catName) {
+        $jsonLd['category'] = $catName;
+    }
+
+    // Only buyable products get an Offer block — quote-only have no fixed price
+    if ($isBuyable && $product->price !== null) {
+        $jsonLd['offers'] = [
+            '@type'           => 'Offer',
+            'url'             => route('public.product', $product->slug),
+            'priceCurrency'   => 'TRY',
+            'price'           => number_format((float) $product->price, 2, '.', ''),
+            'availability'    => $product->isInStock()
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            'seller'          => ['@type' => 'Organization', 'name' => 'CNRWOOD'],
+        ];
+    }
+@endphp
+{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
 </script>
 
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">

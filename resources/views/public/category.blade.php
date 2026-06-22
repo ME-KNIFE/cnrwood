@@ -22,6 +22,30 @@
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
 
+{{-- ItemList JSON-LD — category product listing (Phase 12C) ──────────────── --}}
+@if ($products->isNotEmpty())
+<script type="application/ld+json">
+@php
+    $listItems = [];
+    foreach ($products as $i => $p) {
+        $listItems[] = [
+            '@type'    => 'ListItem',
+            'position' => ($products->currentPage() - 1) * $products->perPage() + $i + 1,
+            'url'      => route('public.product', $p->slug),
+            'name'     => $p->getTranslation('name', 'tr') ?? $p->slug,
+        ];
+    }
+@endphp
+{!! json_encode([
+    '@context'        => 'https://schema.org',
+    '@type'           => 'ItemList',
+    'name'            => $catName,
+    'url'             => route('public.category', $category->slug),
+    'itemListElement' => $listItems,
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+@endif
+
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">

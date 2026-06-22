@@ -7,6 +7,30 @@
 
 @section('content')
 
+{{-- Organization + LocalBusiness JSON-LD (Phase 12C) ─────────────────────── --}}
+<script type="application/ld+json">
+{!! json_encode([
+    '@context'     => 'https://schema.org',
+    '@type'        => ['Organization', 'LocalBusiness'],
+    '@id'          => url('/') . '#organization',
+    'name'         => 'CNRWOOD',
+    'url'          => url('/'),
+    'foundingDate' => '1998',
+    'description'  => 'Ahşap sandık, ihracat ambalajı (ISPM 15), kapı sereni, kereste ve ahşap yapı çözümleri.',
+    'address'      => [
+        '@type'           => 'PostalAddress',
+        'addressLocality' => 'Gebze',
+        'addressRegion'   => 'Kocaeli',
+        'addressCountry'  => 'TR',
+    ],
+    'contactPoint' => [
+        '@type'       => 'ContactPoint',
+        'contactType' => 'customer service',
+        'url'         => route('public.contact'),
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+
 {{-- ── HERO ─────────────────────────────────────────────────────────────── --}}
 <section class="relative bg-gradient-to-br from-[#3E2006] via-[#6B3A1F] to-[#8B5A2B] text-white overflow-hidden">
     <div class="absolute inset-0 opacity-10"
