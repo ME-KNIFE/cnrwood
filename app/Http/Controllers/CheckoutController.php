@@ -55,6 +55,7 @@ class CheckoutController extends Controller
             'customer_name'       => ['required', 'string', 'max:255'],
             'customer_email'      => ['required', 'email', 'max:255'],
             'customer_phone'      => ['nullable', 'string', 'max:50'],
+            'payment_method'      => ['required', 'in:havale_eft,kredi_karti'],
             // Saved-address shortcut (authenticated users only)
             'shipping_address_id' => ['nullable', 'integer'],
             'billing_address_id'  => ['nullable', 'integer'],
@@ -96,11 +97,13 @@ class CheckoutController extends Controller
             null,
         ) ?? $shippingAddress;
 
+        $paymentMethod = $validated['payment_method'];
+
         $checkoutData = [
             'customer_name'    => $validated['customer_name'],
             'customer_email'   => $validated['customer_email'],
             'customer_phone'   => $validated['customer_phone'] ?? null,
-            'payment_method'   => 'havale_eft',
+            'payment_method'   => $paymentMethod,
             'shipping_address' => $shippingAddress,
             'billing_address'  => $billingAddress,
         ];
@@ -113,8 +116,18 @@ class CheckoutController extends Controller
                 ->with('checkout_error', $e->getMessage());
         }
 
-        session(['checkout_order_id' => $order->id]);
         session(['cart_count' => 0]);
+
+        // For credit card: redirect to Iyzico 3DS payment initiation form
+        if ($paymentMethod === 'kredi_karti') {
+            // Store pending order ID for guest auth in PaymentController
+            session(['pending_order_id' => $order->id]);
+
+            return view('public.payment-card-form', ['order' => $order]);
+        }
+
+        // For havale/EFT: show success page directly
+        session(['checkout_order_id' => $order->id]);
 
         return redirect()->route('checkout.success');
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderInvoiceController;
 use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicController;
@@ -114,6 +115,21 @@ Route::prefix('hesabim')->name('account.')->group(function () {
         Route::post('/adresler/{address}/faturalama',    [AddressController::class, 'setDefaultBilling'])->name('addresses.default-billing');
     });
 });
+
+// ─── Phase 8A — Public shopping cart (guest + authenticated) ────────────────
+// ─── Phase 11C — Iyzico 3DS payment ────────────────────────────────────────
+// /odeme/kart/{order}  → initiate 3DS (CSRF-protected, throttled)
+// /odeme/3d-sonuc      → Iyzico callback (CSRF-exempt: external POST from Iyzico)
+Route::prefix('odeme')->name('payment.')->group(function () {
+    Route::middleware('throttle:5,1')->group(function () {
+        Route::post('/kart/{order}', [PaymentController::class, 'initiate'])->name('initiate');
+    });
+});
+
+// CSRF-exempt callback — Iyzico posts here after 3DS; excluded in bootstrap/app.php
+Route::post('/odeme/3d-sonuc', [PaymentController::class, 'callback'])
+    ->name('payment.callback')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ─── Phase 8A — Public shopping cart (guest + authenticated) ────────────────
 // Static segments (ekle, temizle) are declared before the {item} parameter

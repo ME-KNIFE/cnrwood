@@ -286,24 +286,70 @@
                     </div>
                 </div>
 
-                {{-- Payment info (EFT only — no gateway) ─────────────────── --}}
+                {{-- Payment method selection (Phase 11C) ────────────────── --}}
                 <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-3">Ödeme Yöntemi</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">Ödeme Yöntemi</h2>
 
-                    <div class="flex items-start gap-3 p-4 bg-[#F5F0E8] border border-[#E6DFD2] rounded">
-                        <div class="mt-0.5">
-                            <svg class="w-5 h-5 text-[#2C5F2E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-[#3E2006]">Havale / EFT</p>
-                            <p class="text-xs text-[#555555] mt-0.5">
-                                Siparişiniz oluşturulduktan sonra banka hesap bilgilerimiz tarafınıza iletilecektir.
-                                Ödemeniz onaylandığında siparişiniz işleme alınacaktır.
-                            </p>
-                        </div>
+                    @error('payment_method')
+                        <p class="mb-3 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+
+                    <div class="space-y-3">
+
+                        {{-- Option 1: Kredi Kartı ─────────────────────────── --}}
+                        <label id="pm-card-label"
+                               class="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors
+                                      {{ old('payment_method', 'havale_eft') === 'kredi_karti'
+                                          ? 'border-[#3E2006] bg-[#FDF9F5]'
+                                          : 'border-[#E6DFD2] hover:border-[#8B5A2B]' }}">
+                            <input type="radio"
+                                   name="payment_method"
+                                   value="kredi_karti"
+                                   id="pm_kredi_karti"
+                                   class="mt-0.5 accent-[#3E2006]"
+                                   {{ old('payment_method', 'havale_eft') === 'kredi_karti' ? 'checked' : '' }}>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-[#3E2006]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                    </svg>
+                                    <p class="text-sm font-semibold text-[#3E2006]">Kredi / Banka Kartı</p>
+                                    <span class="text-[10px] font-bold text-white bg-[#2C5F2E] px-1.5 py-0.5 rounded">3D Secure</span>
+                                </div>
+                                <p class="text-xs text-[#555555] mt-1">
+                                    Anında ödeme. iyzico güvencesiyle 3D Secure korumalı.
+                                </p>
+                            </div>
+                        </label>
+
+                        {{-- Option 2: Havale / EFT ────────────────────────── --}}
+                        <label id="pm-eft-label"
+                               class="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors
+                                      {{ old('payment_method', 'havale_eft') === 'havale_eft'
+                                          ? 'border-[#3E2006] bg-[#FDF9F5]'
+                                          : 'border-[#E6DFD2] hover:border-[#8B5A2B]' }}">
+                            <input type="radio"
+                                   name="payment_method"
+                                   value="havale_eft"
+                                   id="pm_havale_eft"
+                                   class="mt-0.5 accent-[#3E2006]"
+                                   {{ old('payment_method', 'havale_eft') === 'havale_eft' ? 'checked' : '' }}>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-[#3E2006]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                                    </svg>
+                                    <p class="text-sm font-semibold text-[#3E2006]">Havale / EFT</p>
+                                </div>
+                                <p class="text-xs text-[#555555] mt-1">
+                                    Siparişiniz oluşturulduktan sonra IBAN bilgilerimiz size iletilir.
+                                    Ödeme onaylandığında kargoya verilir.
+                                </p>
+                            </div>
+                        </label>
+
                     </div>
                 </div>
 
@@ -395,3 +441,34 @@
 </section>
 
 @endsection
+
+<script>
+// Highlight selected payment method option
+(function () {
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const labels = {
+        kredi_karti: document.getElementById('pm-card-label'),
+        havale_eft:  document.getElementById('pm-eft-label'),
+    };
+
+    function updateHighlight() {
+        radios.forEach(function (radio) {
+            const label = labels[radio.value];
+            if (!label) return;
+            if (radio.checked) {
+                label.classList.add('border-[#3E2006]', 'bg-[#FDF9F5]');
+                label.classList.remove('border-[#E6DFD2]');
+            } else {
+                label.classList.remove('border-[#3E2006]', 'bg-[#FDF9F5]');
+                label.classList.add('border-[#E6DFD2]');
+            }
+        });
+    }
+
+    radios.forEach(function (radio) {
+        radio.addEventListener('change', updateHighlight);
+    });
+
+    updateHighlight();
+})();
+</script>
