@@ -32,8 +32,8 @@
             @foreach ($projects as $project)
                 @php
                     $cover = $project->getCoverImageUrl();
-                    $title = $project->getTranslation('title', 'tr');
-                    $desc  = $project->getTranslation('description', 'tr');
+                    $title = $project->getTranslation('title', app()->getLocale());
+                    $desc  = $project->getTranslation('description', app()->getLocale());
                 @endphp
                 <article class="bg-white border border-[#E6DFD2] rounded-lg overflow-hidden flex flex-col
                                 hover:shadow-md hover:border-[#8B5A2B] transition-all group">

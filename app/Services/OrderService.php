@@ -91,9 +91,9 @@ class OrderService
                 $order->items()->create([
                     'product_id'         => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
-                    'product_name'       => $item->product->getTranslation('name', 'tr'),
+                    'product_name'       => $item->product->getTranslation('name', app()->getLocale()),
                     'product_sku'        => $item->product->sku,
-                    'variant_name'       => $item->variant?->getTranslation('name', 'tr'),
+                    'variant_name'       => $item->variant?->getTranslation('name', app()->getLocale()),
                     'quantity'           => $item->quantity,
                     'unit_price'         => $item->unit_price,
                     'total_price'        => $item->quantity * $item->unit_price,
@@ -107,7 +107,7 @@ class OrderService
 
                     if ($decremented === 0) {
                         throw new \RuntimeException(
-                            "Stok tükendi: {$item->product->getTranslation('name', 'tr')}"
+                            "Stok tükendi: {$item->product->getTranslation('name', app()->getLocale())}"
                         );
                     }
                 }
@@ -255,7 +255,7 @@ class OrderService
         }
 
         if ($product->track_stock && ($product->stock_quantity ?? 0) < $item->quantity) {
-            throw new \RuntimeException("Yetersiz stok: {$product->getTranslation('name', 'tr')}");
+            throw new \RuntimeException("Yetersiz stok: {$product->getTranslation('name', app()->getLocale())}");
         }
     }
 

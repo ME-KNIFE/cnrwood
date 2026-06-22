@@ -58,7 +58,7 @@
                 @foreach ($cart->items as $item)
                     @php
                         $product = $item->product;
-                        $pname   = $product ? ($product->getTranslation('name', 'tr') ?? '—') : '—';
+                        $pname   = $product ? ($product->getTranslation('name', app()->getLocale()) ?? '—') : '—';
                         $vname   = $item->variant
                                     ? (is_array($item->variant->name)
                                         ? ($item->variant->name['tr'] ?? null)

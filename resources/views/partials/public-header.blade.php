@@ -1,15 +1,16 @@
 @php
     $navLinks = [
-        ['label' => 'Anasayfa',         'url' => route('home'),             'active' => request()->routeIs('home')],
-        ['label' => 'Kurumsal',         'url' => route('public.corporate'), 'active' => request()->routeIs('public.corporate') || request()->routeIs('public.about')],
-        ['label' => 'Hizmetler',        'url' => route('public.services'),  'active' => request()->routeIs('public.services')],
-        ['label' => 'Ürünler',          'url' => route('public.products'),  'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
-        ['label' => 'Sandık Hesaplama', 'url' => route('public.sandik'),      'active' => request()->routeIs('public.sandik')],
-        ['label' => 'Projeler',          'url' => route('public.projects.index'), 'active' => request()->routeIs('public.projects.*')],
-        ['label' => 'Fuarlar',          'url' => route('public.fairs.index'),    'active' => request()->routeIs('public.fairs.*')],
-        ['label' => 'Blog',             'url' => route('public.blog.index'),     'active' => request()->routeIs('public.blog.*')],
-        ['label' => 'İletişim',         'url' => route('public.contact'),        'active' => request()->routeIs('public.contact')],
+        ['label' => __('nav.home'),      'url' => route('home'),                   'active' => request()->routeIs('home')],
+        ['label' => __('nav.corporate'), 'url' => route('public.corporate'),       'active' => request()->routeIs('public.corporate') || request()->routeIs('public.about')],
+        ['label' => __('nav.services'),  'url' => route('public.services'),        'active' => request()->routeIs('public.services')],
+        ['label' => __('nav.products'),  'url' => route('public.products'),        'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
+        ['label' => __('nav.sandik'),    'url' => route('public.sandik'),          'active' => request()->routeIs('public.sandik')],
+        ['label' => __('nav.projects'),  'url' => route('public.projects.index'),  'active' => request()->routeIs('public.projects.*')],
+        ['label' => __('nav.fairs'),     'url' => route('public.fairs.index'),     'active' => request()->routeIs('public.fairs.*')],
+        ['label' => __('nav.blog'),      'url' => route('public.blog.index'),      'active' => request()->routeIs('public.blog.*')],
+        ['label' => __('nav.contact'),   'url' => route('public.contact'),         'active' => request()->routeIs('public.contact')],
     ];
+    $currentLocale = app()->getLocale();
 @endphp
 
 <header class="bg-white border-b border-[#E6DFD2] sticky top-0 z-40">
@@ -34,6 +35,18 @@
             </nav>
 
             <div class="hidden md:flex items-center gap-2">
+                {{-- Language switcher --}}
+                <div class="flex items-center border border-[#E6DFD2] rounded overflow-hidden text-xs font-semibold">
+                    <a href="{{ route('locale.switch', 'tr') }}"
+                       class="px-2 py-1 transition-colors {{ $currentLocale === 'tr' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
+                        TR
+                    </a>
+                    <a href="{{ route('locale.switch', 'en') }}"
+                       class="px-2 py-1 transition-colors {{ $currentLocale === 'en' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
+                        EN
+                    </a>
+                </div>
+
                 {{-- Cart icon with session-backed item count --}}
                 @php $cartCount = session('cart_count', 0); @endphp
                 <a href="{{ route('cart.index') }}"
@@ -60,19 +73,19 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        Hesabım
+                        {{ __('nav.account') }}
                     </a>
                 @else
                     <a href="{{ route('account.login') }}"
                        class="text-sm font-medium text-[#555555] hover:text-[#3E2006] px-3 py-2 rounded hover:bg-[#F5F0E8] transition-colors">
-                        Giriş Yap
+                        {{ __('nav.login') }}
                     </a>
                 @endauth
 
                 <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded
                           text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
-                    Teklif Al
+                    {{ __('nav.quote') }}
                 </a>
             </div>
 
@@ -89,9 +102,18 @@
                             {{ $link['label'] }}
                         </a>
                     @endforeach
+                    {{-- Mobile language switcher --}}
+                    <div class="flex items-center gap-2 px-4 py-2 border-t border-[#E6DFD2] mt-1">
+                        <span class="text-xs text-[#8B5A2B]">Dil / Language:</span>
+                        <a href="{{ route('locale.switch', 'tr') }}"
+                           class="text-xs font-semibold px-2 py-0.5 rounded {{ $currentLocale === 'tr' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">TR</a>
+                        <a href="{{ route('locale.switch', 'en') }}"
+                           class="text-xs font-semibold px-2 py-0.5 rounded {{ $currentLocale === 'en' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">EN</a>
+                    </div>
+
                     <a href="{{ route('cart.index') }}"
                        class="flex items-center justify-between mx-3 mt-2 px-3 py-2 text-sm text-[#3E2006] bg-[#F5F0E8] hover:bg-[#E6DFD2] rounded">
-                        <span>Sepetim</span>
+                        <span>{{ __('nav.cart') }}</span>
                         @if (session('cart_count', 0) > 0)
                             <span class="min-w-[18px] h-[18px] flex items-center justify-center
                                          text-[10px] font-bold bg-[#2C5F2E] text-white rounded-full px-1">
@@ -102,17 +124,17 @@
                     @auth
                         <a href="{{ route('account.dashboard') }}"
                            class="block px-4 py-2 text-sm {{ request()->routeIs('account.*') ? 'text-[#3E2006] bg-[#F5F0E8]' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
-                            Hesabım
+                            {{ __('nav.account') }}
                         </a>
                     @else
                         <a href="{{ route('account.login') }}"
                            class="block px-4 py-2 text-sm text-[#555555] hover:bg-[#F5F0E8]">
-                            Giriş Yap
+                            {{ __('nav.login') }}
                         </a>
                     @endauth
                     <a href="{{ route('public.quote.create') }}"
                        class="block mx-3 mt-2 px-3 py-2 text-sm text-center text-white bg-[#1F497D] hover:bg-[#173a64] rounded">
-                        Teklif Al
+                        {{ __('nav.quote') }}
                     </a>
                 </div>
             </details>

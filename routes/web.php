@@ -58,6 +58,15 @@ Route::get('/hizmetler',        [PublicController::class, 'services'])->name('pu
 Route::get('/blog',          [BlogController::class, 'index'])->name('public.blog.index');
 Route::get('/blog/{slug}',   [BlogController::class, 'show'])->name('public.blog.show');
 
+// ─── Phase 12B — Language switcher ──────────────────────────────────────────
+// Stores locale in session; redirect back preserves current page.
+Route::get('/dil/{locale}', function (string $locale) {
+    if (in_array($locale, ['tr', 'en'], true)) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back(fallback: route('home'));
+})->name('locale.switch')->where('locale', 'tr|en');
+
 // ─── Phase 12A — Projects + Fairs ───────────────────────────────────────────
 Route::get('/projeler',              [ProjectController::class, 'index'])->name('public.projects.index');
 Route::get('/projeler/{slug}',       [ProjectController::class, 'show'])->name('public.projects.show');

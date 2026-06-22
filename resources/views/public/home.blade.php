@@ -2,7 +2,7 @@
 
 @php
     $title           = 'CNRWOOD — Ahşap Sandık, İhracat Ambalajı ve Ahşap Yapı Çözümleri | Gebze';
-    $metaDescription = '1998’den beri Gebze’de ahşap sandık, ISPM 15 ısıl işlemli ihracat ambalajı, kapı sereni, kereste & levha ve ahşap yapı projelerinde profesyonel üretim. Hızlı teklif ve kaliteli işçilik.';
+    $metaDescription = '1998'den beri Gebze'de ahşap sandık, ISPM 15 ısıl işlemli ihracat ambalajı, kapı sereni, kereste & levha ve ahşap yapı projelerinde profesyonel üretim. Hızlı teklif ve kaliteli işçilik.';
 @endphp
 
 @section('content')
@@ -39,20 +39,19 @@
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div class="max-w-3xl">
             <span class="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-white/15 rounded-full mb-6">
-                1998’den beri profesyonel ahşap çözümleri
+                {{ __('home.hero_badge') }}
             </span>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Ahşap sandık, ambalaj ve yapı çözümlerinde <span class="text-[#F5F0E8]">güvenilir ortağınız</span>
+                {{ __('home.hero_title') }} <span class="text-[#F5F0E8]">{{ __('home.hero_strong') }}</span>
             </h1>
             <p class="text-lg lg:text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
-                İhracat sandıkları, ISPM 15 ısıl işlemli ambalaj, kapı sereni, kereste &amp; levha ve
-                ahşap yapı projelerinde, Gebze’deki tesisimizden Türkiye ve dünyaya hizmet veriyoruz.
+                {{ __('home.hero_subtitle') }}
             </p>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('public.products') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded
                           bg-white text-[#3E2006] hover:bg-[#F5F0E8] transition-colors shadow-lg">
-                    Ürünleri İncele
+                    {{ __('home.browse_products') }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
@@ -60,7 +59,7 @@
                 <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded
                           bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-lg">
-                    Teklif Al
+                    {{ __('nav.quote') }}
                 </a>
             </div>
         </div>
@@ -73,19 +72,19 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
                 <div class="text-3xl font-bold text-[#3E2006]">1998</div>
-                <div class="text-sm text-[#555555] mt-1">Kuruluş Yılı</div>
+                <div class="text-sm text-[#555555] mt-1">{{ __('home.stat_year') }}</div>
             </div>
             <div>
                 <div class="text-3xl font-bold text-[#3E2006]">4</div>
-                <div class="text-sm text-[#555555] mt-1">Şube</div>
+                <div class="text-sm text-[#555555] mt-1">{{ __('home.stat_branches') }}</div>
             </div>
             <div>
                 <div class="text-3xl font-bold text-[#3E2006]">70+</div>
-                <div class="text-sm text-[#555555] mt-1">Çalışan</div>
+                <div class="text-sm text-[#555555] mt-1">{{ __('home.stat_employees') }}</div>
             </div>
             <div>
                 <div class="text-3xl font-bold text-[#3E2006]">7+</div>
-                <div class="text-sm text-[#555555] mt-1">İhracat Yapılan Ülke</div>
+                <div class="text-sm text-[#555555] mt-1">{{ __('home.stat_countries') }}</div>
             </div>
         </div>
     </div>
@@ -97,17 +96,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="text-3xl font-bold text-[#3E2006]">Ürün Kategorileri</h2>
-                <p class="text-[#555555] mt-2">İhtiyacınıza uygun ahşap çözümünü keşfedin.</p>
+                <h2 class="text-3xl font-bold text-[#3E2006]">{{ __('home.categories_title') }}</h2>
+                <p class="text-[#555555] mt-2">{{ __('home.categories_subtitle') }}</p>
             </div>
             <a href="{{ route('public.products') }}" class="hidden sm:inline text-sm font-medium text-[#1F497D] hover:underline">
-                Tümünü Gör →
+                {{ __('home.view_all') }} →
             </a>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach ($rootCategories as $cat)
-                @php $catName = $cat->getTranslation('name', 'tr') ?? '—'; @endphp
+                @php $catName = $cat->getTranslation('name', app()->getLocale()) ?? '—'; @endphp
                 <a href="{{ route('public.category', $cat->slug) }}"
                    class="group flex flex-col items-center justify-center text-center bg-white border border-[#E6DFD2] rounded-lg p-6 hover:border-[#8B5A2B] hover:shadow-md transition-all">
                     <div class="w-12 h-12 rounded-full bg-[#F5F0E8] flex items-center justify-center mb-3 group-hover:bg-[#8B5A2B]/15 transition-colors">
@@ -131,11 +130,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="text-3xl font-bold text-[#3E2006]">Öne Çıkan Ürünler</h2>
-                <p class="text-[#555555] mt-2">Üretim kataloğumuzdan seçili çözümler.</p>
+                <h2 class="text-3xl font-bold text-[#3E2006]">{{ __('home.featured_title') }}</h2>
+                <p class="text-[#555555] mt-2">{{ __('home.featured_subtitle') }}</p>
             </div>
             <a href="{{ route('public.products') }}" class="hidden sm:inline text-sm font-medium text-[#1F497D] hover:underline">
-                Tüm Ürünler →
+                {{ __('home.all_products') }} →
             </a>
         </div>
 
@@ -151,15 +150,15 @@
 {{-- ── CTA BANNER ───────────────────────────────────────────────────────── --}}
 <section class="py-16 bg-[#F5F0E8]">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-[#3E2006] mb-4">Projeniz için özel çözüm mü arıyorsunuz?</h2>
+        <h2 class="text-3xl font-bold text-[#3E2006] mb-4">{{ __('home.cta_title') }}</h2>
         <p class="text-[#555555] text-lg mb-8 max-w-2xl mx-auto">
-            Ölçü, malzeme ve adetlerinize göre teklif hazırlayalım. ISPM 15 sertifikalı üretim, hızlı teslimat.
+            {{ __('home.cta_body') }}
         </p>
         <div class="flex flex-wrap justify-center gap-3">
             <a href="{{ route('public.quote.create') }}"
                class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded
                       bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
-                Teklif Talep Et
+                {{ __('home.cta_btn') }}
             </a>
             <a href="tel:+902627512120"
                class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded

@@ -1,11 +1,11 @@
 @extends('layouts.public')
 
 @php
-    $trTitle = $project->getTranslation('title', 'tr');
-    $trDesc  = $project->getTranslation('description', 'tr');
-    $title   = ($project->getTranslation('meta_title', 'tr') ?? $trTitle) . ' — CNRWOOD';
-    $metaDescription = $project->getTranslation('meta_description', 'tr')
-        ?? ($trDesc ? \Illuminate\Support\Str::limit($trDesc, 160) : null);
+    $localTitle = $project->getTranslation('title', app()->getLocale());
+    $localDesc  = $project->getTranslation('description', app()->getLocale());
+    $title   = ($project->getTranslation('meta_title', app()->getLocale()) ?? $localTitle) . ' — CNRWOOD';
+    $metaDescription = $project->getTranslation('meta_description', app()->getLocale())
+        ?? ($localDesc ? \Illuminate\Support\Str::limit($localDesc, 160) : null);
     $gallery = $project->getMedia('project_gallery');
 @endphp
 
@@ -18,9 +18,9 @@
             <span class="mx-1">/</span>
             <a href="{{ route('public.projects.index') }}" class="hover:underline">Projeler</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">{{ $trTitle }}</span>
+            <span class="text-[#3E2006]">{{ $localTitle }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $trTitle }}</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $localTitle }}</h1>
         @if ($project->completed_at)
             <p class="text-sm text-[#8B5A2B] mt-2">Tamamlandı: {{ $project->completed_at->format('F Y') }}</p>
         @endif
@@ -38,15 +38,15 @@
             @if ($gallery->isNotEmpty())
                 <div class="rounded-lg overflow-hidden border border-[#E6DFD2] aspect-video bg-[#F5F0E8]">
                     <img src="{{ $gallery->first()->getUrl() }}"
-                         alt="{{ $trTitle }}"
+                         alt="{{ $localTitle }}"
                          class="w-full h-full object-cover">
                 </div>
             @endif
 
             {{-- Description ──────────────────────────────────────────────── --}}
-            @if ($trDesc)
+            @if ($localDesc)
                 <div class="prose prose-stone max-w-none text-[#333333]">
-                    {!! nl2br(e($trDesc)) !!}
+                    {!! nl2br(e($localDesc)) !!}
                 </div>
             @endif
 
@@ -61,7 +61,7 @@
                                class="block rounded-lg overflow-hidden border border-[#E6DFD2] aspect-square
                                       bg-[#F5F0E8] hover:opacity-90 transition-opacity">
                                 <img src="{{ $media->getUrl('thumb') ?: $media->getUrl() }}"
-                                     alt="{{ $trTitle }}"
+                                     alt="{{ $localTitle }}"
                                      class="w-full h-full object-cover"
                                      loading="lazy">
                             </a>
@@ -92,14 +92,12 @@
 
             {{-- CTA ─────────────────────────────────────────────────────── --}}
             <div class="bg-[#3E2006] text-white rounded-lg p-6">
-                <h3 class="font-bold text-lg mb-2">Benzer Bir Proje Mi?</h3>
-                <p class="text-sm text-[#D4A96A] mb-4">
-                    Özel ahşap ambalaj veya sandık ihtiyacınız için teklif alın.
-                </p>
+                <h3 class="font-bold text-lg mb-2">{{ __('projects.cta_title') }}</h3>
+                <p class="text-sm text-[#D4A96A] mb-4">{{ __('projects.cta_body') }}</p>
                 <a href="{{ route('public.quote.create') }}"
                    class="block text-center py-2 px-4 bg-[#D4A96A] hover:bg-[#C49050] text-[#3E2006]
                           font-semibold rounded transition-colors text-sm">
-                    Teklif Al
+                    {{ __('nav.quote') }}
                 </a>
             </div>
 
@@ -127,7 +125,7 @@
                                     @endif
                                 </div>
                                 <span class="text-sm font-medium text-[#3E2006] group-hover:text-[#6B3A1F] line-clamp-2">
-                                    {{ $other->getTranslation('title', 'tr') }}
+                                    {{ $other->getTranslation('title', app()->getLocale()) }}
                                 </span>
                             </a>
                         @endforeach

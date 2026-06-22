@@ -2,10 +2,11 @@
 
 @php
     /** @var \App\Models\Product $product */
-    $name        = $product->getTranslation('name', 'tr') ?? '—';
-    $description = $product->getTranslation('description', 'tr');
-    $shortDesc   = $product->getTranslation('short_description', 'tr');
-    $catName     = $product->category?->getTranslation('name', 'tr');
+    $locale      = app()->getLocale();
+    $name        = $product->getTranslation('name', $locale) ?? '—';
+    $description = $product->getTranslation('description', $locale);
+    $shortDesc   = $product->getTranslation('short_description', $locale);
+    $catName     = $product->category?->getTranslation('name', $locale);
     $isBuyable   = $product->isBuyable();
     $priceTxt    = $isBuyable ? $product->getDisplayPrice() : null;
 
@@ -26,8 +27,8 @@
 <script type="application/ld+json">
 @php
     $crumbs = [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Anasayfa', 'item' => route('home')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Ürünler',  'item' => route('public.products')],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),     'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.products'), 'item' => route('public.products')],
     ];
     if ($catName && $product->category) {
         $crumbs[] = ['@type' => 'ListItem', 'position' => 3, 'name' => $catName, 'item' => route('public.category', ['slug' => $product->category->slug])];
@@ -87,9 +88,9 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <nav class="text-sm text-[#8B5A2B]">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <a href="{{ route('public.products') }}" class="hover:underline">Ürünler</a>
+            <a href="{{ route('public.products') }}" class="hover:underline">{{ __('breadcrumb.products') }}</a>
             @if ($catName && $product->category)
                 <span class="mx-1">/</span>
                 <a href="{{ route('public.category', $product->category->slug) }}" class="hover:underline">{{ $catName }}</a>
@@ -125,7 +126,7 @@
                     @foreach ($gallery as $img)
                         <div class="aspect-square bg-white border border-[#E6DFD2] rounded overflow-hidden">
                             <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($img->url) }}"
-                                 alt="{{ is_array($img->alt_text) ? ($img->alt_text['tr'] ?? $name) : $name }}"
+                                 alt="{{ is_array($img->alt_text) ? ($img->alt_text[$locale] ?? $name) : $name }}"
                                  class="w-full h-full object-cover">
                         </div>
                     @endforeach
@@ -175,15 +176,15 @@
                         @if ($product->isInStock())
                             <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#2C5F2E]">
                                 <span class="w-2 h-2 rounded-full bg-[#2C5F2E]"></span>
-                                Stokta
+                                {{ __('product.in_stock_short') }}
                                 @if ($product->isLowStock())
-                                    <span class="text-[#555555] font-normal">(son {{ $product->stock_quantity }} adet)</span>
+                                    <span class="text-[#555555] font-normal">({{ __('product.low_stock', ['count' => $product->stock_quantity]) }})</span>
                                 @endif
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#555555]">
                                 <span class="w-2 h-2 rounded-full bg-[#555555]"></span>
-                                Tükendi
+                                {{ __('product.out_of_stock_short') }}
                             </span>
                         @endif
                     </div>
@@ -203,14 +204,14 @@
                                 <div class="mb-4">
                                     <label for="product_variant_id"
                                            class="block text-sm font-medium text-[#3E2006] mb-1">
-                                        Seçenek
+                                        {{ __('product.variant_label') }}
                                     </label>
                                     <select id="product_variant_id"
                                             name="product_variant_id"
                                             class="w-full border border-[#E6DFD2] rounded px-3 py-2 bg-white text-[#3E2006] text-sm">
                                         @foreach ($product->variants as $v)
                                             @php
-                                                $vn = is_array($v->name) ? ($v->name['tr'] ?? '—') : ($v->name ?? '—');
+                                                $vn = is_array($v->name) ? ($v->name[$locale] ?? $v->name['tr'] ?? '—') : ($v->name ?? '—');
                                             @endphp
                                             <option value="{{ $v->id }}">
                                                 {{ $vn }}
@@ -227,7 +228,7 @@
                                 <div>
                                     <label for="quantity"
                                            class="block text-sm font-medium text-[#3E2006] mb-1">
-                                        Adet
+                                        {{ __('product.quantity') }}
                                     </label>
                                     <input type="number" id="quantity" name="quantity"
                                            value="1" min="1" max="99"
@@ -244,7 +245,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                                 </svg>
-                                Sepete Ekle
+                                {{ __('product.add_to_cart') }}
                             </button>
                         </form>
                     @else
@@ -252,12 +253,12 @@
                                 class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
                                        text-base font-semibold rounded bg-[#555555] text-white
                                        opacity-50 cursor-not-allowed">
-                            Stokta Yok
+                            {{ __('product.out_of_stock') }}
                         </button>
                     @endif
 
                     <p class="text-xs text-[#555555] text-center mt-2">
-                        veya telefonla:
+                        {{ __('product.or_call') }}
                         <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
                     </p>
 
@@ -265,22 +266,21 @@
                     {{-- ── QUOTE-ONLY PRODUCT — NO PRICE, NO STOCK, NO CART ── --}}
                     <div class="mb-4">
                         <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#1F497D] bg-[#1F497D]/10 px-3 py-1 rounded-full">
-                            Sadece Teklif Üzerine
+                            {{ __('product.quote_only_badge') }}
                         </span>
                     </div>
 
                     <p class="text-[#555555] mb-5 leading-relaxed">
-                        Bu ürün ölçü, malzeme ve adet detaylarınıza göre özel olarak üretilmektedir.
-                        Detaylı teklif için bizimle iletişime geçin.
+                        {{ __('product.quote_only_desc') }}
                     </p>
 
                     <a href="{{ route('public.quote.product.create', $product->slug) }}"
                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
                               bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
-                        Teklif Al
+                        {{ __('product.request_quote') }}
                     </a>
                     <p class="text-xs text-[#555555] text-center mt-2">
-                        veya telefonla: <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
+                        {{ __('product.or_call') }} <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
                     </p>
                 @endif
 
@@ -293,7 +293,7 @@
     {{-- DESCRIPTION --}}
     @if ($description)
         <div class="mt-16 pt-10 border-t border-[#E6DFD2]">
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-4">Ürün Açıklaması</h2>
+            <h2 class="text-2xl font-bold text-[#3E2006] mb-4">{{ __('product.description') }}</h2>
             <div class="prose prose-sm max-w-none text-[#333333] leading-relaxed whitespace-pre-line">
                 {{ $description }}
             </div>
@@ -303,7 +303,7 @@
     {{-- RELATED --}}
     @if ($related->isNotEmpty())
         <div class="mt-16 pt-10 border-t border-[#E6DFD2]">
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">Benzer Ürünler</h2>
+            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">{{ __('product.related') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($related as $rel)
                     @include('partials.product-card', ['product' => $rel])

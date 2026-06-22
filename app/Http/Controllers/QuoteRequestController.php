@@ -152,7 +152,7 @@ class QuoteRequestController extends Controller
                 QuoteRequestItem::create([
                     'quote_request_id' => $quote->id,
                     'product_id'       => $product->id,
-                    'product_name'     => $product->getTranslation('name', 'tr') ?? ('Ürün #' . $product->id),
+                    'product_name'     => $product->getTranslation('name', app()->getLocale()) ?? ('Ürün #' . $product->id),
                     'quantity'         => $qty,
                     'notes'            => null,
                 ]);

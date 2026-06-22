@@ -30,8 +30,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($upcoming as $fair)
                     @php
-                        $name = $fair->getTranslation('name', 'tr');
-                        $desc = $fair->getTranslation('description', 'tr');
+                        $name = $fair->getTranslation('name', app()->getLocale());
+                        $desc = $fair->getTranslation('description', app()->getLocale());
                     @endphp
                     <div class="bg-white border-2 border-[#1F497D] rounded-lg p-6 flex flex-col gap-3 relative overflow-hidden">
                         <span class="absolute top-3 right-3 text-xs font-bold px-2 py-0.5 bg-[#1F497D] text-white rounded-full">
@@ -95,7 +95,7 @@
             <div class="divide-y divide-[#E6DFD2] border border-[#E6DFD2] rounded-lg overflow-hidden bg-white">
                 @foreach ($past as $fair)
                     @php
-                        $name = $fair->getTranslation('name', 'tr');
+                        $name = $fair->getTranslation('name', app()->getLocale());
                     @endphp
                     <div class="flex flex-wrap items-center gap-4 px-6 py-4 hover:bg-[#F5F0E8] transition-colors">
                         <div class="flex-1 min-w-0">

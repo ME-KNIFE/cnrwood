@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Redirect already-authenticated users away from guest-only routes (login/register)
         $middleware->redirectUsersTo(fn () => route('account.dashboard'));
+
+        // Set app locale from session for all web requests (Phase 12B)
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -34,7 +34,7 @@
                     @if ($post->featured_image_url)
                         <a href="{{ route('public.blog.show', $post->slug) }}" class="block overflow-hidden aspect-video bg-[#F5F0E8]">
                             <img src="{{ $post->featured_image_url }}"
-                                 alt="{{ $post->getTranslation('title', 'tr') }}"
+                                 alt="{{ $post->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                  loading="lazy">
                         </a>
@@ -55,11 +55,11 @@
                         <h2 class="text-lg font-bold text-[#3E2006] mb-2 leading-snug">
                             <a href="{{ route('public.blog.show', $post->slug) }}"
                                class="hover:text-[#6B3A1F] transition-colors">
-                                {{ $post->getTranslation('title', 'tr') }}
+                                {{ $post->getTranslation('title', app()->getLocale()) }}
                             </a>
                         </h2>
 
-                        @php $excerpt = $post->getTranslation('excerpt', 'tr'); @endphp
+                        @php $excerpt = $post->getTranslation('excerpt', app()->getLocale()); @endphp
                         @if ($excerpt)
                             <p class="text-sm text-[#555555] line-clamp-3 flex-1">{{ $excerpt }}</p>
                         @endif

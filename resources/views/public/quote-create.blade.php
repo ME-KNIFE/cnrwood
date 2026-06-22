@@ -5,8 +5,8 @@
     $isProduct = $product !== null;
 
     if ($isProduct) {
-        $prodName    = $product->getTranslation('name', 'tr') ?? '—';
-        $catName     = $product->category?->getTranslation('name', 'tr');
+        $prodName    = $product->getTranslation('name', app()->getLocale()) ?? '—';
+        $catName     = $product->category?->getTranslation('name', app()->getLocale());
         $primary     = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
         $imgUrl      = $primary ? \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) : null;
         $title       = $prodName . ' için Teklif Al — CNRWOOD';

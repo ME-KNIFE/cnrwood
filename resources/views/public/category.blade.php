@@ -1,8 +1,9 @@
 @extends('layouts.public')
 
 @php
-    $catName = $category->getTranslation('name', 'tr') ?? '—';
-    $catDesc = $category->getTranslation('description', 'tr');
+    $locale  = app()->getLocale();
+    $catName = $category->getTranslation('name', $locale) ?? '—';
+    $catDesc = $category->getTranslation('description', $locale);
     $title          = $catName . ' — CNRWOOD';
     $metaDescription = $catDesc ? strip_tags(\Illuminate\Support\Str::limit($catDesc, 160)) : ($catName . ' kategorisi altındaki CNRWOOD ürünleri.');
 @endphp
@@ -15,9 +16,9 @@
     '@context'        => 'https://schema.org',
     '@type'           => 'BreadcrumbList',
     'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Anasayfa', 'item' => route('home')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Ürünler',  'item' => route('public.products')],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => $catName,   'item' => route('public.category', ['slug' => $category->slug])],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),     'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.products'), 'item' => route('public.products')],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $catName,                  'item' => route('public.category', ['slug' => $category->slug])],
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
@@ -32,7 +33,7 @@
             '@type'    => 'ListItem',
             'position' => ($products->currentPage() - 1) * $products->perPage() + $i + 1,
             'url'      => route('public.product', $p->slug),
-            'name'     => $p->getTranslation('name', 'tr') ?? $p->slug,
+            'name'     => $p->getTranslation('name', app()->getLocale()) ?? $p->slug,
         ];
     }
 @endphp
@@ -49,9 +50,9 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <a href="{{ route('public.products') }}" class="hover:underline">Ürünler</a>
+            <a href="{{ route('public.products') }}" class="hover:underline">{{ __('breadcrumb.products') }}</a>
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ $catName }}</span>
         </nav>
@@ -66,12 +67,12 @@
 
     @if ($products->isEmpty())
         <div class="text-center py-16 bg-white border border-[#E6DFD2] rounded-lg">
-            <p class="text-[#555555] mb-4">Bu kategoride şu anda görüntülenecek ürün bulunmuyor.</p>
-            <a href="{{ route('public.products') }}" class="text-[#1F497D] hover:underline">Tüm ürünleri göster</a>
+            <p class="text-[#555555] mb-4">{{ __('category.no_products') }}</p>
+            <a href="{{ route('public.products') }}" class="text-[#1F497D] hover:underline">{{ __('category.show_all') }}</a>
         </div>
     @else
         <div class="mb-6 text-sm text-[#555555]">
-            <strong class="text-[#3E2006]">{{ $products->total() }}</strong> ürün listeleniyor
+            <strong class="text-[#3E2006]">{{ $products->total() }}</strong> {{ __('category.result_count', ['count' => '']) }}
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -87,12 +88,12 @@
 
     @if ($siblings->isNotEmpty())
         <div class="mt-16 pt-10 border-t border-[#E6DFD2]">
-            <h2 class="text-xl font-bold text-[#3E2006] mb-4">Diğer Kategoriler</h2>
+            <h2 class="text-xl font-bold text-[#3E2006] mb-4">{{ __('category.other_cats') }}</h2>
             <div class="flex flex-wrap gap-2">
                 @foreach ($siblings as $sib)
                     <a href="{{ route('public.category', $sib->slug) }}"
                        class="inline-block px-4 py-2 text-sm bg-white border border-[#E6DFD2] rounded hover:border-[#8B5A2B] hover:text-[#3E2006] text-[#555555] transition-colors">
-                        {{ $sib->getTranslation('name', 'tr') }}
+                        {{ $sib->getTranslation('name', $locale) }}
                     </a>
                 @endforeach
             </div>

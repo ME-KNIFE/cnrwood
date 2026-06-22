@@ -1,7 +1,8 @@
 @php
     /** @var \App\Models\Product $product */
-    $name      = $product->getTranslation('name', 'tr') ?? '—';
-    $catName   = $product->category?->getTranslation('name', 'tr') ?? null;
+    $locale    = app()->getLocale();
+    $name      = $product->getTranslation('name', $locale) ?? '—';
+    $catName   = $product->category?->getTranslation('name', $locale) ?? null;
     $primary   = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
     $imgUrl    = $primary ? \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) : null;
     $isBuyable = $product->isBuyable();
