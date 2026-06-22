@@ -5,8 +5,10 @@
         ['label' => 'Hizmetler',        'url' => route('public.services'),  'active' => request()->routeIs('public.services')],
         ['label' => 'Ürünler',          'url' => route('public.products'),  'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
         ['label' => 'Sandık Hesaplama', 'url' => route('public.sandik'),      'active' => request()->routeIs('public.sandik')],
-        ['label' => 'Blog',             'url' => route('public.blog.index'), 'active' => request()->routeIs('public.blog.*')],
-        ['label' => 'İletişim',         'url' => route('public.contact'),   'active' => request()->routeIs('public.contact')],
+        ['label' => 'Projeler',          'url' => route('public.projects.index'), 'active' => request()->routeIs('public.projects.*')],
+        ['label' => 'Fuarlar',          'url' => route('public.fairs.index'),    'active' => request()->routeIs('public.fairs.*')],
+        ['label' => 'Blog',             'url' => route('public.blog.index'),     'active' => request()->routeIs('public.blog.*')],
+        ['label' => 'İletişim',         'url' => route('public.contact'),        'active' => request()->routeIs('public.contact')],
     ];
 @endphp
 

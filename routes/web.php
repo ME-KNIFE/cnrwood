@@ -6,6 +6,8 @@ use App\Http\Controllers\Account\AuthController;
 use App\Http\Controllers\Admin\OrderInvoiceController;
 use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\FairController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CheckoutController;
@@ -53,9 +55,13 @@ Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('publi
 Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
 
 // ─── Phase 11B — Public blog ────────────────────────────────────────────────
-// Read-only. Slug is resolved via DB lookup only — no user input used in queries directly.
 Route::get('/blog',          [BlogController::class, 'index'])->name('public.blog.index');
 Route::get('/blog/{slug}',   [BlogController::class, 'show'])->name('public.blog.show');
+
+// ─── Phase 12A — Projects + Fairs ───────────────────────────────────────────
+Route::get('/projeler',              [ProjectController::class, 'index'])->name('public.projects.index');
+Route::get('/projeler/{slug}',       [ProjectController::class, 'show'])->name('public.projects.show');
+Route::get('/fuarlar',               [FairController::class,   'index'])->name('public.fairs.index');
 // ─── Phase 9B — Secure admin file download (auth:admin required) ───────────
 // Protected by the 'admin' guard — only authenticated AdminUsers may access.
 // File path comes from DB (QuoteRequest model), never from request input.
