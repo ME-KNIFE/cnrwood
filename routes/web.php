@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderInvoiceController;
 use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -51,6 +52,8 @@ Route::get('/hizmetler',        [PublicController::class, 'services'])->name('pu
 Route::middleware('auth:admin')->group(function () {
     Route::get('/admin-dl/sandik/{quoteRequest}', [SandikAttachmentController::class, 'download'])
          ->name('admin.sandik.attachment.download');
+    Route::get('/admin-dl/orders/{order}/invoice', [OrderInvoiceController::class, 'download'])
+         ->name('admin.orders.invoice');
 });
 
 // ─── Phase 9A — Sandık Hesaplama real form ─────────────────────────────────
@@ -79,6 +82,8 @@ Route::prefix('sepet')->name('cart.')->group(function () {
     Route::middleware('throttle:30,1')->group(function () {
         Route::post('/ekle',               [CartController::class, 'add'])->name('add');
         Route::post('/temizle',            [CartController::class, 'clear'])->name('clear');
+        Route::post('/kupon',              [CartController::class, 'applyCoupon'])->name('coupon.apply');
+        Route::post('/kupon/kaldir',       [CartController::class, 'removeCoupon'])->name('coupon.remove');
         Route::post('/{item}/guncelle',    [CartController::class, 'update'])->name('update');
         Route::post('/{item}/sil',         [CartController::class, 'remove'])->name('remove');
     });

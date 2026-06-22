@@ -167,6 +167,13 @@
 
                     <h2 class="text-lg font-bold text-[#3E2006] mb-4">Sipariş Özeti</h2>
 
+                    @php
+                        $couponDiscount = ($cart->coupon && $cart->coupon->isValid())
+                            ? (float) $cart->coupon->calculateDiscount($cart->getSubtotal())
+                            : 0.0;
+                        $cartTotal = $cart->getSubtotal() - $couponDiscount;
+                    @endphp
+
                     <div class="space-y-2 text-sm mb-4">
                         <div class="flex justify-between">
                             <span class="text-[#555555]">Ara Toplam ({{ $cart->getItemCount() }} ürün)</span>
@@ -174,17 +181,50 @@
                                 {{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL
                             </span>
                         </div>
+                        @if ($couponDiscount > 0)
+                        <div class="flex justify-between text-[#2C5F2E]">
+                            <span>İndirim ({{ $cart->coupon->code }})</span>
+                            <span class="font-medium">−{{ number_format($couponDiscount, 2, ',', '.') }} TL</span>
+                        </div>
+                        @endif
                         <div class="flex justify-between">
                             <span class="text-[#555555]">Kargo</span>
                             <span class="text-[#555555] italic text-xs">Hesaplanacak</span>
                         </div>
                     </div>
 
+                    {{-- Coupon --}}
+                    @if ($cart->coupon && $cart->coupon->isValid())
+                    <div class="flex items-center justify-between px-3 py-2 bg-[#2C5F2E]/10 border border-[#2C5F2E]/30 rounded text-sm mb-3">
+                        <span class="text-[#2C5F2E] font-medium">
+                            <strong>{{ $cart->coupon->code }}</strong> uygulandı
+                        </span>
+                        <form method="POST" action="{{ route('cart.coupon.remove') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs text-red-600 hover:underline ml-3">Kaldır</button>
+                        </form>
+                    </div>
+                    @else
+                    <form method="POST" action="{{ route('cart.coupon.apply') }}" class="mb-3">
+                        @csrf
+                        <div class="flex gap-2">
+                            <input type="text"
+                                   name="coupon_code"
+                                   placeholder="Kupon kodu"
+                                   class="flex-grow text-sm border border-[#E6DFD2] rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#3E2006]">
+                            <button type="submit"
+                                    class="text-sm px-3 py-2 bg-[#3E2006] text-white rounded hover:bg-[#6B3A1F] transition-colors whitespace-nowrap">
+                                Uygula
+                            </button>
+                        </div>
+                    </form>
+                    @endif
+
                     <div class="border-t border-[#E6DFD2] my-4"></div>
 
                     <div class="flex justify-between font-bold text-[#3E2006] text-lg mb-1">
                         <span>Toplam</span>
-                        <span>{{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL</span>
+                        <span>{{ number_format($cartTotal, 2, ',', '.') }} TL</span>
                     </div>
                     <p class="text-xs text-[#555555] mb-6">(Kargo hariç)</p>
 

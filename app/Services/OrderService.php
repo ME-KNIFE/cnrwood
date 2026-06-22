@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Mail\OrderReceived;
+use App\Mail\PaymentConfirmed;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderService
 {
@@ -37,7 +40,7 @@ class OrderService
      */
     public function createFromCart(Cart $cart, array $checkoutData): Order
     {
-        return DB::transaction(function () use ($cart, $checkoutData) {
+        $order = DB::transaction(function () use ($cart, $checkoutData) {
             // Load cart items with products
             $cart->load('items.product', 'items.variant', 'coupon');
 
@@ -115,6 +118,16 @@ class OrderService
 
             return $order;
         });
+
+        if (! empty($order->customer_email)) {
+            try {
+                Mail::to($order->customer_email)->send(new OrderReceived($order));
+            } catch (\Throwable $e) {
+                logger()->error("OrderReceived mail failed #{$order->order_number}: " . $e->getMessage());
+            }
+        }
+
+        return $order;
     }
 
     /**
@@ -179,6 +192,14 @@ class OrderService
             'payment_status' => 'odendi',
             'status'         => 'islemde',
         ]);
+
+        if (! empty($order->customer_email)) {
+            try {
+                Mail::to($order->customer_email)->send(new PaymentConfirmed($order->fresh()));
+            } catch (\Throwable $e) {
+                logger()->error("PaymentConfirmed mail failed #{$order->order_number}: " . $e->getMessage());
+            }
+        }
     }
 
     /**

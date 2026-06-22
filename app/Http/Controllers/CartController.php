@@ -13,7 +13,7 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->cartService->resolveCart();
-        $cart->load('items.product.images', 'items.variant');
+        $cart->load('items.product.images', 'items.variant', 'coupon');
         session(['cart_count' => $cart->getItemCount()]);
 
         return view('public.cart', ['cart' => $cart]);
@@ -86,5 +86,30 @@ class CartController extends Controller
         session(['cart_count' => 0]);
 
         return back()->with('cart_success', 'Sepet temizlendi.');
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $data = $request->validate([
+            'coupon_code' => ['required', 'string', 'max:50'],
+        ]);
+
+        $cart = $this->cartService->resolveCart();
+
+        try {
+            $this->cartService->applyCoupon($cart, $data['coupon_code']);
+        } catch (\RuntimeException $e) {
+            return back()->with('cart_error', $e->getMessage());
+        }
+
+        return back()->with('cart_success', 'Kupon uygulandı.');
+    }
+
+    public function removeCoupon()
+    {
+        $cart = $this->cartService->resolveCart();
+        $this->cartService->removeCoupon($cart);
+
+        return back()->with('cart_success', 'Kupon kaldırıldı.');
     }
 }

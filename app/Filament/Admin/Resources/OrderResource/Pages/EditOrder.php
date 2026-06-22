@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\OrderResource\Pages;
 
 use App\Filament\Admin\Resources\OrderResource;
 use App\Services\OrderService;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
@@ -14,7 +15,17 @@ class EditOrder extends EditRecord
     protected ?string $pendingStatus = null;
     protected ?string $pendingPaymentStatus = null;
 
-    protected function getHeaderActions(): array { return []; }
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('invoice')
+                ->label('Fatura İndir')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('gray')
+                ->url(fn () => route('admin.orders.invoice', $this->getRecord()))
+                ->openUrlInNewTab(),
+        ];
+    }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {

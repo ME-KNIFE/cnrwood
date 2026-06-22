@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -106,6 +107,31 @@ class CartService
     public function getItemCount(Cart $cart): int
     {
         return (int) $cart->items()->sum('quantity');
+    }
+
+    public function applyCoupon(Cart $cart, string $code): void
+    {
+        $coupon = Coupon::where('code', strtoupper(trim($code)))->first();
+
+        if (! $coupon || ! $coupon->isValid()) {
+            throw new \RuntimeException('Geçersiz veya süresi dolmuş kupon kodu.');
+        }
+
+        $cart->loadMissing('items');
+        $subtotal = $cart->getSubtotal();
+
+        if ($coupon->min_order_amount && $subtotal < (float) $coupon->min_order_amount) {
+            throw new \RuntimeException(
+                'Bu kupon için minimum sipariş tutarı ' . number_format((float) $coupon->min_order_amount, 2, ',', '.') . ' TL\'dir.'
+            );
+        }
+
+        $cart->update(['coupon_id' => $coupon->id]);
+    }
+
+    public function removeCoupon(Cart $cart): void
+    {
+        $cart->update(['coupon_id' => null]);
     }
 
     // ── Private ───────────────────────────────────────────────────────────────
