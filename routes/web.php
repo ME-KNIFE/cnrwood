@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\AuthController;
 use App\Http\Controllers\Admin\OrderInvoiceController;
 use App\Http\Controllers\Admin\SandikAttachmentController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
@@ -49,6 +50,11 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.si
 Route::get('/kurumsal',         [PublicController::class, 'corporate'])->name('public.corporate');
 Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('public.about');
 Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
+
+// ─── Phase 11B — Public blog ────────────────────────────────────────────────
+// Read-only. Slug is resolved via DB lookup only — no user input used in queries directly.
+Route::get('/blog',          [BlogController::class, 'index'])->name('public.blog.index');
+Route::get('/blog/{slug}',   [BlogController::class, 'show'])->name('public.blog.show');
 // ─── Phase 9B — Secure admin file download (auth:admin required) ───────────
 // Protected by the 'admin' guard — only authenticated AdminUsers may access.
 // File path comes from DB (QuoteRequest model), never from request input.

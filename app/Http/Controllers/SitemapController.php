@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Response;
@@ -33,6 +34,7 @@ class SitemapController extends Controller
             ['loc' => route('public.sandik'),       'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
             ['loc' => route('public.contact'),      'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => route('public.quote.create'), 'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('public.blog.index'),   'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
         ];
 
         ProductCategory::query()
@@ -62,6 +64,21 @@ class SitemapController extends Controller
                         'loc'        => route('public.product', ['slug' => $p->slug]),
                         'lastmod'    => optional($p->updated_at)->toAtomString(),
                         'changefreq' => 'weekly',
+                        'priority'   => '0.6',
+                    ];
+                }
+            });
+
+        BlogPost::published()
+            ->whereNotNull('slug')
+            ->select('slug', 'published_at')
+            ->orderBy('published_at', 'desc')
+            ->chunk(500, function ($posts) use (&$urls) {
+                foreach ($posts as $post) {
+                    $urls[] = [
+                        'loc'        => route('public.blog.show', ['slug' => $post->slug]),
+                        'lastmod'    => optional($post->published_at)->toAtomString(),
+                        'changefreq' => 'monthly',
                         'priority'   => '0.6',
                     ];
                 }
