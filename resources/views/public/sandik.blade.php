@@ -398,4 +398,33 @@
                 </ol>
             </div>
 
-            <div class="bg-white 
+
+            <div class="bg-white border border-[#E6DFD2] rounded-lg p-5 text-sm">
+                <h3 class="font-semibold text-[#3E2006] mb-3">{{ __('sandik.direct_contact') }}</h3>
+                <ul class="space-y-2 text-[#555555]">
+                    <li>
+                        <span class="block text-xs uppercase text-[#8B5A2B]">{{ __('contact.phone') }}</span>
+                        <a href="tel:+902627512120" class="text-[#3E2006] hover:underline">+90 262 751 21 20</a>
+                    </li>
+                    <li>
+                        <span class="block text-xs uppercase text-[#8B5A2B]">{{ __('contact.email') }}</span>
+                        <a href="mailto:info@cnrwood.com" class="text-[#3E2006] hover:underline">info@cnrwood.com</a>
+                    </li>
+                    <li>
+                        <span class="block text-xs uppercase text-[#8B5A2B]">{{ __('contact.hours_label') }}</span>
+                        {{ __('contact.hours_value') }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-[#1F497D]/5 border border-[#1F497D]/20 rounded-lg p-5 text-sm">
+                <p class="text-[#1F497D] font-semibold mb-1">{{ __('sandik.free_badge') }}</p>
+                <p class="text-[#555555]">{{ __('sandik.free_desc') }}</p>
+            </div>
+
+        </aside>
+    </div>
+
+</section>
+
+@endsection
