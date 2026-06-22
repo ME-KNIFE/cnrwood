@@ -49,6 +49,23 @@
                     @endif
                 </a>
 
+                @auth
+                    <a href="{{ route('account.dashboard') }}"
+                       class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded
+                              text-[#3E2006] hover:bg-[#F5F0E8] transition-colors {{ request()->routeIs('account.*') ? 'bg-[#F5F0E8]' : '' }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Hesabım
+                    </a>
+                @else
+                    <a href="{{ route('account.login') }}"
+                       class="text-sm font-medium text-[#555555] hover:text-[#3E2006] px-3 py-2 rounded hover:bg-[#F5F0E8] transition-colors">
+                        Giriş Yap
+                    </a>
+                @endauth
+
                 <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded
                           text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
@@ -79,6 +96,17 @@
                             </span>
                         @endif
                     </a>
+                    @auth
+                        <a href="{{ route('account.dashboard') }}"
+                           class="block px-4 py-2 text-sm {{ request()->routeIs('account.*') ? 'text-[#3E2006] bg-[#F5F0E8]' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
+                            Hesabım
+                        </a>
+                    @else
+                        <a href="{{ route('account.login') }}"
+                           class="block px-4 py-2 text-sm text-[#555555] hover:bg-[#F5F0E8]">
+                            Giriş Yap
+                        </a>
+                    @endauth
                     <a href="{{ route('public.quote.create') }}"
                        class="block mx-3 mt-2 px-3 py-2 text-sm text-center text-white bg-[#1F497D] hover:bg-[#173a64] rounded">
                         Teklif Al

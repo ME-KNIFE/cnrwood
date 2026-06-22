@@ -2,7 +2,13 @@
 
 @php
     /** @var \App\Models\Cart $cart */
+    /** @var \Illuminate\Support\Collection $savedAddresses */
+    /** @var \App\Models\Address|null $defaultShipping */
+    /** @var \App\Models\Address|null $defaultBilling */
     $title = 'Siparişi Tamamla — CNRWOOD';
+    $savedAddresses  = $savedAddresses  ?? collect();
+    $defaultShipping = $defaultShipping ?? null;
+    $defaultBilling  = $defaultBilling  ?? null;
 @endphp
 
 @section('content')
@@ -119,6 +125,31 @@
                 {{-- Shipping address ──────────────────────────────────────── --}}
                 <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
                     <h2 class="text-lg font-bold text-[#3E2006] mb-5">Teslimat Adresi</h2>
+
+                    {{-- Saved address picker (authenticated users with addresses) --}}
+                    @if ($savedAddresses->isNotEmpty())
+                        <div class="mb-5 p-4 bg-[#F5F0E8] border border-[#E6DFD2] rounded">
+                            <label for="shipping_address_id" class="block text-sm font-medium text-[#3E2006] mb-2">
+                                Kayıtlı Adreslerimden Seç
+                            </label>
+                            <select id="shipping_address_id"
+                                    name="shipping_address_id"
+                                    class="w-full border border-[#E6DFD2] rounded px-3 py-2 text-sm text-[#3E2006] bg-white
+                                           focus:outline-none focus:ring-1 focus:ring-[#3E2006]">
+                                <option value="">— Manuel girin —</option>
+                                @foreach ($savedAddresses as $addr)
+                                    <option value="{{ $addr->id }}"
+                                        {{ ($defaultShipping?->id === $addr->id) ? 'selected' : '' }}>
+                                        {{ $addr->title }} — {{ $addr->full_name }}, {{ $addr->city }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-[#555555] mt-1.5">
+                                Seçildiğinde aşağıdaki alanları doldurmanıza gerek yoktur.
+                                <a href="{{ route('account.addresses') }}" class="text-[#1F497D] hover:underline">Adreslerimi yönet →</a>
+                            </p>
+                        </div>
+                    @endif
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 

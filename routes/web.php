@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Account\AddressController;
+use App\Http\Controllers\Account\AuthController;
 use App\Http\Controllers\Admin\OrderInvoiceController;
 use App\Http\Controllers\Admin\SandikAttachmentController;
 use App\Http\Controllers\CartController;
@@ -71,6 +74,38 @@ Route::prefix('siparis')->name('checkout.')->group(function () {
     Route::get('/tesekkurler', [CheckoutController::class, 'success'])->name('success');
     Route::middleware('throttle:5,1')->group(function () {
         Route::post('/olustur', [CheckoutController::class, 'store'])->name('store');
+    });
+});
+
+// ─── Phase 10B/10C — Customer account portal ───────────────────────────────
+// Guest-accessible auth routes
+Route::prefix('hesabim')->name('account.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/giris',   [AuthController::class, 'loginForm'])->name('login');
+        Route::post('/giris',  [AuthController::class, 'login'])->name('login.submit');
+        Route::get('/kayit',   [AuthController::class, 'registerForm'])->name('register');
+        Route::post('/kayit',  [AuthController::class, 'register'])->name('register.submit');
+    });
+
+    Route::post('/cikis', [AuthController::class, 'logout'])->name('logout');
+
+    // Authenticated customer area
+    Route::middleware('auth')->group(function () {
+        Route::get('/',                                  [AccountController::class, 'dashboard'])->name('dashboard');
+        Route::get('/siparislerim',                      [AccountController::class, 'orders'])->name('orders');
+        Route::get('/siparislerim/{order}',              [AccountController::class, 'orderDetail'])->name('orders.detail');
+        Route::get('/profil',                            [AccountController::class, 'profile'])->name('profile');
+        Route::patch('/profil',                          [AccountController::class, 'updateProfile'])->name('profile.update');
+
+        // Address book
+        Route::get('/adresler',                          [AddressController::class, 'index'])->name('addresses');
+        Route::get('/adresler/ekle',                     [AddressController::class, 'create'])->name('addresses.create');
+        Route::post('/adresler',                         [AddressController::class, 'store'])->name('addresses.store');
+        Route::get('/adresler/{address}/duzenle',        [AddressController::class, 'edit'])->name('addresses.edit');
+        Route::put('/adresler/{address}',                [AddressController::class, 'update'])->name('addresses.update');
+        Route::delete('/adresler/{address}',             [AddressController::class, 'destroy'])->name('addresses.destroy');
+        Route::post('/adresler/{address}/teslimat',      [AddressController::class, 'setDefaultShipping'])->name('addresses.default-shipping');
+        Route::post('/adresler/{address}/faturalama',    [AddressController::class, 'setDefaultBilling'])->name('addresses.default-billing');
     });
 });
 

@@ -12,7 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Redirect unauthenticated web users to the customer login page
+        $middleware->redirectGuestsTo(fn () => route('account.login'));
+
+        // Redirect already-authenticated users away from guest-only routes (login/register)
+        $middleware->redirectUsersTo(fn () => route('account.dashboard'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
