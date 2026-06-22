@@ -1,8 +1,8 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'Projelerimiz — CNRWOOD';
-    $metaDescription = 'CNRWOOD tamamlanmış projeleri. Ahşap ambalaj, ihracat sandığı ve özel çözümlerimizle hayata geçirdiğimiz çalışmalar.';
+    $title           = __('projects.title') . ' — CNRWOOD';
+    $metaDescription = __('projects.meta_desc');
 @endphp
 
 @section('content')
@@ -10,13 +10,13 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Projeler</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.projects') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">Projelerimiz</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('projects.title') }}</h1>
         <p class="text-[#555555] mt-2">
-            Yıllar içinde hayata geçirdiğimiz özel ahşap ambalaj ve sandık çözümleri.
+            {{ __('projects.subtitle') }}
         </p>
     </div>
 </section>
@@ -25,7 +25,7 @@
 
     @if ($projects->isEmpty())
         <div class="text-center py-20 text-[#8B5A2B]">
-            <p class="text-lg">Henüz proje eklenmemiş.</p>
+            <p class="text-lg">{{ __('projects.empty') }}</p>
         </div>
     @else
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -73,7 +73,7 @@
 
                         <a href="{{ route('public.projects.show', $project->slug) }}"
                            class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#1F497D] hover:underline">
-                            Projeyi İncele
+                            {{ __('projects.view') }}
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>

@@ -42,15 +42,15 @@
                 @if ($priceTxt)
                     <span class="text-[#2C5F2E] font-semibold">{{ $priceTxt }}</span>
                 @else
-                    <span class="text-xs text-[#555555]">Fiyat bilgisi yok</span>
+                    <span class="text-xs text-[#555555]">{{ __('product.no_price') }}</span>
                 @endif
                 <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded bg-[#2C5F2E]/10 text-[#2C5F2E]">
-                    Satılık
+                    {{ __('product.for_sale') }}
                 </span>
             @else
-                <span class="text-sm text-[#555555]">Fiyat için teklif alın</span>
+                <span class="text-sm text-[#555555]">{{ __('product.request_quote_short') }}</span>
                 <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded bg-[#1F497D]/10 text-[#1F497D]">
-                    Sadece Teklif
+                    {{ __('product.quote_only_short') }}
                 </span>
             @endif
         </div>

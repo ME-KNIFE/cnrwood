@@ -1,8 +1,8 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'İletişim — CNRWOOD';
-    $metaDescription = 'CNRWOOD ile iletişime geçin. Gebze, Kocaeli\'deki tesisimiz, telefon, e-posta ve çalışma saatleri. 1 iş günü içinde dönüş garantisi.';
+    $title           = __('nav.contact') . ' — CNRWOOD';
+    $metaDescription = __('contact.subtitle');
 @endphp
 
 @section('content')
@@ -10,14 +10,14 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">İletişim</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.contact') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">İletişim</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('breadcrumb.contact') }}</h1>
         <p class="text-[#555555] mt-2 max-w-2xl">
-            Sorularınız, talepleriniz veya iş birlikleriniz için bize ulaşın.
-            En geç <strong>1 iş günü içinde</strong> dönüş yaparız.
+            {{ __('contact.subtitle') }}
+            <br><strong>{{ __('contact.response_time') }}</strong>
         </p>
     </div>
 </section>
@@ -30,15 +30,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <div>
-                <p class="text-[#2C5F2E] font-semibold">Mesajınız başarıyla iletildi.</p>
-                <p class="text-[#2C5F2E]/80 text-sm mt-1">En geç 1 iş günü içinde sizinle iletişime geçeceğiz.</p>
+                <p class="text-[#2C5F2E] font-semibold">{{ __('contact.success_title') }}</p>
+                <p class="text-[#2C5F2E]/80 text-sm mt-1">{{ __('contact.success_body') }}</p>
             </div>
         </div>
     @endif
 
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-800 font-semibold mb-2">Lütfen aşağıdaki hataları düzeltin:</p>
+            <p class="text-red-800 font-semibold mb-2">{{ __('contact.errors_fix') }}</p>
             <ul class="list-disc list-inside text-red-700 text-sm space-y-1">
                 @foreach ($errors->all() as $err)
                     <li>{{ $err }}</li>
@@ -54,7 +54,7 @@
               class="lg:col-span-2 bg-white border border-[#E6DFD2] rounded-lg p-6 sm:p-8 space-y-5">
             @csrf
 
-            <h2 class="text-xl font-bold text-[#3E2006] pb-3 border-b border-[#E6DFD2]">Bize Mesaj Gönderin</h2>
+            <h2 class="text-xl font-bold text-[#3E2006] pb-3 border-b border-[#E6DFD2]">{{ __('contact.send_message') }}</h2>
 
             {{-- Honeypot --}}
             <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
@@ -64,7 +64,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label for="name" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Ad Soyad <span class="text-red-600">*</span>
+                        {{ __('contact.name') }} <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="name" id="name" required maxlength="120"
                            value="{{ old('name') }}"
@@ -73,7 +73,7 @@
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        E-posta <span class="text-red-600">*</span>
+                        {{ __('contact.email') }} <span class="text-red-600">*</span>
                     </label>
                     <input type="email" name="email" id="email" required maxlength="160"
                            value="{{ old('email') }}"
@@ -82,7 +82,7 @@
 
                 <div>
                     <label for="phone" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Telefon <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                        {{ __('contact.phone') }} <span class="text-xs text-[#555555] font-normal">{{ __('contact.optional') }}</span>
                     </label>
                     <input type="tel" name="phone" id="phone" maxlength="20"
                            value="{{ old('phone') }}"
@@ -92,7 +92,7 @@
 
                 <div>
                     <label for="subject" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Konu <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                        {{ __('contact.subject') }} <span class="text-xs text-[#555555] font-normal">{{ __('contact.optional') }}</span>
                     </label>
                     <input type="text" name="subject" id="subject" maxlength="255"
                            value="{{ old('subject') }}"
@@ -102,26 +102,24 @@
 
             <div>
                 <label for="message" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                    Mesaj <span class="text-red-600">*</span>
+                    {{ __('contact.message_label') }} <span class="text-red-600">*</span>
                 </label>
                 <textarea name="message" id="message" rows="7" required maxlength="4000"
                           class="w-full px-3 py-2 border border-[#E6DFD2] rounded text-sm focus:outline-none focus:border-[#8B5A2B] focus:ring-1 focus:ring-[#8B5A2B]">{{ old('message') }}</textarea>
             </div>
 
             <div class="pt-2 border-t border-[#E6DFD2] text-xs text-[#555555] leading-relaxed">
-                Formu göndererek, paylaştığınız bilgilerin CNR Ahşap tarafından yalnızca bu mesajın
-                yanıtlanması amacıyla <strong>6698 sayılı KVKK</strong> kapsamında işlenmesini kabul
-                etmiş olursunuz. Verileriniz üçüncü kişilerle paylaşılmaz.
+                {{ __('contact.kvkk') }}
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
                 <p class="text-xs text-[#555555]">
-                    <span class="text-red-600">*</span> ile işaretli alanlar zorunludur.
+                    <span class="text-red-600">*</span> {{ __('contact.required_note') }}
                 </p>
                 <button type="submit"
                         class="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
                                bg-[#3E2006] hover:bg-[#6B3A1F] text-white transition-colors shadow-md">
-                    Mesajı Gönder
+                    {{ __('contact.send_message') }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                     </svg>
@@ -133,7 +131,7 @@
         <aside class="space-y-6">
 
             <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
-                <h3 class="font-bold text-[#3E2006] mb-4 pb-3 border-b border-[#E6DFD2]">İletişim Bilgileri</h3>
+                <h3 class="font-bold text-[#3E2006] mb-4 pb-3 border-b border-[#E6DFD2]">{{ __('contact.info_card_title') }}</h3>
 
                 <ul class="space-y-4 text-sm">
                     <li class="flex items-start gap-3">
@@ -144,7 +142,7 @@
                             </svg>
                         </span>
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">Adres</p>
+                            <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">{{ __('contact.address_label') }}</p>
                             <p class="text-[#3E2006]">
                                 Pelitli Mah. Pelitli Yolu Cad.<br>
                                 No: 137/A, Gebze / Kocaeli
@@ -152,7 +150,7 @@
                             <a href="https://www.google.com/maps/search/?api=1&query=CNR+Ahsap+Pelitli+Gebze+Kocaeli"
                                target="_blank" rel="noopener noreferrer"
                                class="inline-block mt-1 text-xs text-[#1F497D] hover:underline">
-                                Haritada Görüntüle →
+                                {{ __('contact.map_link') }} →
                             </a>
                         </div>
                     </li>
@@ -188,9 +186,9 @@
                             </svg>
                         </span>
                         <div>
-                            <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">Çalışma Saatleri</p>
-                            <p class="text-[#3E2006]">Hafta içi 07:20 – 17:20</p>
-                            <p class="text-xs text-[#555555]">Cumartesi – Pazar: Kapalı</p>
+                            <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">{{ __('contact.hours_label') }}</p>
+                            <p class="text-[#3E2006]">{{ __('contact.hours_value') }}</p>
+                            <p class="text-xs text-[#555555]">{{ __('contact.weekend') }}</p>
                         </div>
                     </li>
                 </ul>
@@ -198,14 +196,12 @@
 
             {{-- CTA — Teklif Al --}}
             <div class="bg-gradient-to-br from-[#1F497D] to-[#173a64] text-white rounded-lg p-6">
-                <h3 class="font-bold text-lg mb-2">Resmi Teklif Almak İstiyorum</h3>
-                <p class="text-sm text-white/90 mb-4 leading-relaxed">
-                    Ürün, ölçü ve adet bilgileriyle birlikte yazılı ve detaylı teklif alın.
-                </p>
+                <h3 class="font-bold text-lg mb-2">{{ __('contact.quote_cta_title') }}</h3>
+                <p class="text-sm text-white/90 mb-4 leading-relaxed">{{ __('contact.quote_cta_body') }}</p>
                 <a href="{{ route('public.quote.create') }}"
                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded
                           bg-white text-[#1F497D] hover:bg-[#F5F0E8] transition-colors">
-                    Teklif Al
+                    {{ __('nav.quote') }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>

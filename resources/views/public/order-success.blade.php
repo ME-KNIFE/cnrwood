@@ -2,7 +2,7 @@
 
 @php
     /** @var \App\Models\Order|null $order */
-    $title = 'Siparişiniz Alındı — CNRWOOD';
+    $title = __('order.title') . ' — CNRWOOD';
 @endphp
 
 @section('content')
@@ -10,9 +10,9 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <nav class="text-sm text-[#8B5A2B]">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Sipariş Onayı</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.order_confirm') }}</span>
         </nav>
     </div>
 </section>
@@ -25,39 +25,39 @@
         </svg>
     </div>
 
-    <h1 class="text-3xl font-bold text-[#3E2006] mb-3">Siparişiniz Alındı!</h1>
+    <h1 class="text-3xl font-bold text-[#3E2006] mb-3">{{ __('order.title') }}</h1>
 
     @if ($order)
 
         <p class="text-[#555555] mb-8 leading-relaxed">
             Teşekkürler, <strong class="text-[#3E2006]">{{ $order->customer_name }}</strong>.
-            Siparişiniz başarıyla oluşturuldu.
+            {{ __('order.success_body') }}
         </p>
 
         <div class="bg-white border border-[#E6DFD2] rounded-lg p-6 text-left mb-8">
 
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-[#E6DFD2]">
-                <span class="text-sm text-[#555555]">Sipariş Numarası</span>
+                <span class="text-sm text-[#555555]">{{ __('order.number') }}</span>
                 <span class="font-mono font-bold text-[#3E2006]">{{ $order->order_number }}</span>
             </div>
 
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-[#E6DFD2]">
-                <span class="text-sm text-[#555555]">Durum</span>
+                <span class="text-sm text-[#555555]">{{ __('order.status') }}</span>
                 <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#555555] bg-[#F5F0E8] px-3 py-1 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
-                    Beklemede
+                    {{ __('order.pending') }}
                 </span>
             </div>
 
             <div class="flex justify-between items-center mb-4 pb-4 border-b border-[#E6DFD2]">
-                <span class="text-sm text-[#555555]">Toplam Tutar</span>
+                <span class="text-sm text-[#555555]">{{ __('order.total_amount') }}</span>
                 <span class="font-bold text-[#3E2006]">
                     {{ number_format($order->total, 2, ',', '.') }} TL
                 </span>
             </div>
 
             <div class="flex justify-between items-start">
-                <span class="text-sm text-[#555555]">Onay E-postası</span>
+                <span class="text-sm text-[#555555]">{{ __('order.confirm_email') }}</span>
                 <span class="text-sm text-[#3E2006]">{{ $order->customer_email }}</span>
             </div>
 
@@ -65,32 +65,29 @@
 
         {{-- EFT payment instructions --}}
         <div class="bg-[#F5F0E8] border border-[#E6DFD2] rounded-lg p-6 text-left mb-8">
-            <h2 class="text-base font-bold text-[#3E2006] mb-3">Havale / EFT Bilgileri</h2>
+            <h2 class="text-base font-bold text-[#3E2006] mb-3">{{ __('order.eft_title') }}</h2>
             <p class="text-sm text-[#555555] mb-4">
-                Siparişinizi işleme alabilmemiz için lütfen aşağıdaki hesaba havale/EFT yapınız.
-                Ödemeniz onaylandıktan sonra siparişiniz hazırlanmaya başlayacaktır.
+                {{ __('order.eft_body') }}
             </p>
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between">
-                    <span class="text-[#555555] font-medium">Banka</span>
-                    <span class="text-[#3E2006]">— İletişim için lütfen bizi arayın —</span>
+                    <span class="text-[#555555] font-medium">{{ __('order.bank_label') }}</span>
+                    <span class="text-[#3E2006]">{{ __('order.bank_contact') }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-[#555555] font-medium">Açıklama</span>
+                    <span class="text-[#555555] font-medium">{{ __('order.description_label') }}</span>
                     <span class="font-mono text-[#3E2006]">{{ $order->order_number }}</span>
                 </div>
             </div>
             <p class="text-xs text-[#555555] mt-4">
-                Havale açıklamasına sipariş numaranızı <strong>{{ $order->order_number }}</strong>
-                yazmayı unutmayınız.
+                {{ __('order.eft_note') }} <strong>{{ $order->order_number }}</strong>
             </p>
         </div>
 
     @else
 
         <p class="text-[#555555] mb-8 leading-relaxed">
-            Teşekkürler! Siparişiniz başarıyla alınmıştır.<br>
-            Sipariş detaylarınız e-posta adresinize gönderilecektir.
+            {{ __('order.no_order_text') }}
         </p>
 
     @endif
@@ -99,12 +96,12 @@
         <a href="{{ route('public.products') }}"
            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded
                   bg-[#3E2006] text-white hover:bg-[#6B3A1F] transition-colors">
-            Alışverişe Devam Et
+            {{ __('order.continue_shopping') }}
         </a>
         <a href="{{ route('public.contact') }}"
            class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium rounded
                   border border-[#E6DFD2] text-[#3E2006] bg-white hover:bg-[#F5F0E8] transition-colors">
-            Bize Ulaşın
+            {{ __('order.contact_us') }}
         </a>
     </div>
 

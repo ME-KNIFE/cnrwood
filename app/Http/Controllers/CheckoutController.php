@@ -55,7 +55,7 @@ class CheckoutController extends Controller
             'customer_name'       => ['required', 'string', 'max:255'],
             'customer_email'      => ['required', 'email', 'max:255'],
             'customer_phone'      => ['nullable', 'string', 'max:50'],
-            'payment_method'      => ['required', 'in:havale_eft,kredi_karti'],
+            'payment_method'      => ['nullable', 'in:havale_eft,kredi_karti'],
             // Saved-address shortcut (authenticated users only)
             'shipping_address_id' => ['nullable', 'integer'],
             'billing_address_id'  => ['nullable', 'integer'],
@@ -97,7 +97,7 @@ class CheckoutController extends Controller
             null,
         ) ?? $shippingAddress;
 
-        $paymentMethod = $validated['payment_method'];
+        $paymentMethod = $validated['payment_method'] ?? 'havale_eft';
 
         $checkoutData = [
             'customer_name'    => $validated['customer_name'],

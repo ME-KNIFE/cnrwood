@@ -2,7 +2,7 @@
 
 @php
     /** @var \App\Models\Cart $cart */
-    $title = 'Sepetim — CNRWOOD';
+    $title = __('cart.h1') . ' — CNRWOOD';
 @endphp
 
 @section('content')
@@ -10,16 +10,16 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <nav class="text-sm text-[#8B5A2B]">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Sepetim</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.cart') }}</span>
         </nav>
     </div>
 </section>
 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <h1 class="text-3xl font-bold text-[#3E2006] mb-8">Sepetim</h1>
+    <h1 class="text-3xl font-bold text-[#3E2006] mb-8">{{ __('cart.h1') }}</h1>
 
     @if (session('cart_success'))
         <div class="mb-6 p-4 bg-[#2C5F2E]/10 border border-[#2C5F2E]/30 rounded text-[#2C5F2E] text-sm">
@@ -40,11 +40,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
-            <p class="text-[#555555] text-lg mb-6">Sepetiniz boş.</p>
+            <p class="text-[#555555] text-lg mb-6">{{ __('cart.empty') }}</p>
             <a href="{{ route('public.products') }}"
                class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded
                       bg-[#3E2006] text-white hover:bg-[#6B3A1F] transition-colors">
-                Ürünlere Göz At
+                {{ __('cart.browse_products') }}
             </a>
         </div>
 
@@ -102,11 +102,11 @@
                             @endif
 
                             @if (! $isValid)
-                                <p class="text-xs text-red-600 mt-1 font-medium">Bu ürün artık satışta değil.</p>
+                                <p class="text-xs text-red-600 mt-1 font-medium">{{ __('cart.product_unavailable') }}</p>
                             @endif
 
                             <p class="text-sm font-semibold text-[#2C5F2E] mt-1">
-                                {{ number_format($item->unit_price, 2, ',', '.') }} TL / adet
+                                {{ number_format($item->unit_price, 2, ',', '.') }} TL / {{ __('cart.unit_suffix') }}
                             </p>
                         </div>
 
@@ -116,7 +116,7 @@
                             {{-- Quantity update --}}
                             <form method="POST" action="{{ route('cart.update', $item) }}">
                                 @csrf
-                                <label class="sr-only" for="qty-{{ $item->id }}">Adet</label>
+                                <label class="sr-only" for="qty-{{ $item->id }}">{{ __('cart.qty_label') }}</label>
                                 <select id="qty-{{ $item->id }}"
                                         name="quantity"
                                         onchange="this.form.submit()"
@@ -136,9 +136,9 @@
                             <form method="POST" action="{{ route('cart.remove', $item) }}">
                                 @csrf
                                 <button type="submit"
-                                        onclick="return confirm('Ürünü sepetten kaldırmak istediğinize emin misiniz?')"
+                                        onclick="return confirm('{{ __('cart.remove_confirm') }}')"
                                         class="text-xs text-[#555555] hover:text-red-600 transition-colors underline">
-                                    Kaldır
+                                    {{ __('cart.remove') }}
                                 </button>
                             </form>
 
@@ -152,9 +152,9 @@
                     <form method="POST" action="{{ route('cart.clear') }}" class="inline">
                         @csrf
                         <button type="submit"
-                                onclick="return confirm('Sepeti tamamen temizlemek istediğinize emin misiniz?')"
+                                onclick="return confirm('{{ __('cart.clear_confirm') }}')"
                                 class="text-sm text-[#555555] hover:text-red-600 transition-colors underline">
-                            Sepeti Temizle
+                            {{ __('cart.clear') }}
                         </button>
                     </form>
                 </div>
@@ -165,7 +165,7 @@
             <div class="mt-8 lg:mt-0">
                 <div class="bg-[#F5F0E8] border border-[#E6DFD2] rounded-lg p-6 sticky top-24">
 
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">Sipariş Özeti</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">{{ __('cart.summary') }}</h2>
 
                     @php
                         $couponDiscount = ($cart->coupon && $cart->coupon->isValid())
@@ -176,7 +176,7 @@
 
                     <div class="space-y-2 text-sm mb-4">
                         <div class="flex justify-between">
-                            <span class="text-[#555555]">Ara Toplam ({{ $cart->getItemCount() }} ürün)</span>
+                            <span class="text-[#555555]">{{ __('cart.subtotal_items', ['count' => $cart->getItemCount()]) }}</span>
                             <span class="font-medium text-[#3E2006]">
                                 {{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL
                             </span>
@@ -188,8 +188,8 @@
                         </div>
                         @endif
                         <div class="flex justify-between">
-                            <span class="text-[#555555]">Kargo</span>
-                            <span class="text-[#555555] italic text-xs">Hesaplanacak</span>
+                            <span class="text-[#555555]">{{ __('cart.shipping') }}</span>
+                            <span class="text-[#555555] italic text-xs">{{ __('cart.shipping_calc') }}</span>
                         </div>
                     </div>
 
@@ -197,11 +197,11 @@
                     @if ($cart->coupon && $cart->coupon->isValid())
                     <div class="flex items-center justify-between px-3 py-2 bg-[#2C5F2E]/10 border border-[#2C5F2E]/30 rounded text-sm mb-3">
                         <span class="text-[#2C5F2E] font-medium">
-                            <strong>{{ $cart->coupon->code }}</strong> uygulandı
+                            <strong>{{ $cart->coupon->code }}</strong> {{ __('cart.coupon_applied') }}
                         </span>
                         <form method="POST" action="{{ route('cart.coupon.remove') }}" class="inline">
                             @csrf
-                            <button type="submit" class="text-xs text-red-600 hover:underline ml-3">Kaldır</button>
+                            <button type="submit" class="text-xs text-red-600 hover:underline ml-3">{{ __('cart.coupon_remove') }}</button>
                         </form>
                     </div>
                     @else
@@ -210,11 +210,11 @@
                         <div class="flex gap-2">
                             <input type="text"
                                    name="coupon_code"
-                                   placeholder="Kupon kodu"
+                                   placeholder="{{ __('cart.coupon_placeholder') }}"
                                    class="flex-grow text-sm border border-[#E6DFD2] rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#3E2006]">
                             <button type="submit"
                                     class="text-sm px-3 py-2 bg-[#3E2006] text-white rounded hover:bg-[#6B3A1F] transition-colors whitespace-nowrap">
-                                Uygula
+                                {{ __('cart.coupon_apply') }}
                             </button>
                         </div>
                     </form>
@@ -223,17 +223,17 @@
                     <div class="border-t border-[#E6DFD2] my-4"></div>
 
                     <div class="flex justify-between font-bold text-[#3E2006] text-lg mb-1">
-                        <span>Toplam</span>
+                        <span>{{ __('cart.total') }}</span>
                         <span>{{ number_format($cartTotal, 2, ',', '.') }} TL</span>
                     </div>
-                    <p class="text-xs text-[#555555] mb-6">(Kargo hariç)</p>
+                    <p class="text-xs text-[#555555] mb-6">{{ __('cart.excl_shipping') }}</p>
 
                     {{-- Checkout — Phase 8B --}}
                     <a href="{{ route('checkout.index') }}"
                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
                               text-base font-semibold rounded bg-[#2C5F2E] hover:bg-[#214a23]
                               text-white transition-colors mb-3">
-                        Siparişi Tamamla
+                        {{ __('cart.place_order') }}
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M9 5l7 7-7 7"/>
@@ -244,7 +244,7 @@
                        class="w-full inline-flex items-center justify-center px-6 py-2.5
                               text-sm font-medium rounded border border-[#E6DFD2]
                               text-[#3E2006] bg-white hover:bg-[#F5F0E8] transition-colors">
-                        Alışverişe Devam Et
+                        {{ __('cart.continue') }}
                     </a>
 
                 </div>
@@ -255,5 +255,3 @@
     @endif
 
 </section>
-
-@endsection

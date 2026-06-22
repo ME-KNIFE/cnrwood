@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'Hizmetlerimiz — CNRWOOD | Ahşap Sandık, Palet ve İhracat Ambalajı';
+    $title           = __('services.title') . ' — CNRWOOD';
     $metaDescription = 'CNR Ahşap’ın sunduğu hizmetler: özel ahşap sandık üretimi, ISPM 15 sertifikalı ihracat ambalajı, palet üretimi, kereste & levha tedariği ve ahşap yapı çözümleri.';
 @endphp
 
@@ -12,8 +12,8 @@
     '@context'        => 'https://schema.org',
     '@type'           => 'BreadcrumbList',
     'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Anasayfa',     'item' => route('home')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Hizmetlerimiz', 'item' => route('public.services')],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),     'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.services'), 'item' => route('public.services')],
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
@@ -21,13 +21,13 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Hizmetlerimiz</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.services') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">Hizmetlerimiz</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('services.title') }}</h1>
         <p class="text-[#555555] mt-3 max-w-3xl leading-relaxed">
-            Üretim sürecinizin her aşamasında ihtiyaç duyacağınız ahşap çözümleri tek çatı altında sunuyoruz.
+            {{ __('services.subtitle') }}
         </p>
     </div>
 </section>
@@ -39,40 +39,40 @@
         @php
             $services = [
                 [
-                    'title' => 'Ahşap Sandık Üretimi',
-                    'desc'  => 'Standart ve özel ölçülerde ahşap sandık üretimi; ağır makine, otomotiv, savunma ve elektronik sektörlerine uygun çözümler.',
+                    'title' => __('services.item1_title'),
+                    'desc'  => __('services.item1_desc'),
                     'color' => '#3E2006',
-                    'link'  => ['url' => route('public.products', ['kategori' => 'ahsap-sandik']), 'label' => 'Sandıkları İncele'],
+                    'link'  => ['url' => route('public.products', ['kategori' => 'ahsap-sandik']), 'label' => __('services.item1_link')],
                 ],
                 [
-                    'title' => 'ISPM 15 İhracat Ambalajı',
-                    'desc'  => 'Uluslararası ihracat için ISPM 15 standardına uygun ısıl işlem görmüş (HT) ahşap ambalaj ve paletler.',
+                    'title' => __('services.item2_title'),
+                    'desc'  => __('services.item2_desc'),
                     'color' => '#2C5F2E',
-                    'link'  => ['url' => route('public.products', ['kategori' => 'ihracat-ambalaj']), 'label' => 'İhracat Ambalajı'],
+                    'link'  => ['url' => route('public.products', ['kategori' => 'ihracat-ambalaj']), 'label' => __('services.item2_link')],
                 ],
                 [
-                    'title' => 'Palet Üretimi',
-                    'desc'  => 'Euro palet, ISPM 15 palet ve özel ölçülerde palet üretimi. Lojistik ve depolama için dayanıklı çözümler.',
+                    'title' => __('services.item3_title'),
+                    'desc'  => __('services.item3_desc'),
                     'color' => '#8B5A2B',
-                    'link'  => ['url' => route('public.products', ['kategori' => 'palet']), 'label' => 'Palet Çeşitleri'],
+                    'link'  => ['url' => route('public.products', ['kategori' => 'palet']), 'label' => __('services.item3_link')],
                 ],
                 [
-                    'title' => 'Kereste & Levha',
-                    'desc'  => 'Çam, kayın ve karışık kereste; OSB ve diğer levha ürünleri için güvenilir tedarik.',
+                    'title' => __('services.item4_title'),
+                    'desc'  => __('services.item4_desc'),
                     'color' => '#6B3A1F',
-                    'link'  => ['url' => route('public.products'), 'label' => 'Ürün Kataloğu'],
+                    'link'  => ['url' => route('public.products'), 'label' => __('services.item4_link')],
                 ],
                 [
-                    'title' => 'Ahşap Yapı Projeleri',
-                    'desc'  => 'CLT ve özel ahşap yapı sistemleriyle restoran, çardak ve mimari uygulamalar için anahtar teslim üretim.',
+                    'title' => __('services.item5_title'),
+                    'desc'  => __('services.item5_desc'),
                     'color' => '#1F497D',
-                    'link'  => ['url' => route('public.quote.create'), 'label' => 'Proje Teklif Al'],
+                    'link'  => ['url' => route('public.quote.create'), 'label' => __('services.item5_link')],
                 ],
                 [
-                    'title' => 'Sandık Hesaplama',
-                    'desc'  => 'Ürün ölçüleriniz ve teknik gereksinimleriniz için özel sandık hesaplama hizmeti.',
+                    'title' => __('services.item6_title'),
+                    'desc'  => __('services.item6_desc'),
                     'color' => '#3E2006',
-                    'link'  => ['url' => route('public.sandik'), 'label' => 'Hesaplama Aracı'],
+                    'link'  => ['url' => route('public.sandik'), 'label' => __('services.item6_link')],
                 ],
             ];
         @endphp
@@ -97,8 +97,8 @@
 </section>
 
 @include('partials.public-cta', [
-    'ctaTitle' => 'Size En Uygun Hizmeti Birlikte Belirleyelim',
-    'ctaText'  => 'Proje detaylarınızı paylaşın; uzman ekibimiz size özel teklif hazırlasın.',
+    'ctaTitle' => __('services.cta_title'),
+    'ctaText'  => __('services.cta_text'),
 ])
 
 @endsection

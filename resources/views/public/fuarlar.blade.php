@@ -1,8 +1,8 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'Fuarlar — CNRWOOD';
-    $metaDescription = 'CNRWOOD katıldığı yurt içi ve yurt dışı fuarlar. Yaklaşan ve geçmiş fuar takvimi.';
+    $title           = __('fairs.title') . ' — CNRWOOD';
+    $metaDescription = __('fairs.meta_desc');
 @endphp
 
 @section('content')
@@ -10,13 +10,13 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Fuarlar</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.fairs') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">Fuarlar</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('fairs.title') }}</h1>
         <p class="text-[#555555] mt-2">
-            CNRWOOD olarak katıldığımız yurt içi ve yurt dışı fuarları takip edin.
+            {{ __('fairs.subtitle') }}
         </p>
     </div>
 </section>
@@ -26,7 +26,7 @@
     {{-- Upcoming fairs ──────────────────────────────────────────────────────── --}}
     @if ($upcoming->isNotEmpty())
         <div>
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">Yaklaşan Fuarlar</h2>
+            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">{{ __('fairs.upcoming') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($upcoming as $fair)
                     @php
@@ -35,7 +35,7 @@
                     @endphp
                     <div class="bg-white border-2 border-[#1F497D] rounded-lg p-6 flex flex-col gap-3 relative overflow-hidden">
                         <span class="absolute top-3 right-3 text-xs font-bold px-2 py-0.5 bg-[#1F497D] text-white rounded-full">
-                            Yaklaşan
+                            {{ __('fairs.badge_upcoming') }}
                         </span>
 
                         <div class="flex items-start gap-3">
@@ -91,7 +91,7 @@
     {{-- Past fairs ──────────────────────────────────────────────────────────── --}}
     @if ($past->isNotEmpty())
         <div>
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">Geçmiş Fuarlar</h2>
+            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">{{ __('fairs.past') }}</h2>
             <div class="divide-y divide-[#E6DFD2] border border-[#E6DFD2] rounded-lg overflow-hidden bg-white">
                 @foreach ($past as $fair)
                     @php
@@ -120,7 +120,7 @@
 
     @if ($upcoming->isEmpty() && $past->isEmpty())
         <div class="text-center py-20 text-[#8B5A2B]">
-            <p class="text-lg">Henüz fuar bilgisi eklenmemiş.</p>
+            <p class="text-lg">{{ __('fairs.empty') }}</p>
         </div>
     @endif
 

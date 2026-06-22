@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'Teklif Talebiniz Alındı — CNRWOOD';
+    $title           = __('quote.thankyou_title') . ' — CNRWOOD';
     $metaDescription = 'Teklif talebiniz başarıyla alındı. CNRWOOD ekibi en geç 1 iş günü içinde sizinle iletişime geçecektir.';
     $noindex         = true;
 @endphp
@@ -18,40 +18,37 @@
             </svg>
         </div>
 
-        <h1 class="text-3xl font-bold text-[#3E2006] mb-3">Teklif Talebiniz Alındı</h1>
+        <h1 class="text-3xl font-bold text-[#3E2006] mb-3">{{ __('quote.thankyou_title') }}</h1>
         <p class="text-[#555555] leading-relaxed mb-6">
-            Teşekkür ederiz. Talebiniz başarıyla kayıt altına alındı.
-            Uzman ekibimiz <strong>en geç 1 iş günü içinde</strong> sizinle iletişime geçecek.
+            {{ __('quote.thankyou_body') }}
         </p>
 
         @if ($reference)
             <div class="inline-block bg-[#F5F0E8] border border-[#E6DFD2] rounded-lg px-6 py-3 mb-8">
-                <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-1">Referans Numaranız</p>
+                <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-1">{{ __('quote.reference_label') }}</p>
                 <p class="text-xl font-mono font-bold text-[#3E2006]">{{ $reference }}</p>
             </div>
         @endif
 
         <div class="text-sm text-[#555555] mb-8 p-4 bg-[#1F497D]/5 border border-[#1F497D]/15 rounded text-left">
-            <strong class="text-[#3E2006]">Önemli:</strong>
-            Bu form için sizden herhangi bir ödeme alınmadı. Teklif tamamen ücretsiz ve
-            bağlayıcı değildir.
+            <strong class="text-[#3E2006]">{{ __('quote.important') }}</strong> {{ __('quote.no_payment_note') }}
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
             <a href="{{ route('home') }}"
                class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded
                       bg-[#3E2006] hover:bg-[#6B3A1F] text-white transition-colors">
-                Anasayfaya Dön
+                {{ __('quote.back_home') }}
             </a>
             <a href="{{ route('public.products') }}"
                class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded
                       bg-white border border-[#3E2006] text-[#3E2006] hover:bg-[#F5F0E8] transition-colors">
-                Ürünleri İncele
+                {{ __('quote.browse_products') }}
             </a>
         </div>
 
         <p class="text-xs text-[#555555] mt-8 pt-6 border-t border-[#E6DFD2]">
-            Acil durumlar için doğrudan arayabilirsiniz:
+            {{ __('quote.urgent_contact') }}
             <a href="tel:+902627512120" class="text-[#1F497D] hover:underline font-medium">+90 262 751 21 20</a>
         </p>
     </div>

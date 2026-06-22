@@ -14,15 +14,15 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <a href="{{ route('public.projects.index') }}" class="hover:underline">Projeler</a>
+            <a href="{{ route('public.projects.index') }}" class="hover:underline">{{ __('breadcrumb.projects') }}</a>
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ $localTitle }}</span>
         </nav>
         <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $localTitle }}</h1>
         @if ($project->completed_at)
-            <p class="text-sm text-[#8B5A2B] mt-2">Tamamlandı: {{ $project->completed_at->format('F Y') }}</p>
+            <p class="text-sm text-[#8B5A2B] mt-2">{{ __('projects.completed') }}: {{ $project->completed_at->format('F Y') }}</p>
         @endif
     </div>
 </section>
@@ -53,7 +53,7 @@
             {{-- Full gallery ─────────────────────────────────────────────── --}}
             @if ($gallery->count() > 1)
                 <div>
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">Proje Galerisi</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">{{ __('projects.gallery') }}</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach ($gallery as $media)
                             <a href="{{ $media->getUrl() }}"
@@ -77,16 +77,16 @@
 
             {{-- Project info card ────────────────────────────────────────── --}}
             <div class="bg-white border border-[#E6DFD2] rounded-lg p-6 space-y-4">
-                <h3 class="font-bold text-[#3E2006]">Proje Detayları</h3>
+                <h3 class="font-bold text-[#3E2006]">{{ __('projects.details') }}</h3>
                 @if ($project->completed_at)
                     <div>
-                        <p class="text-xs text-[#8B5A2B] uppercase tracking-wider mb-0.5">Tamamlanma</p>
+                        <p class="text-xs text-[#8B5A2B] uppercase tracking-wider mb-0.5">{{ __('projects.completion_label') }}</p>
                         <p class="text-sm font-medium text-[#3E2006]">{{ $project->completed_at->format('F Y') }}</p>
                     </div>
                 @endif
                 <div>
-                    <p class="text-xs text-[#8B5A2B] uppercase tracking-wider mb-0.5">Görsel Sayısı</p>
-                    <p class="text-sm font-medium text-[#3E2006]">{{ $gallery->count() }} görsel</p>
+                    <p class="text-xs text-[#8B5A2B] uppercase tracking-wider mb-0.5">{{ __('projects.images_label') }}</p>
+                    <p class="text-sm font-medium text-[#3E2006]">{{ __('projects.images_count', ['count' => $gallery->count()]) }}</p>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
             {{-- Other projects ───────────────────────────────────────────── --}}
             @if ($others->isNotEmpty())
                 <div>
-                    <h3 class="font-bold text-[#3E2006] mb-3">Diğer Projeler</h3>
+                    <h3 class="font-bold text-[#3E2006] mb-3">{{ __('projects.others') }}</h3>
                     <div class="space-y-3">
                         @foreach ($others as $other)
                             <a href="{{ route('public.projects.show', $other->slug) }}"

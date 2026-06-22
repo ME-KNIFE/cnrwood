@@ -9,11 +9,11 @@
         $catName     = $product->category?->getTranslation('name', app()->getLocale());
         $primary     = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
         $imgUrl      = $primary ? \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) : null;
-        $title       = $prodName . ' için Teklif Al — CNRWOOD';
+        $title       = __('quote.product_h1', ['name' => \$prodName]) . ' — CNRWOOD';
         $metaDescription = $prodName . ' için CNRWOOD\'dan ücretsiz ve bağlayıcı olmayan teklif alın.';
         $formAction  = route('public.quote.product.store', ['slug' => $product->slug]);
     } else {
-        $title       = 'Teklif Al — CNRWOOD';
+        $title       = __('nav.quote') . ' — CNRWOOD';
         $metaDescription = 'Ahşap sandık, ambalaj, kapı sereni, kereste & levha ve ahşap yapı projeleriniz için CNRWOOD\'dan ücretsiz teklif alın.';
         $formAction  = route('public.quote.store');
     }
@@ -24,14 +24,14 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             @if ($isProduct)
                 <span class="mx-1">/</span>
                 <a href="{{ route('public.products') }}" class="hover:underline">Ürünler</a>
                 <span class="mx-1">/</span>
                 <a href="{{ route('public.product', $product->slug) }}" class="hover:underline">{{ $prodName }}</a>
                 <span class="mx-1">/</span>
-                <span class="text-[#3E2006]">Teklif Al</span>
+                <span class="text-[#3E2006]">{{ __('breadcrumb.quote') }}</span>
             @else
                 <span class="mx-1">/</span>
                 <span class="text-[#3E2006]">Teklif Al</span>
@@ -39,14 +39,13 @@
         </nav>
         <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">
             @if ($isProduct)
-                {{ $prodName }} için Teklif Talebi
+                {{ __('quote.product_h1', ['name' => $prodName]) }}
             @else
-                Genel Teklif Talebi
+                {{ __('quote.general_h1') }}
             @endif
         </h1>
         <p class="text-[#555555] mt-2">
-            Formu doldurun, ekibimiz <strong>en geç 1 iş günü içinde</strong> sizinle iletişime geçsin.
-            Bu talep ücretsizdir ve hiçbir ödeme alınmaz.
+            {{ __('quote.subtitle') }}
         </p>
     </div>
 </section>
@@ -55,7 +54,7 @@
 
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-800 font-semibold mb-2">Lütfen aşağıdaki hataları düzeltin:</p>
+            <p class="text-red-800 font-semibold mb-2">{{ __('quote.errors_fix') }}</p>
             <ul class="list-disc list-inside text-red-700 text-sm space-y-1">
                 @foreach ($errors->all() as $err)
                     <li>{{ $err }}</li>
@@ -79,7 +78,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                     <label for="contact_name" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Ad Soyad <span class="text-red-600">*</span>
+                        {{ __('quote.name') }} <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="contact_name" id="contact_name" required maxlength="120"
                            value="{{ old('contact_name') }}"
@@ -88,7 +87,7 @@
 
                 <div>
                     <label for="contact_email" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        E-posta <span class="text-red-600">*</span>
+                        {{ __('quote.email') }} <span class="text-red-600">*</span>
                     </label>
                     <input type="email" name="contact_email" id="contact_email" required maxlength="160"
                            value="{{ old('contact_email') }}"
@@ -97,7 +96,7 @@
 
                 <div>
                     <label for="contact_phone" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Telefon <span class="text-red-600">*</span>
+                        {{ __('quote.phone') }} <span class="text-red-600">*</span>
                     </label>
                     <input type="tel" name="contact_phone" id="contact_phone" required maxlength="20"
                            value="{{ old('contact_phone') }}"
@@ -107,7 +106,7 @@
 
                 <div>
                     <label for="preferred_contact" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Tercih Edilen İletişim
+                        {{ __('quote.preferred_contact') }}
                     </label>
                     <select name="preferred_contact" id="preferred_contact"
                             class="w-full px-3 py-2 border border-[#E6DFD2] rounded text-sm focus:outline-none focus:border-[#8B5A2B] focus:ring-1 focus:ring-[#8B5A2B]">
@@ -119,7 +118,7 @@
 
                 <div>
                     <label for="company_name" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Firma Adı <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                        {{ __('quote.company') }} <span class="text-xs text-[#555555] font-normal">{{ __('quote.optional') }}</span>
                     </label>
                     <input type="text" name="company_name" id="company_name" maxlength="160"
                            value="{{ old('company_name') }}"
@@ -128,7 +127,7 @@
 
                 <div>
                     <label for="tax_number" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Vergi No <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                        {{ __('quote.tax_number') }} <span class="text-xs text-[#555555] font-normal">{{ __('quote.optional') }}</span>
                     </label>
                     <input type="text" name="tax_number" id="tax_number" maxlength="20"
                            value="{{ old('tax_number') }}"
@@ -139,7 +138,7 @@
             @if ($isProduct)
                 <div>
                     <label for="quantity" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                        Adet <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                        {{ __('quote.quantity') }} <span class="text-xs text-[#555555] font-normal">{{ __('quote.optional') }}</span>
                     </label>
                     <input type="number" name="quantity" id="quantity" min="1" max="999999"
                            value="{{ old('quantity', 1) }}"
@@ -149,28 +148,25 @@
 
             <div>
                 <label for="message" class="block text-sm font-medium text-[#3E2006] mb-1.5">
-                    Mesaj / Detay <span class="text-xs text-[#555555] font-normal">(opsiyonel)</span>
+                    {{ __('quote.message_label') }} <span class="text-xs text-[#555555] font-normal">{{ __('quote.optional') }}</span>
                 </label>
                 <textarea name="message" id="message" rows="6" maxlength="4000"
-                          placeholder="Ölçü, malzeme, hedef ülke, teslimat tarihi gibi detayları yazabilirsiniz."
+                          placeholder="{{ __('quote.message_placeholder') }}"
                           class="w-full px-3 py-2 border border-[#E6DFD2] rounded text-sm focus:outline-none focus:border-[#8B5A2B] focus:ring-1 focus:ring-[#8B5A2B]">{{ old('message') }}</textarea>
             </div>
 
             <div class="pt-2 border-t border-[#E6DFD2] text-xs text-[#555555] leading-relaxed">
-                Formu göndererek, paylaştığınız iletişim bilgilerinin CNR Ahşap tarafından yalnızca
-                bu teklif talebinin değerlendirilmesi ve sizinle iletişim kurulması amacıyla
-                <strong>6698 sayılı KVKK</strong> kapsamında işlenmesini kabul etmiş olursunuz.
-                Verileriniz üçüncü kişilerle paylaşılmaz.
+                {{ __('quote.kvkk') }}
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between pt-2">
                 <p class="text-xs text-[#555555]">
-                    <span class="text-red-600">*</span> ile işaretli alanlar zorunludur.
+                    <span class="text-red-600">*</span> {{ __('quote.required_note') }}
                 </p>
                 <button type="submit"
                         class="inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
                                bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
-                    Teklif Talebini Gönder
+                    {{ __('nav.quote') }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
@@ -197,14 +193,14 @@
                         @endif
                         <a href="{{ route('public.product', $product->slug) }}"
                            class="inline-block mt-3 text-sm text-[#1F497D] hover:underline">
-                            Ürün detayına dön →
+                            {{ __('quote.back_to_product') }} →
                         </a>
                     </div>
                 </div>
             @endif
 
             <div class="bg-[#F5F0E8] border border-[#E6DFD2] rounded-lg p-5 text-sm">
-                <h3 class="font-semibold text-[#3E2006] mb-3">Doğrudan İletişim</h3>
+                <h3 class="font-semibold text-[#3E2006] mb-3">{{ __('quote.direct_contact') }}</h3>
                 <ul class="space-y-2 text-[#555555]">
                     <li>
                         <span class="block text-xs uppercase text-[#8B5A2B]">Telefon</span>
@@ -222,17 +218,14 @@
             </div>
 
             <div class="bg-white border border-[#E6DFD2] rounded-lg p-5 text-sm">
-                <h3 class="font-semibold text-[#3E2006] mb-2">Süreç Nasıl İşler?</h3>
+                <h3 class="font-semibold text-[#3E2006] mb-2">{{ __('quote.how_it_works') }}</h3>
                 <ol class="list-decimal list-inside text-[#555555] space-y-1.5">
-                    <li>Formu doldurun ve gönderin.</li>
-                    <li>Talebiniz uzman ekibimize iletilir.</li>
-                    <li>1 iş günü içinde size dönüş yapılır.</li>
-                    <li>Detaylı, yazılı teklif tarafınıza sunulur.</li>
+                    <li>{{ __('quote.step1') }}</li>
+                    <li>{{ __('quote.step2') }}</li>
+                    <li>{{ __('quote.step3') }}</li>
+                    <li>{{ __('quote.step4') }}</li>
                 </ol>
             </div>
         </aside>
     </div>
 
-</section>
-
-@endsection

@@ -5,7 +5,7 @@
     /** @var \Illuminate\Support\Collection $savedAddresses */
     /** @var \App\Models\Address|null $defaultShipping */
     /** @var \App\Models\Address|null $defaultBilling */
-    $title = 'Siparişi Tamamla — CNRWOOD';
+    $title = __('checkout.h1') . ' — CNRWOOD';
     $savedAddresses  = $savedAddresses  ?? collect();
     $defaultShipping = $defaultShipping ?? null;
     $defaultBilling  = $defaultBilling  ?? null;
@@ -16,18 +16,18 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <nav class="text-sm text-[#8B5A2B]">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <a href="{{ route('cart.index') }}" class="hover:underline">Sepetim</a>
+            <a href="{{ route('cart.index') }}" class="hover:underline">{{ __('breadcrumb.cart') }}</a>
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">Siparişi Tamamla</span>
+            <span class="text-[#3E2006]">{{ __('breadcrumb.checkout') }}</span>
         </nav>
     </div>
 </section>
 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-    <h1 class="text-3xl font-bold text-[#3E2006] mb-8">Siparişi Tamamla</h1>
+    <h1 class="text-3xl font-bold text-[#3E2006] mb-8">{{ __('checkout.h1') }}</h1>
 
     @if (session('checkout_error'))
         <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
@@ -37,7 +37,7 @@
 
     @if ($errors->any())
         <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-            <p class="font-medium mb-1">Lütfen aşağıdaki hataları düzeltin:</p>
+            <p class="font-medium mb-1">{{ __('checkout.errors_fix') }}</p>
             <ul class="list-disc list-inside space-y-0.5">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -57,14 +57,14 @@
 
                 {{-- Customer info ─────────────────────────────────────────── --}}
                 <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-5">İletişim Bilgileri</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-5">{{ __('checkout.contact_info') }}</h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                         <div class="sm:col-span-2">
                             <label for="customer_name"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Ad Soyad <span class="text-red-500">*</span>
+                                {{ __('checkout.name') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
                                    id="customer_name"
@@ -83,7 +83,7 @@
                         <div>
                             <label for="customer_email"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                E-posta <span class="text-red-500">*</span>
+                                {{ __('checkout.email') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="email"
                                    id="customer_email"
@@ -103,7 +103,7 @@
                         <div>
                             <label for="customer_phone"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Telefon
+                                {{ __('checkout.phone') }}
                             </label>
                             <input type="tel"
                                    id="customer_phone"
@@ -124,19 +124,19 @@
 
                 {{-- Shipping address ──────────────────────────────────────── --}}
                 <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-5">Teslimat Adresi</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-5">{{ __('checkout.shipping_address') }}</h2>
 
                     {{-- Saved address picker (authenticated users with addresses) --}}
                     @if ($savedAddresses->isNotEmpty())
                         <div class="mb-5 p-4 bg-[#F5F0E8] border border-[#E6DFD2] rounded">
                             <label for="shipping_address_id" class="block text-sm font-medium text-[#3E2006] mb-2">
-                                Kayıtlı Adreslerimden Seç
+                                {{ __('checkout.saved_addresses') }}
                             </label>
                             <select id="shipping_address_id"
                                     name="shipping_address_id"
                                     class="w-full border border-[#E6DFD2] rounded px-3 py-2 text-sm text-[#3E2006] bg-white
                                            focus:outline-none focus:ring-1 focus:ring-[#3E2006]">
-                                <option value="">— Manuel girin —</option>
+                                <option value="">{{ __('checkout.manual_entry') }}</option>
                                 @foreach ($savedAddresses as $addr)
                                     <option value="{{ $addr->id }}"
                                         {{ ($defaultShipping?->id === $addr->id) ? 'selected' : '' }}>
@@ -145,8 +145,8 @@
                                 @endforeach
                             </select>
                             <p class="text-xs text-[#555555] mt-1.5">
-                                Seçildiğinde aşağıdaki alanları doldurmanıza gerek yoktur.
-                                <a href="{{ route('account.addresses') }}" class="text-[#1F497D] hover:underline">Adreslerimi yönet →</a>
+                                {{ __('checkout.saved_address_hint') }}
+                                <a href="{{ route('account.addresses') }}" class="text-[#1F497D] hover:underline">{{ __('checkout.manage_addresses') }} →</a>
                             </p>
                         </div>
                     @endif
@@ -156,7 +156,7 @@
                         <div>
                             <label for="full_name"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Alıcı Adı <span class="text-red-500">*</span>
+                                {{ __('checkout.recipient_name') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
                                    id="full_name"
@@ -175,7 +175,7 @@
                         <div>
                             <label for="phone"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Telefon (Teslimat)
+                                {{ __('checkout.phone_delivery') }}
                             </label>
                             <input type="tel"
                                    id="phone"
@@ -193,7 +193,7 @@
                         <div class="sm:col-span-2">
                             <label for="address_line1"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Adres <span class="text-red-500">*</span>
+                                {{ __('checkout.address_line1') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
                                    id="address_line1"
@@ -201,7 +201,7 @@
                                    value="{{ old('address_line1') }}"
                                    required
                                    maxlength="500"
-                                   placeholder="Mahalle, cadde, sokak, bina no, daire no"
+                                   placeholder="{{ __('checkout.address_placeholder') }}"
                                    class="w-full border {{ $errors->has('address_line1') ? 'border-red-400' : 'border-[#E6DFD2]' }}
                                           rounded px-3 py-2 text-sm text-[#3E2006] bg-white
                                           focus:outline-none focus:ring-1 focus:ring-[#3E2006]">
@@ -213,7 +213,7 @@
                         <div class="sm:col-span-2">
                             <label for="address_line2"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Adres (devam)
+                                {{ __('checkout.address_line2') }}
                             </label>
                             <input type="text"
                                    id="address_line2"
@@ -228,7 +228,7 @@
                         <div>
                             <label for="city"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                İl <span class="text-red-500">*</span>
+                                {{ __('checkout.city') }} <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
                                    id="city"
@@ -247,7 +247,7 @@
                         <div>
                             <label for="district"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                İlçe
+                                {{ __('checkout.district') }}
                             </label>
                             <input type="text"
                                    id="district"
@@ -262,7 +262,7 @@
                         <div>
                             <label for="postal_code"
                                    class="block text-sm font-medium text-[#3E2006] mb-1">
-                                Posta Kodu
+                                {{ __('checkout.postal_code') }}
                             </label>
                             <input type="text"
                                    id="postal_code"
@@ -275,9 +275,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-[#3E2006] mb-1">Ülke</label>
+                            <label class="block text-sm font-medium text-[#3E2006] mb-1">{{ __('checkout.country_label') }}</label>
                             <input type="text"
-                                   value="Türkiye"
+                                   value="{{ __('checkout.country_value') }}"
                                    disabled
                                    class="w-full border border-[#E6DFD2] rounded px-3 py-2
                                           text-sm text-[#555555] bg-[#F5F0E8] cursor-not-allowed">
@@ -288,7 +288,7 @@
 
                 {{-- Payment method selection (Phase 11C) ────────────────── --}}
                 <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">Ödeme Yöntemi</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">{{ __('checkout.payment_method') }}</h2>
 
                     @error('payment_method')
                         <p class="mb-3 text-xs text-red-600">{{ $message }}</p>
@@ -314,11 +314,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
                                     </svg>
-                                    <p class="text-sm font-semibold text-[#3E2006]">Kredi / Banka Kartı</p>
+                                    <p class="text-sm font-semibold text-[#3E2006]">{{ __('checkout.payment_card') }}</p>
                                     <span class="text-[10px] font-bold text-white bg-[#2C5F2E] px-1.5 py-0.5 rounded">3D Secure</span>
                                 </div>
                                 <p class="text-xs text-[#555555] mt-1">
-                                    Anında ödeme. iyzico güvencesiyle 3D Secure korumalı.
+                                    {{ __('checkout.card_desc') }}
                                 </p>
                             </div>
                         </label>
@@ -341,11 +341,10 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
                                     </svg>
-                                    <p class="text-sm font-semibold text-[#3E2006]">Havale / EFT</p>
+                                    <p class="text-sm font-semibold text-[#3E2006]">{{ __('checkout.payment_eft') }}</p>
                                 </div>
                                 <p class="text-xs text-[#555555] mt-1">
-                                    Siparişiniz oluşturulduktan sonra IBAN bilgilerimiz size iletilir.
-                                    Ödeme onaylandığında kargoya verilir.
+                                    {{ __('checkout.eft_desc') }}
                                 </p>
                             </div>
                         </label>
@@ -359,7 +358,7 @@
             <div class="mt-8 lg:mt-0">
                 <div class="bg-[#F5F0E8] border border-[#E6DFD2] rounded-lg p-6 sticky top-24">
 
-                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">Sipariş Özeti</h2>
+                    <h2 class="text-lg font-bold text-[#3E2006] mb-4">{{ __('checkout.summary') }}</h2>
 
                     <div class="space-y-3 mb-4">
                         @foreach ($cart->items as $item)
@@ -379,7 +378,7 @@
                                         {{ $pname }}
                                         @if ($vname) <span class="text-[#555555]">({{ $vname }})</span> @endif
                                     </p>
-                                    <p class="text-xs text-[#555555]">{{ $item->quantity }} adet</p>
+                                    <p class="text-xs text-[#555555]">{{ $item->quantity }} {{ __('checkout.qty_suffix') }}</p>
                                 </div>
                                 <span class="font-medium text-[#3E2006] whitespace-nowrap flex-shrink-0">
                                     {{ number_format($item->getLineTotal(), 2, ',', '.') }} TL
@@ -390,28 +389,28 @@
 
                     <div class="border-t border-[#E6DFD2] pt-4 space-y-2 text-sm mb-4">
                         <div class="flex justify-between">
-                            <span class="text-[#555555]">Ara Toplam</span>
+                            <span class="text-[#555555]">{{ __('cart.subtotal_items', ['count' => \$cart->getItemCount()]) }}</span>
                             <span class="font-medium text-[#3E2006]">
                                 {{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL
                             </span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-[#555555]">Kargo</span>
-                            <span class="text-[#555555] italic text-xs">Hesaplanacak</span>
+                            <span class="text-[#555555]">{{ __('cart.shipping') }}</span>
+                            <span class="text-[#555555] italic text-xs">{{ __('checkout.shipping_info') }}</span>
                         </div>
                     </div>
 
                     <div class="border-t border-[#E6DFD2] pt-4 flex justify-between font-bold text-[#3E2006] text-lg mb-1">
-                        <span>Toplam</span>
+                        <span>{{ __('cart.total') }}</span>
                         <span>{{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL</span>
                     </div>
-                    <p class="text-xs text-[#555555] mb-6">(Kargo hariç)</p>
+                    <p class="text-xs text-[#555555] mb-6">{{ __('checkout.excl_shipping') }}</p>
 
                     <button type="submit"
                             class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
                                    text-base font-semibold rounded bg-[#2C5F2E] hover:bg-[#214a23]
                                    text-white transition-colors mb-3">
-                        Siparişi Onayla
+                        {{ __('checkout.place_order') }}
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M5 13l4 4L19 7"/>
@@ -422,13 +421,13 @@
                        class="w-full inline-flex items-center justify-center px-6 py-2.5
                               text-sm font-medium rounded border border-[#E6DFD2]
                               text-[#3E2006] bg-white hover:bg-[#F5F0E8] transition-colors">
-                        Sepete Dön
+                        {{ __('checkout.back_to_cart') }}
                     </a>
 
                     <p class="text-xs text-[#555555] text-center mt-4">
-                        Siparişinizi onaylayarak
-                        <a href="{{ route('public.contact') }}" class="text-[#1F497D] hover:underline">gizlilik politikamızı</a>
-                        kabul etmiş olursunuz.
+                        {{ __('checkout.privacy_text') }}
+                        <a href="{{ route('public.contact') }}" class="text-[#1F497D] hover:underline">{{ __('checkout.privacy_link') }}</a>
+                        {{ __('checkout.privacy_suffix') }}
                     </p>
 
                 </div>

@@ -11,9 +11,9 @@
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
-            <a href="{{ route('home') }}" class="hover:underline">Anasayfa</a>
+            <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
-            <a href="{{ route('public.blog.index') }}" class="hover:underline">Blog</a>
+            <a href="{{ route('public.blog.index') }}" class="hover:underline">{{ __('breadcrumb.blog') }}</a>
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ \Illuminate\Support\Str::limit($post->getTranslation('title', app()->getLocale()), 50) }}</span>
         </nav>
@@ -55,7 +55,7 @@
 @if ($related->isNotEmpty())
     <section class="border-t border-[#E6DFD2] bg-[#F5F0E8]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <h2 class="text-xl font-bold text-[#3E2006] mb-6">Diğer Yazılar</h2>
+            <h2 class="text-xl font-bold text-[#3E2006] mb-6">{{ __('blog.related') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 @foreach ($related as $rel)
                     <a href="{{ route('public.blog.show', $rel->slug) }}"
