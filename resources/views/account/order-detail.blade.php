@@ -66,21 +66,111 @@
             </span>
         </div>
         <div class="bg-white border border-[#E6DFD2] rounded-lg p-4">
-            <p class="text-xs text-[#555555] uppercase tracking-wider mb-1">Kargo</p>
-            @if ($order->tracking_number)
-                <p class="text-sm font-medium text-[#3E2006]">{{ $order->cargo_company }}</p>
-                <p class="text-xs text-[#555555]">{{ $order->tracking_number }}</p>
-            @else
-                <p class="text-sm text-[#555555]">—</p>
-            @endif
-        </div>
-        <div class="bg-white border border-[#E6DFD2] rounded-lg p-4">
             <p class="text-xs text-[#555555] uppercase tracking-wider mb-1">Ödeme Yöntemi</p>
             <p class="text-sm font-medium text-[#3E2006]">
                 {{ $order->payment_method === 'havale_eft' ? 'Havale / EFT' : $order->payment_method }}
             </p>
         </div>
     </div>
+
+    {{-- Shipment tracking ───────────────────────────────────────────────────── --}}
+    @if ($order->shipments->isNotEmpty())
+        <div class="bg-white border border-[#E6DFD2] rounded-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#E6DFD2]">
+                <h2 class="font-bold text-[#3E2006]">Kargo / Sevkiyat</h2>
+            </div>
+
+            <div class="divide-y divide-[#E6DFD2]">
+                @foreach ($order->shipments->sortByDesc('created_at') as $shipment)
+                    <div class="px-6 py-5">
+
+                        {{-- Status badge + company ─────────────────────────── --}}
+                        <div class="flex flex-wrap items-center gap-3 mb-3">
+                            @php
+                                $shipBadge = match ($shipment->status) {
+                                    'kargoya_verildi' => ['bg-blue-100', 'text-blue-700',  'Kargoya Verildi'],
+                                    'teslim_edildi'   => ['bg-green-100','text-green-700', 'Teslim Edildi'],
+                                    'iade'            => ['bg-red-100',  'text-red-700',   'İade'],
+                                    default           => ['bg-gray-100', 'text-gray-600',  'Hazırlanıyor'],
+                                };
+                            @endphp
+                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
+                                         {{ $shipBadge[0] }} {{ $shipBadge[1] }}">
+                                @if ($shipment->status === 'teslim_edildi')
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                @elseif ($shipment->status === 'kargoya_verildi')
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                                    </svg>
+                                @endif
+                                {{ $shipBadge[2] }}
+                            </span>
+                            @if ($shipment->cargo_company)
+                                <span class="text-sm font-semibold text-[#3E2006]">{{ $shipment->cargo_company }}</span>
+                            @endif
+                        </div>
+
+                        {{-- Tracking number + link ─────────────────────────── --}}
+                        @if ($shipment->tracking_number)
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="flex-1">
+                                    <p class="text-xs text-[#555555] mb-0.5">Takip Numarası</p>
+                                    <p class="text-sm font-mono font-semibold text-[#3E2006]">
+                                        {{ $shipment->tracking_number }}
+                                    </p>
+                                </div>
+                                @if ($shipment->tracking_url)
+                                    <a href="{{ $shipment->tracking_url }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold
+                                              rounded bg-[#1F497D] text-white hover:bg-[#173a64] transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                        Kargoyu Takip Et
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
+
+                        {{-- Dates ──────────────────────────────────────────── --}}
+                        <div class="flex flex-wrap gap-6 text-xs text-[#555555]">
+                            @if ($shipment->shipped_at)
+                                <div>
+                                    <p class="uppercase tracking-wider mb-0.5">Gönderim</p>
+                                    <p class="font-medium text-[#3E2006]">{{ $shipment->shipped_at->format('d.m.Y H:i') }}</p>
+                                </div>
+                            @endif
+                            @if ($shipment->estimated_delivery)
+                                <div>
+                                    <p class="uppercase tracking-wider mb-0.5">Tahmini Teslim</p>
+                                    <p class="font-medium text-[#3E2006]">{{ $shipment->estimated_delivery->format('d.m.Y') }}</p>
+                                </div>
+                            @endif
+                            @if ($shipment->delivered_at)
+                                <div>
+                                    <p class="uppercase tracking-wider mb-0.5">Teslim Tarihi</p>
+                                    <p class="font-medium text-green-700">{{ $shipment->delivered_at->format('d.m.Y H:i') }}</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if ($shipment->notes)
+                            <p class="mt-3 text-xs text-[#555555] bg-[#F5F0E8] rounded px-3 py-2">
+                                {{ $shipment->notes }}
+                            </p>
+                        @endif
+
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="grid sm:grid-cols-2 gap-6">
 

@@ -31,7 +31,7 @@ class AccountController extends Controller
         $user = auth()->user();
 
         $orders = $user->orders()
-            ->with(['items'])
+            ->with(['items', 'shipments'])
             ->latest()
             ->paginate(15);
 
