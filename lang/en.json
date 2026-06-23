@@ -408,5 +408,22 @@
     "checkout.place_order": "Confirm & Pay",
     "checkout.h1": "Checkout",
     "checkout.payment_card": "Credit / Debit Card",
-    "checkout.payment_eft": "Bank Transfer / EFT"
+    "checkout.payment_eft": "Bank Transfer / EFT",
+    "home.how_we_work": "How We Work",
+    "home.splitter_title": "Two Different Solutions Under One Roof",
+    "home.splitter_subtitle": "Request a quote for custom industrial production; buy ready products directly from our store.",
+    "home.industrial_title": "Industrial Solutions",
+    "home.industrial_desc": "Wooden crates, export packaging, door sill, lumber and wooden structures. Custom pricing by dimensions, quantity and specs. No cart or online payment.",
+    "home.industrial_label": "Industrial Solutions",
+    "home.store_title": "Store Products",
+    "home.store_desc": "Wood pellets, cat litter, shelves and other ready-made products. View prices, add to cart and purchase securely online.",
+    "home.store_label": "Store",
+    "home.quote_products_title": "Quote-Only Production Products",
+    "home.store_preview_title": "Ready Wood Products",
+    "home.projects_label": "Projects & References",
+    "home.projects_title": "Production Power Proven in the Field",
+    "home.about_label": "About Us",
+    "home.about_title": "A Factory Producing from Gebze to the World",
+    "home.contact_title": "Let's Talk About Your Project",
+    "home.contact_subtitle": "Contact our team for custom wood packaging and production solutions. Our experts will get back to you as soon as possible."
 }

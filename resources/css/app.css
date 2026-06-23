@@ -6,4 +6,14 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Oswald', ui-sans-serif, system-ui, sans-serif;
+
+    /* CNRWOOD brand palette */
+    --color-wood-deep:    #3e2006;
+    --color-wood-medium:  #6b3a1f;
+    --color-wood-natural: #8b5a2b;
+    --color-cream:        #f5f0e8;
+    --color-forest:       #2c5f2e;
+    --color-steel:        #1f497d;
+    --color-whatsapp:     #25d366;
 }

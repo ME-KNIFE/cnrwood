@@ -408,5 +408,22 @@
     "checkout.place_order": "Siparişi Onayla ve Öde",
     "checkout.h1": "Siparişi Tamamla",
     "checkout.payment_card": "Kredi / Banka Kartı",
-    "checkout.payment_eft": "Havale / EFT"
+    "checkout.payment_eft": "Havale / EFT",
+    "home.how_we_work": "Nasıl Çalışıyoruz",
+    "home.splitter_title": "İki Farklı Çözüm, Tek Çatı Altında",
+    "home.splitter_subtitle": "Projeye özel endüstriyel üretim için teklif alın; hazır ürünler için mağazadan doğrudan satın alın.",
+    "home.industrial_title": "Endüstriyel Çözümler",
+    "home.industrial_desc": "Ahşap sandık, ihracat ambalajı, kapı sereni, kereste ve ahşap yapılar. Ölçü, adet ve teknik gereksinime göre özel fiyatlandırma. Sepet veya online ödeme yoktur.",
+    "home.industrial_label": "Endüstriyel Çözümler",
+    "home.store_title": "Mağaza Ürünleri",
+    "home.store_desc": "Ahşap pelet, kedi kumu, raf ve diğer hazır ürünler. Fiyatları görüntüleyin, sepete ekleyin ve güvenle online satın alın.",
+    "home.store_label": "Mağaza",
+    "home.quote_products_title": "Teklife Özel Üretim Ürünleri",
+    "home.store_preview_title": "Hazır Ahşap Ürünler",
+    "home.projects_label": "Projeler & Referanslar",
+    "home.projects_title": "Sahada Kanıtlanmış Üretim Gücü",
+    "home.about_label": "Kurumsal",
+    "home.about_title": "Gebze'den Dünyaya Üreten Bir Fabrika",
+    "home.contact_title": "Projenizi Konuşalım",
+    "home.contact_subtitle": "İhtiyacınıza özel ahşap ambalaj ve üretim çözümleri için ekibimizle iletişime geçin. Uzmanlarımız en kısa sürede size dönüş yapsın."
 }
