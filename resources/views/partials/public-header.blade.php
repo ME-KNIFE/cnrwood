@@ -6,139 +6,196 @@
         ['label' => __('nav.products'),  'url' => route('public.products'),        'active' => request()->routeIs('public.products') || request()->routeIs('public.product') || request()->routeIs('public.category')],
         ['label' => __('nav.sandik'),    'url' => route('public.sandik'),          'active' => request()->routeIs('public.sandik')],
         ['label' => __('nav.projects'),  'url' => route('public.projects.index'),  'active' => request()->routeIs('public.projects.*')],
-        ['label' => __('nav.fairs'),     'url' => route('public.fairs.index'),     'active' => request()->routeIs('public.fairs.*')],
         ['label' => __('nav.blog'),      'url' => route('public.blog.index'),      'active' => request()->routeIs('public.blog.*')],
         ['label' => __('nav.contact'),   'url' => route('public.contact'),         'active' => request()->routeIs('public.contact')],
     ];
     $currentLocale = app()->getLocale();
+    $cartCount     = session('cart_count', 0);
 @endphp
 
-<header class="bg-white border-b border-[#E6DFD2] sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+<header class="sticky top-0 z-50 w-full" x-data="{ open: false }" @keydown.escape.window="open = false">
 
-            <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <span class="inline-flex items-center justify-center w-9 h-9 rounded bg-[#3E2006] text-[#F5F0E8] font-bold text-sm">CN</span>
-                <span class="text-[#3E2006] font-semibold text-lg tracking-tight group-hover:text-[#6B3A1F] transition-colors">CNRWOOD</span>
+    {{-- ── Utility top bar (desktop only) ──────────────────────────────── --}}
+    <div class="hidden lg:block bg-wood-deep text-cream/80">
+        <div class="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 text-xs lg:px-8">
+            <div class="flex items-center gap-6">
+                {{-- Location --}}
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 7 12 7s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+                    Gebze OSB, Kocaeli
+                </span>
+                {{-- Phone --}}
+                <a href="tel:+902627512120" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
+                    <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    +90 262 751 21 20
+                </a>
+                {{-- Email --}}
+                <a href="mailto:info@cnrwood.com" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
+                    <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    info@cnrwood.com
+                </a>
+            </div>
+            <div class="flex items-center gap-5">
+                {{-- ISPM badge --}}
+                <span class="inline-flex items-center gap-1.5 font-medium text-cream/90">
+                    <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    ISPM 15 Sertifikalı İhracat Ambalajı
+                </span>
+                {{-- Language switcher --}}
+                <div class="flex items-center overflow-hidden rounded-sm border border-cream/25 text-[11px] font-semibold">
+                    <a href="{{ route('locale.switch', 'tr') }}"
+                       class="px-2 py-1 transition-colors {{ $currentLocale === 'tr' ? 'bg-wood-natural text-wood-deep' : 'text-cream/70 hover:text-cream' }}">
+                        TR
+                    </a>
+                    <a href="{{ route('locale.switch', 'en') }}"
+                       class="px-2 py-1 transition-colors {{ $currentLocale === 'en' ? 'bg-wood-natural text-wood-deep' : 'text-cream/70 hover:text-cream' }}">
+                        EN
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ── Main bar ──────────────────────────────────────────────────────── --}}
+    <div class="border-b border-[#E6DFD2] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 lg:h-[4.5rem] lg:px-8">
+
+            {{-- Logo --}}
+            <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
+                <span class="flex h-11 w-11 items-center justify-center rounded-sm bg-wood-deep font-heading text-2xl font-bold text-wood-natural">
+                    C
+                </span>
+                <span class="flex flex-col leading-none">
+                    <span class="font-heading text-[1.6rem] font-bold tracking-wide text-wood-deep">
+                        CNR<span class="text-wood-natural">WOOD</span>
+                    </span>
+                    <span class="hidden sm:block mt-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8B5A2B]">
+                        Ahşap Ambalaj &amp; Üretim · Est. 1998
+                    </span>
+                </span>
             </a>
 
-            <nav class="hidden md:flex items-center gap-1">
+            {{-- Desktop nav (xl+) --}}
+            <nav class="hidden items-center gap-0.5 xl:flex">
                 @foreach ($navLinks as $link)
                     <a href="{{ $link['url'] }}"
-                       class="px-3 py-2 text-sm font-medium rounded transition-colors
+                       class="rounded-sm px-3 py-2 text-sm font-semibold transition-colors
                               {{ $link['active']
-                                    ? 'text-[#3E2006] bg-[#F5F0E8]'
-                                    : 'text-[#555555] hover:text-[#3E2006] hover:bg-[#F5F0E8]/60' }}">
+                                  ? 'bg-[#F5F0E8] text-wood-deep'
+                                  : 'text-[#555555] hover:bg-[#F5F0E8] hover:text-wood-deep' }}">
                         {{ $link['label'] }}
                     </a>
                 @endforeach
             </nav>
 
-            <div class="hidden md:flex items-center gap-2">
-                {{-- Language switcher --}}
-                <div class="flex items-center border border-[#E6DFD2] rounded overflow-hidden text-xs font-semibold">
-                    <a href="{{ route('locale.switch', 'tr') }}"
-                       class="px-2 py-1 transition-colors {{ $currentLocale === 'tr' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
-                        TR
-                    </a>
-                    <a href="{{ route('locale.switch', 'en') }}"
-                       class="px-2 py-1 transition-colors {{ $currentLocale === 'en' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
-                        EN
-                    </a>
-                </div>
+            {{-- Right actions --}}
+            <div class="flex items-center gap-2 lg:gap-3">
 
-                {{-- Cart icon with session-backed item count --}}
-                @php $cartCount = session('cart_count', 0); @endphp
+                {{-- Cart --}}
                 <a href="{{ route('cart.index') }}"
-                   aria-label="Sepetim"
-                   class="relative inline-flex items-center p-2 rounded text-[#3E2006]
-                          hover:bg-[#F5F0E8] transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   aria-label="{{ __('nav.cart') }}"
+                   class="relative flex h-10 w-10 items-center justify-center rounded-sm text-[#3E2006] transition-colors hover:bg-[#F5F0E8]">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     @if ($cartCount > 0)
-                        <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center
-                                     text-[10px] font-bold bg-[#2C5F2E] text-white rounded-full px-1 leading-none">
+                        <span class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-forest text-[10px] font-bold text-white">
                             {{ $cartCount > 99 ? '99+' : $cartCount }}
                         </span>
                     @endif
                 </a>
 
+                {{-- Account --}}
                 @auth
                     <a href="{{ route('account.dashboard') }}"
-                       class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded
-                              text-[#3E2006] hover:bg-[#F5F0E8] transition-colors {{ request()->routeIs('account.*') ? 'bg-[#F5F0E8]' : '' }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                       class="hidden sm:flex h-10 w-10 items-center justify-center rounded-sm text-[#3E2006] transition-colors hover:bg-[#F5F0E8] {{ request()->routeIs('account.*') ? 'bg-[#F5F0E8]' : '' }}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        {{ __('nav.account') }}
                     </a>
                 @else
                     <a href="{{ route('account.login') }}"
-                       class="text-sm font-medium text-[#555555] hover:text-[#3E2006] px-3 py-2 rounded hover:bg-[#F5F0E8] transition-colors">
-                        {{ __('nav.login') }}
+                       class="hidden sm:flex h-10 w-10 items-center justify-center rounded-sm text-[#555555] transition-colors hover:bg-[#F5F0E8] hover:text-wood-deep">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
                     </a>
                 @endauth
 
+                {{-- Quote CTA (desktop) --}}
                 <a href="{{ route('public.quote.create') }}"
-                   class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded
-                          text-white bg-[#1F497D] hover:bg-[#173a64] transition-colors">
+                   class="hidden items-center gap-2 rounded-sm bg-steel px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#173a64] sm:flex">
+                    <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
                     {{ __('nav.quote') }}
                 </a>
-            </div>
 
-            <details class="md:hidden relative">
-                <summary class="list-none cursor-pointer p-2 rounded hover:bg-[#F5F0E8]" aria-label="Menüyü aç">
-                    <svg class="w-6 h-6 text-[#3E2006]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {{-- Hamburger (hidden on xl) --}}
+                <button id="cnr-menu-btn"
+                        aria-label="{{ __('nav.home') }}"
+                        class="flex h-10 w-10 items-center justify-center rounded-sm text-[#3E2006] transition-colors hover:bg-[#F5F0E8] xl:hidden">
+                    <svg id="cnr-icon-open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                </summary>
-                <div class="absolute right-0 mt-2 w-56 bg-white border border-[#E6DFD2] rounded-md shadow-lg py-2">
-                    @foreach ($navLinks as $link)
-                        <a href="{{ $link['url'] }}"
-                           class="block px-4 py-2 text-sm {{ $link['active'] ? 'text-[#3E2006] bg-[#F5F0E8]' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
-                            {{ $link['label'] }}
-                        </a>
-                    @endforeach
-                    {{-- Mobile language switcher --}}
-                    <div class="flex items-center gap-2 px-4 py-2 border-t border-[#E6DFD2] mt-1">
-                        <span class="text-xs text-[#8B5A2B]">Dil / Language:</span>
-                        <a href="{{ route('locale.switch', 'tr') }}"
-                           class="text-xs font-semibold px-2 py-0.5 rounded {{ $currentLocale === 'tr' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">TR</a>
-                        <a href="{{ route('locale.switch', 'en') }}"
-                           class="text-xs font-semibold px-2 py-0.5 rounded {{ $currentLocale === 'en' ? 'bg-[#3E2006] text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">EN</a>
-                    </div>
-
-                    <a href="{{ route('cart.index') }}"
-                       class="flex items-center justify-between mx-3 mt-2 px-3 py-2 text-sm text-[#3E2006] bg-[#F5F0E8] hover:bg-[#E6DFD2] rounded">
-                        <span>{{ __('nav.cart') }}</span>
-                        @if (session('cart_count', 0) > 0)
-                            <span class="min-w-[18px] h-[18px] flex items-center justify-center
-                                         text-[10px] font-bold bg-[#2C5F2E] text-white rounded-full px-1">
-                                {{ session('cart_count', 0) > 99 ? '99+' : session('cart_count', 0) }}
-                            </span>
-                        @endif
-                    </a>
-                    @auth
-                        <a href="{{ route('account.dashboard') }}"
-                           class="block px-4 py-2 text-sm {{ request()->routeIs('account.*') ? 'text-[#3E2006] bg-[#F5F0E8]' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">
-                            {{ __('nav.account') }}
-                        </a>
-                    @else
-                        <a href="{{ route('account.login') }}"
-                           class="block px-4 py-2 text-sm text-[#555555] hover:bg-[#F5F0E8]">
-                            {{ __('nav.login') }}
-                        </a>
-                    @endauth
-                    <a href="{{ route('public.quote.create') }}"
-                       class="block mx-3 mt-2 px-3 py-2 text-sm text-center text-white bg-[#1F497D] hover:bg-[#173a64] rounded">
-                        {{ __('nav.quote') }}
-                    </a>
-                </div>
-            </details>
-
+                    <svg id="cnr-icon-close" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
+
+    {{-- ── Mobile menu ───────────────────────────────────────────────────── --}}
+    <nav id="cnr-mobile-menu"
+         class="hidden border-b border-[#E6DFD2] bg-white px-4 pb-6 pt-2 xl:hidden">
+        <div class="flex flex-col divide-y divide-[#E6DFD2]">
+            @foreach ($navLinks as $link)
+                <a href="{{ $link['url'] }}"
+                   class="py-3 text-base font-semibold
+                          {{ $link['active'] ? 'text-wood-deep' : 'text-[#555555]' }}">
+                    {{ $link['label'] }}
+                </a>
+            @endforeach
+        </div>
+
+        {{-- Mobile language switcher --}}
+        <div class="mt-4 flex items-center gap-2 text-xs text-[#8B5A2B]">
+            <span class="font-medium">Dil / Language:</span>
+            <a href="{{ route('locale.switch', 'tr') }}"
+               class="font-bold px-2 py-0.5 rounded-sm {{ $currentLocale === 'tr' ? 'bg-wood-deep text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">TR</a>
+            <a href="{{ route('locale.switch', 'en') }}"
+               class="font-bold px-2 py-0.5 rounded-sm {{ $currentLocale === 'en' ? 'bg-wood-deep text-white' : 'text-[#555555] hover:bg-[#F5F0E8]' }}">EN</a>
+        </div>
+
+        {{-- Mobile Quote CTA --}}
+        <a href="{{ route('public.quote.create') }}"
+           class="mt-5 flex items-center justify-center gap-2 rounded-sm bg-steel px-4 py-3 text-base font-semibold text-white">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            {{ __('nav.quote') }}
+        </a>
+        <div class="mt-4 flex items-center justify-center gap-1.5 text-xs text-[#8B5A2B]">
+            <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            ISPM 15 Sertifikalı · Gebze, Kocaeli
+        </div>
+    </nav>
+
 </header>
+
+<script>
+(function () {
+    var btn   = document.getElementById('cnr-menu-btn');
+    var menu  = document.getElementById('cnr-mobile-menu');
+    var open  = document.getElementById('cnr-icon-open');
+    var close = document.getElementById('cnr-icon-close');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function () {
+        var hidden = menu.classList.toggle('hidden');
+        open.classList.toggle('hidden', !hidden);
+        close.classList.toggle('hidden', hidden);
+    });
+})();
+</script>
