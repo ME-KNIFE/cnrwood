@@ -72,7 +72,7 @@
             <p>
                 {{ $order->shipping_address['full_name'] ?? $order->customer_name }}<br>
                 {{ $order->shipping_address['address_line1'] ?? '' }}<br>
-                @if (!empty($order->shipping_address['address_line2'])){{ $order->shipping_address['address_line2'] }}<br>@endif
+                @if (!empty($order->shipping_address['address_line2'] ?? null)){{ $order->shipping_address['address_line2'] }}<br>@endif
                 {{ $order->shipping_address['district'] ?? '' }}
                 {{ $order->shipping_address['city'] ?? '' }}<br>
                 {{ $order->shipping_address['country'] ?? 'Türkiye' }}
@@ -116,7 +116,7 @@
         @if ($order->discount_amount > 0)
         <tr>
             <td style="color:#555">
-                İndirim@if ($order->coupon_code) ({{ $order->coupon_code }})@endif
+                İndirim{{ $order->coupon_code ? ' (' . $order->coupon_code . ')' : '' }}
             </td>
             <td style="color:#2C5F2E">−{{ number_format($order->discount_amount, 2, ',', '.') }} TL</td>
         </tr>

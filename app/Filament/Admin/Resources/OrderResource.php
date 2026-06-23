@@ -100,6 +100,35 @@ class OrderResource extends Resource
                         ->columnSpanFull(),
                 ]),
 
+            Section::make('Fatura Adresi')
+                ->schema([
+                    Placeholder::make('billing_address_display')
+                        ->label('Fatura Adresi')
+                        ->content(function ($record) {
+                            if (! $record?->billing_address) {
+                                return new HtmlString('<em>Fatura adresi belirtilmemiş.</em>');
+                            }
+                            if ($record->billing_address === $record->shipping_address) {
+                                return new HtmlString('<em>Teslimat adresiyle aynı.</em>');
+                            }
+                            $a     = $record->billing_address;
+                            $lines = array_filter([
+                                $a['full_name']    ?? null,
+                                $a['phone']        ?? null,
+                                $a['address_line1'] ?? null,
+                                $a['address_line2'] ?? null,
+                                trim(($a['district'] ?? '') . ' ' . ($a['city'] ?? '')),
+                                isset($a['postal_code']) ? 'Posta Kodu: ' . $a['postal_code'] : null,
+                                $a['country'] ?? 'Türkiye',
+                            ]);
+                            return new HtmlString(implode('<br>', array_values($lines)));
+                        })
+                        ->columnSpanFull(),
+                ])
+                ->collapsible()
+                ->collapsed(fn ($record) => ! $record?->billing_address
+                    || $record->billing_address === $record->shipping_address),
+
             Section::make('Finansal Detaylar')
                 ->schema([
                     Placeholder::make('subtotal')->label('Ara Toplam')

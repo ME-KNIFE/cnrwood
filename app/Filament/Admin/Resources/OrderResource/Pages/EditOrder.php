@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources\OrderResource\Pages;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Services\OrderService;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
@@ -24,6 +25,41 @@ class EditOrder extends EditRecord
                 ->color('gray')
                 ->url(fn () => route('admin.orders.invoice', $this->getRecord()))
                 ->openUrlInNewTab(),
+
+            Action::make('cancel_order')
+                ->label('Siparişi İptal Et')
+                ->icon('heroicon-o-x-circle')
+                ->color('danger')
+                ->form([
+                    Textarea::make('reason')
+                        ->label('İptal Sebebi (isteğe bağlı)')
+                        ->rows(3),
+                ])
+                ->modalHeading('Siparişi İptal Et')
+                ->modalDescription('Bu işlem geri alınamaz. Stok kalemleri otomatik olarak iade edilecektir.')
+                ->modalSubmitActionLabel('İptal Et')
+                ->modalIcon('heroicon-o-x-circle')
+                ->visible(fn () => ! in_array(
+                    $this->getRecord()?->status,
+                    ['iptal_edildi', 'kargoya_verildi', 'teslim_edildi', 'iade_edildi'],
+                ))
+                ->action(function (array $data): void {
+                    $record = $this->getRecord();
+                    try {
+                        app(OrderService::class)->cancelOrder($record, $data['reason'] ?? '');
+                        Notification::make()
+                            ->title('Sipariş #' . $record->order_number . ' iptal edildi.')
+                            ->success()
+                            ->send();
+                        $this->redirect(OrderResource::getUrl('edit', ['record' => $record->id]));
+                    } catch (\LogicException $e) {
+                        Notification::make()
+                            ->title('İptal edilemedi')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                }),
         ];
     }
 
