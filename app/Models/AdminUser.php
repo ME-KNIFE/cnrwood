@@ -64,7 +64,7 @@ class AdminUser extends Authenticatable implements FilamentUser
 
     public function canAccessSalesPanel(): bool
     {
-        return $this->role === 'store_manager';
+        return in_array($this->role, ['store_manager', 'super_admin']);
     }
 
     // ── Role helpers ──────────────────────────────────────────────────────────

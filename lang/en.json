@@ -58,6 +58,7 @@
     "products.empty": "No products found matching your criteria.",
     "products.explore": "Explore Products",
     "product.request_quote": "Request a Quote",
+    "product.request_quote_short": "Get Quote",
     "product.add_to_cart": "Add to Cart",
     "product.out_of_stock": "Out of Stock",
     "product.in_stock": "In Stock",

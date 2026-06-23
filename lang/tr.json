@@ -58,6 +58,7 @@
     "products.empty": "Aradığınız kriterlere uygun ürün bulunamadı.",
     "products.explore": "Ürünleri Keşfet",
     "product.request_quote": "Teklif Al",
+    "product.request_quote_short": "Teklif Al",
     "product.add_to_cart": "Sepete Ekle",
     "product.out_of_stock": "Stokta Yok",
     "product.in_stock": "Stokta Var",
