@@ -71,6 +71,7 @@ Route::get('/dil/{locale}', function (string $locale) {
 Route::get('/projeler',              [ProjectController::class, 'index'])->name('public.projects.index');
 Route::get('/projeler/{slug}',       [ProjectController::class, 'show'])->name('public.projects.show');
 Route::get('/fuarlar',               [FairController::class,   'index'])->name('public.fairs.index');
+Route::get('/fuarlar/{slug}',         [FairController::class,   'show'])->name('public.fairs.show');
 // ─── Phase 9B — Secure admin file download (auth:admin required) ───────────
 // Protected by the 'admin' guard — only authenticated AdminUsers may access.
 // File path comes from DB (QuoteRequest model), never from request input.

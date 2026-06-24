@@ -10,14 +10,19 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -31,31 +36,50 @@ class FairResource extends Resource
     protected static ?string $navigationLabel = 'Fuarlar';
     protected static ?string $modelLabel = 'Fuar';
     protected static ?string $pluralModelLabel = 'Fuarlar';
-    protected static string|\UnitEnum|null $navigationGroup = 'İçerik';
+    protected static string|\UnitEnum|null $navigationGroup = 'Icerik';
     protected static ?int $navigationSort = 3;
 
     protected static array $viewRoles   = ['product_manager', 'sales_manager', 'support'];
-    protected static array $createRoles = ['product_manager'];
-    protected static array $editRoles   = ['product_manager'];
+    protected static array $createRoles = ['product_manager', 'sales_manager'];
+    protected static array $editRoles   = ['product_manager', 'sales_manager'];
     protected static array $deleteRoles = ['product_manager'];
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
 
+            Section::make('Yayin Ayarlari')
+                ->schema([
+                    Toggle::make('is_published')
+                        ->label('Yayinda')
+                        ->default(false)
+                        ->helperText('Aktif edilmeden site ziyaretcileri goremiyor.'),
+
+                    Toggle::make('is_featured')
+                        ->label('One Cikan')
+                        ->default(false)
+                        ->helperText('One cikan fuarlar listede ilk sirada gozukur.'),
+
+                    TextInput::make('sort_order')
+                        ->label('Siralama')
+                        ->numeric()
+                        ->default(0),
+                ])
+                ->columns(3),
+
             Section::make('Fuar Bilgileri')
                 ->schema([
                     DatePicker::make('start_date')
-                        ->label('Başlangıç Tarihi')
+                        ->label('Baslangic Tarihi')
                         ->required(),
 
                     DatePicker::make('end_date')
-                        ->label('Bitiş Tarihi')
+                        ->label('Bitis Tarihi')
                         ->nullable()
                         ->afterOrEqual('start_date'),
 
                     TextInput::make('city')
-                        ->label('Şehir')
+                        ->label('Sehir')
                         ->maxLength(100)
                         ->nullable(),
 
@@ -63,20 +87,15 @@ class FairResource extends Resource
                         ->label('Mekan / Fuar Merkezi')
                         ->maxLength(255)
                         ->nullable(),
-
-                    TextInput::make('sort_order')
-                        ->label('Sıralama')
-                        ->numeric()
-                        ->default(0),
                 ])
                 ->columns(2),
 
-            Tabs::make('İçerik')
+            Tabs::make('Icerik')
                 ->tabs([
-                    Tab::make('Türkçe')
+                    Tab::make('Turkce')
                         ->schema([
                             TextInput::make('name.tr')
-                                ->label('Fuar Adı (TR)')
+                                ->label('Fuar Adi (TR)')
                                 ->required()
                                 ->maxLength(255)
                                 ->live(onBlur: true)
@@ -91,27 +110,57 @@ class FairResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(Fair::class, 'slug', ignoreRecord: true)
-                                ->helperText('Otomatik oluşturulur.'),
+                                ->helperText('Otomatik olusturulur.'),
 
                             Textarea::make('description.tr')
-                                ->label('Açıklama (TR)')
+                                ->label('Aciklama (TR)')
                                 ->rows(4)
-                                ->nullable(),
-                        ]),
+                                ->nullable()
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2),
 
-                    Tab::make('İngilizce')
+                    Tab::make('Ingilizce')
                         ->schema([
                             TextInput::make('name.en')
-                                ->label('Fuar Adı (EN)')
+                                ->label('Fuar Adi (EN)')
                                 ->maxLength(255)
                                 ->nullable(),
 
                             Textarea::make('description.en')
-                                ->label('Açıklama (EN)')
+                                ->label('Aciklama (EN)')
                                 ->rows(4)
-                                ->nullable(),
-                        ]),
+                                ->nullable()
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2),
                 ]),
+
+            Section::make('Kapak Gorseli')
+                ->schema([
+                    FileUpload::make('cover_image_path')
+                        ->label('Kapak Gorseli')
+                        ->disk('public')
+                        ->directory('fair-images')
+                        ->image()
+                        ->imageEditor()
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                        ->maxSize(5120)
+                        ->helperText('Maks. 5 MB. JPEG, PNG veya WebP.')
+                        ->nullable()
+                        ->columnSpanFull(),
+
+                    TextInput::make('image_alt_tr')
+                        ->label('Gorsel Alt Metni (TR)')
+                        ->maxLength(255)
+                        ->nullable(),
+
+                    TextInput::make('image_alt_en')
+                        ->label('Gorsel Alt Metni (EN)')
+                        ->maxLength(255)
+                        ->nullable(),
+                ])
+                ->columns(2),
         ]);
     }
 
@@ -119,35 +168,74 @@ class FairResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('cover_image_path')
+                    ->label('Gorsel')
+                    ->disk('public')
+                    ->height(40)
+                    ->width(60)
+                    ->defaultImageUrl(null)
+                    ->toggleable(),
+
                 TextColumn::make('name')
-                    ->label('Fuar Adı')
-                    ->formatStateUsing(fn ($state) => is_array($state) ? ($state['tr'] ?? '—') : ($state ?? '—'))
+                    ->label('Fuar Adi')
+                    ->formatStateUsing(fn ($state) => is_array($state) ? ($state['tr'] ?? '--') : ($state ?? '--'))
                     ->searchable(query: fn (Builder $q, string $s) =>
-                        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.tr')) LIKE ?", ["%{$s}%"]))
+                        $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.tr')) LIKE ?", ["%{$s}%"])
+                          ->orWhere('city', 'like', "%{$s}%")
+                          ->orWhere('venue', 'like', "%{$s}%"))
                     ->limit(60),
 
                 TextColumn::make('city')
-                    ->label('Şehir')
-                    ->placeholder('—'),
+                    ->label('Sehir')
+                    ->placeholder('--'),
 
                 TextColumn::make('venue')
                     ->label('Mekan')
-                    ->placeholder('—')
+                    ->placeholder('--')
                     ->limit(40)
                     ->toggleable(),
 
+                IconColumn::make('is_published')
+                    ->label('Yayinda')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-eye')
+                    ->falseIcon('heroicon-o-eye-slash'),
+
+                IconColumn::make('is_featured')
+                    ->label('One Cikan')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-star')
+                    ->falseIcon('heroicon-o-star'),
+
                 TextColumn::make('start_date')
-                    ->label('Başlangıç')
+                    ->label('Baslangic')
                     ->date('d.m.Y')
                     ->sortable(),
 
                 TextColumn::make('end_date')
-                    ->label('Bitiş')
+                    ->label('Bitis')
                     ->date('d.m.Y')
-                    ->placeholder('—')
+                    ->placeholder('--')
                     ->sortable(),
             ])
             ->defaultSort('start_date', 'desc')
+            ->filters([
+                Filter::make('is_published')
+                    ->label('Yayinda')
+                    ->query(fn (Builder $q) => $q->where('is_published', true)),
+
+                Filter::make('is_featured')
+                    ->label('One Cikan')
+                    ->query(fn (Builder $q) => $q->where('is_featured', true)),
+
+                Filter::make('upcoming')
+                    ->label('Yaklasan')
+                    ->query(fn (Builder $q) => $q->where('start_date', '>=', now()->toDateString())),
+
+                Filter::make('past')
+                    ->label('Gecmis')
+                    ->query(fn (Builder $q) => $q->where('start_date', '<', now()->toDateString())),
+            ])
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),

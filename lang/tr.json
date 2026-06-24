@@ -429,5 +429,11 @@
     "projects.featured": "One Cikan",
     "projects.client_label": "Musteri / Firma",
     "projects.location_label": "Konum",
-    "projects.category_label": "Kategori"
+    "projects.category_label": "Kategori",
+    "fairs.featured": "One Cikan",
+    "fairs.details": "Fuar Detaylari",
+    "fairs.view": "Fuari Incele",
+    "fairs.others": "Diger Fuarlar",
+    "fairs.cta_title": "Bize Ulasin",
+    "fairs.cta_body": "Ozel ambalaj veya sandik ihtiyaciniz icin teklif alin."
 }

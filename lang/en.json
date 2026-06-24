@@ -429,5 +429,11 @@
     "projects.featured": "Featured",
     "projects.client_label": "Client",
     "projects.location_label": "Location",
-    "projects.category_label": "Category"
+    "projects.category_label": "Category",
+    "fairs.featured": "Featured",
+    "fairs.details": "Fair Details",
+    "fairs.view": "View Fair",
+    "fairs.others": "Other Fairs",
+    "fairs.cta_title": "Get in Touch",
+    "fairs.cta_body": "Request a quote for your custom packaging or crate needs."
 }
