@@ -1,18 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Sales\Resources;
 
-use App\Filament\Admin\Resources\ProjectResource\Pages;
-use App\Filament\Concerns\AuthorizesByRole;
+use App\Filament\Sales\Resources\ProjectResource\Pages;
 use App\Models\Project;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
@@ -27,30 +19,31 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class ProjectResource extends Resource
 {
-    use AuthorizesByRole;
-
     protected static ?string $model = Project::class;
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationLabel = 'Projeler';
     protected static ?string $modelLabel = 'Proje';
     protected static ?string $pluralModelLabel = 'Projeler';
     protected static string|\UnitEnum|null $navigationGroup = 'Icerik';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
-    protected static array $viewRoles   = ['product_manager', 'sales_manager', 'support'];
-    protected static array $createRoles = ['product_manager', 'sales_manager'];
-    protected static array $editRoles   = ['product_manager', 'sales_manager'];
-    protected static array $deleteRoles = ['product_manager'];
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -60,13 +53,11 @@ class ProjectResource extends Resource
                 ->schema([
                     Toggle::make('is_published')
                         ->label('Yayinda')
-                        ->default(false)
-                        ->helperText('Aktif edilmeden site ziyaretcileri goremiyor.'),
+                        ->default(false),
 
                     Toggle::make('is_featured')
                         ->label('One Cikan')
-                        ->default(false)
-                        ->helperText('One cikan projeler listede ilk sirada gozukur.'),
+                        ->default(false),
 
                     TextInput::make('sort_order')
                         ->label('Siralama')
@@ -83,7 +74,6 @@ class ProjectResource extends Resource
                 ->schema([
                     TextInput::make('category')
                         ->label('Kategori')
-                        ->placeholder('ornek: Ihracat Ambalaj, ISPM 15, Kasa Uretimi')
                         ->maxLength(100)
                         ->nullable(),
 
@@ -94,7 +84,6 @@ class ProjectResource extends Resource
 
                     TextInput::make('location')
                         ->label('Konum')
-                        ->placeholder('ornek: Istanbul, Izmir')
                         ->maxLength(255)
                         ->nullable(),
                 ])
@@ -126,7 +115,6 @@ class ProjectResource extends Resource
                                 ->label('Kisa Aciklama (TR)')
                                 ->rows(3)
                                 ->maxLength(300)
-                                ->helperText('Proje listesinde gozukur.')
                                 ->nullable()
                                 ->columnSpanFull(),
 
@@ -135,17 +123,6 @@ class ProjectResource extends Resource
                                 ->rows(8)
                                 ->nullable()
                                 ->columnSpanFull(),
-
-                            TextInput::make('meta_title.tr')
-                                ->label('SEO Baslik (TR)')
-                                ->maxLength(70)
-                                ->nullable(),
-
-                            Textarea::make('meta_description.tr')
-                                ->label('SEO Aciklama (TR)')
-                                ->rows(2)
-                                ->maxLength(160)
-                                ->nullable(),
                         ])
                         ->columns(2),
 
@@ -168,17 +145,6 @@ class ProjectResource extends Resource
                                 ->rows(8)
                                 ->nullable()
                                 ->columnSpanFull(),
-
-                            TextInput::make('meta_title.en')
-                                ->label('SEO Baslik (EN)')
-                                ->maxLength(70)
-                                ->nullable(),
-
-                            Textarea::make('meta_description.en')
-                                ->label('SEO Aciklama (EN)')
-                                ->rows(2)
-                                ->maxLength(160)
-                                ->nullable(),
                         ])
                         ->columns(2),
                 ]),
@@ -208,20 +174,6 @@ class ProjectResource extends Resource
                         ->nullable(),
                 ])
                 ->columns(2),
-
-            Section::make('Ek Gorsel Galerisi')
-                ->description('Ek proje fotograflari (Spatie MediaLibrary).')
-                ->schema([
-                    SpatieMediaLibraryFileUpload::make('project_gallery')
-                        ->label('Galeri')
-                        ->collection('project_gallery')
-                        ->multiple()
-                        ->reorderable()
-                        ->image()
-                        ->imageEditor()
-                        ->maxFiles(20)
-                        ->columnSpanFull(),
-                ]),
         ]);
     }
 
@@ -234,7 +186,6 @@ class ProjectResource extends Resource
                     ->disk('public')
                     ->height(40)
                     ->width(60)
-                    ->defaultImageUrl(null)
                     ->toggleable(),
 
                 TextColumn::make('title')
@@ -242,8 +193,7 @@ class ProjectResource extends Resource
                     ->formatStateUsing(fn ($state) => is_array($state) ? ($state['tr'] ?? '--') : ($state ?? '--'))
                     ->searchable(query: fn (Builder $q, string $s) =>
                         $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE ?", ["%{$s}%"])
-                          ->orWhere('client_name', 'like', "%{$s}%")
-                          ->orWhere('category', 'like', "%{$s}%"))
+                          ->orWhere('client_name', 'like', "%{$s}%"))
                     ->sortable()
                     ->limit(50),
 
@@ -252,71 +202,28 @@ class ProjectResource extends Resource
                     ->placeholder('--')
                     ->toggleable(),
 
-                TextColumn::make('client_name')
-                    ->label('Musteri')
-                    ->placeholder('--')
-                    ->toggleable(),
-
                 IconColumn::make('is_published')
                     ->label('Yayinda')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-eye')
-                    ->falseIcon('heroicon-o-eye-slash'),
+                    ->boolean(),
 
                 IconColumn::make('is_featured')
                     ->label('One Cikan')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-star')
-                    ->falseIcon('heroicon-o-star'),
+                    ->boolean(),
 
                 TextColumn::make('completed_at')
                     ->label('Tamamlandi')
                     ->date('d.m.Y')
                     ->sortable()
                     ->placeholder('--'),
-
-                TextColumn::make('sort_order')
-                    ->label('Sira')
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Olusturuldu')
-                    ->dateTime('d.m.Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('sort_order')
-            ->reorderable('sort_order')
             ->filters([
                 Filter::make('is_published')
                     ->label('Yayinda')
                     ->query(fn (Builder $q) => $q->where('is_published', true)),
-
-                Filter::make('is_featured')
-                    ->label('One Cikan')
-                    ->query(fn (Builder $q) => $q->where('is_featured', true)),
-
-                SelectFilter::make('category')
-                    ->label('Kategori')
-                    ->options(fn () => Project::whereNotNull('category')
-                        ->distinct()
-                        ->pluck('category', 'category')
-                        ->toArray()),
-
-                TrashedFilter::make(),
             ])
             ->actions([
                 EditAction::make(),
-                DeleteAction::make(),
-                RestoreAction::make(),
-                ForceDeleteAction::make(),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                ]),
             ]);
     }
 

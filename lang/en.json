@@ -425,5 +425,9 @@
     "home.about_label": "About Us",
     "home.about_title": "A Factory Producing from Gebze to the World",
     "home.contact_title": "Let's Talk About Your Project",
-    "home.contact_subtitle": "Contact our team for custom wood packaging and production solutions. Our experts will get back to you as soon as possible."
+    "home.contact_subtitle": "Contact our team for custom wood packaging and production solutions. Our experts will get back to you as soon as possible.",
+    "projects.featured": "Featured",
+    "projects.client_label": "Client",
+    "projects.location_label": "Location",
+    "projects.category_label": "Category"
 }

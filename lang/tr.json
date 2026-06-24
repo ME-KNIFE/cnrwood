@@ -425,5 +425,9 @@
     "home.about_label": "Kurumsal",
     "home.about_title": "Gebze'den Dünyaya Üreten Bir Fabrika",
     "home.contact_title": "Projenizi Konuşalım",
-    "home.contact_subtitle": "İhtiyacınıza özel ahşap ambalaj ve üretim çözümleri için ekibimizle iletişime geçin. Uzmanlarımız en kısa sürede size dönüş yapsın."
+    "home.contact_subtitle": "İhtiyacınıza özel ahşap ambalaj ve üretim çözümleri için ekibimizle iletişime geçin. Uzmanlarımız en kısa sürede size dönüş yapsın.",
+    "projects.featured": "One Cikan",
+    "projects.client_label": "Musteri / Firma",
+    "projects.location_label": "Konum",
+    "projects.category_label": "Kategori"
 }
