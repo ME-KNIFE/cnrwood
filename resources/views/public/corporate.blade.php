@@ -1,8 +1,13 @@
 @extends('layouts.public')
 
 @php
-    $title           = __('corporate.title') . ' — CNRWOOD';
-    $metaDescription = '1998’den bu yana Gebze’de faaliyet gösteren CNR Ahşap; ahşap sandık, ihracat ambalajı, kereste & levha ve ahşap yapı projelerinde köklü tecrübesini paylaşır.';
+    $locale      = app()->getLocale();
+    $spTitle     = $sitePage?->getTitle($locale);
+    $spExcerpt   = $sitePage?->getExcerpt($locale);
+    $spMetaTitle = $sitePage?->getMetaTitle($locale);
+    $spMetaDesc  = $sitePage?->getMetaDescription($locale);
+    $title           = $spMetaTitle ?? (__('corporate.title') . ' — CNRWOOD');
+    $metaDescription = $spMetaDesc ?? 'Gebze merkezli CNR Ahsap; ahsap sandik, ihracat ambalaji, kereste & levha ve ahsap yapi projelerinde 1998den beri profesyonel cozum sunar.';
 @endphp
 
 @section('content')
@@ -13,8 +18,8 @@
     '@context'        => 'https://schema.org',
     '@type'           => 'BreadcrumbList',
     'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),  'item' => route('home')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.corporate'),  'item' => route('public.corporate')],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),      'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.corporate'), 'item' => route('public.corporate')],
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
@@ -26,11 +31,15 @@
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ __('breadcrumb.corporate') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('corporate.title') }}</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $spTitle ?? __('corporate.title') }}</h1>
         <p class="text-[#555555] mt-3 max-w-3xl leading-relaxed">
-            CNR Ahşap, 1998’den bu yana Gebze merkezli üretim tesisinde; ahşap sandık,
-            ihracat ambalajı, ISPM 15 ısıl işlemli ürünler, kereste &amp; levha ve ahşap yapı
-            projelerinde Türkiye ve dünya genelinde güvenilir bir çözüm ortağıdır.
+            @if ($spExcerpt)
+                {{ $spExcerpt }}
+            @else
+                CNR Ahşap, 1998'den bu yana Gebze merkezli üretim tesisinde; ahşap sandık,
+                ihracat ambalajı, ISPM 15 ısıl işlemli ürünler, kereste &amp; levha ve ahşap yapı
+                projelerinde Türkiye ve dünya genelinde güvenilir bir çözüm ortağıdır.
+            @endif
         </p>
     </div>
 </section>

@@ -1,8 +1,14 @@
 @extends('layouts.public')
 
 @php
-    $title           = 'Hakkımızda — CNRWOOD | 1998’den Beri Ahşap Üretimi';
-    $metaDescription = '1998’den bu yana Gebze’de ahşap sandık, ihracat ambalajı, kereste & levha ve ahşap yapı projelerinde profesyonel üretim yapan CNR Ahşap’ı yakından tanıyın.';
+    $locale      = app()->getLocale();
+    $spTitle     = $sitePage?->getTitle($locale);
+    $spExcerpt   = $sitePage?->getExcerpt($locale);
+    $spContent   = $sitePage?->getContent($locale);
+    $spMetaTitle = $sitePage?->getMetaTitle($locale);
+    $spMetaDesc  = $sitePage?->getMetaDescription($locale);
+    $title           = $spMetaTitle ?? 'Hakkimizda — CNRWOOD | 1998den Beri Ahsap Uretimi';
+    $metaDescription = $spMetaDesc ?? __('about.subtitle');
 @endphp
 
 @section('content')
@@ -12,9 +18,9 @@
     '@context'        => 'https://schema.org',
     '@type'           => 'BreadcrumbList',
     'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),   'item' => route('home')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.corporate'),   'item' => route('public.corporate')],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => __('breadcrumb.about'), 'item' => route('public.about')],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('breadcrumb.home'),      'item' => route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('breadcrumb.corporate'), 'item' => route('public.corporate')],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => __('breadcrumb.about'),     'item' => route('public.about')],
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
 </script>
@@ -28,9 +34,9 @@
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ __('breadcrumb.about') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('about.title') }}</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $spTitle ?? __('about.title') }}</h1>
         <p class="text-[#555555] mt-3 max-w-3xl leading-relaxed">
-            {{ __('about.subtitle') }}
+            {{ $spExcerpt ?? __('about.subtitle') }}
         </p>
     </div>
 </section>
@@ -39,6 +45,11 @@
 
     <div>
         <h2 class="text-2xl font-bold text-[#3E2006] mb-4">{{ __('about.founding_title') }}</h2>
+        @if ($spContent)
+            <div class="prose prose-sm max-w-none text-[#555555] leading-relaxed">
+                {!! nl2br(e($spContent)) !!}
+            </div>
+        @else
         <div class="prose prose-sm max-w-none text-[#555555] leading-relaxed space-y-4">
             <p>
                 CNR Ahşap, 1998 yılında Gebze’de küçük bir atölye olarak faaliyetlerine
@@ -54,6 +65,7 @@
             </p>
         </div>
     </div>
+        @endif
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white border border-[#E6DFD2] rounded-lg p-6">

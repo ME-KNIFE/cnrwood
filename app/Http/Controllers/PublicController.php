@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\SitePage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 /**
- * Public website controller — read-only.
+ * Public website controller -- read-only.
  *
  * Phase 7A scope: home, product listing, category, product detail.
  * Strict rules:
@@ -72,7 +73,7 @@ class PublicController extends Controller
         }
 
         if ($search !== '' && mb_strlen($search) <= 100) {
-            // Safe LIKE — JSON name column is text in storage; cast handled by DB.
+            // Safe LIKE -- JSON name column is text in storage; cast handled by DB.
             $like = '%' . $search . '%';
             $query->where(function ($q) use ($like) {
                 $q->where('name', 'like', $like)
@@ -147,20 +148,27 @@ class PublicController extends Controller
         ]);
     }
 
-    // ── Phase 7E — Static content pages (read-only) ─────────────────────────
+    // -- Phase 7E + 15D.2 -- Corporate pages with SitePage content overrides --------
+
     public function corporate()
     {
-        return view('public.corporate');
+        return view('public.corporate', [
+            'sitePage' => SitePage::findBySlug('kurumsal'),
+        ]);
     }
 
     public function about()
     {
-        return view('public.about');
+        return view('public.about', [
+            'sitePage' => SitePage::findBySlug('hakkimizda'),
+        ]);
     }
 
     public function services()
     {
-        return view('public.services');
+        return view('public.services', [
+            'sitePage' => SitePage::findBySlug('hizmetler'),
+        ]);
     }
 
     public function sandik()

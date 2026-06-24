@@ -1,8 +1,13 @@
 @extends('layouts.public')
 
 @php
-    $title           = __('services.title') . ' — CNRWOOD';
-    $metaDescription = 'CNR Ahşap’ın sunduğu hizmetler: özel ahşap sandık üretimi, ISPM 15 sertifikalı ihracat ambalajı, palet üretimi, kereste & levha tedariği ve ahşap yapı çözümleri.';
+    $locale      = app()->getLocale();
+    $spTitle     = $sitePage?->getTitle($locale);
+    $spExcerpt   = $sitePage?->getExcerpt($locale);
+    $spMetaTitle = $sitePage?->getMetaTitle($locale);
+    $spMetaDesc  = $sitePage?->getMetaDescription($locale);
+    $title           = $spMetaTitle ?? (__('services.title') . ' — CNRWOOD');
+    $metaDescription = $spMetaDesc ?? 'CNR Ahsap hizmetleri: ahsap sandik, ISPM 15 sertifikali ihracat ambalaji, palet uretimi, kereste & levha ve ahsap yapi cozumleri.';
 @endphp
 
 @section('content')
@@ -25,9 +30,9 @@
             <span class="mx-1">/</span>
             <span class="text-[#3E2006]">{{ __('breadcrumb.services') }}</span>
         </nav>
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ __('services.title') }}</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006]">{{ $spTitle ?? __('services.title') }}</h1>
         <p class="text-[#555555] mt-3 max-w-3xl leading-relaxed">
-            {{ __('services.subtitle') }}
+            {{ $spExcerpt ?? __('services.subtitle') }}
         </p>
     </div>
 </section>

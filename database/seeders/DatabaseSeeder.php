@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             TestProductSeeder::class,
             SiteSettingsSeeder::class,
+            SitePageSeeder::class,
         ]);
     }
 }
