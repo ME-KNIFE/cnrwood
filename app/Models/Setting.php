@@ -17,19 +17,23 @@ class Setting extends Model
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = Cache::rememberForever("setting:{$key}", function () use ($key) {
-            return static::where('key', $key)->first();
+        $cached = Cache::rememberForever("setting:{$key}", function () use ($key) {
+            $row = static::where('key', $key)->first();
+            if (! $row) {
+                return null;
+            }
+            return ['value' => $row->value, 'type' => $row->type];
         });
 
-        if (! $setting) {
+        if (! $cached) {
             return $default;
         }
 
-        return match ($setting->type) {
-            'boolean' => (bool) $setting->value,
-            'integer' => (int) $setting->value,
-            'json'    => json_decode($setting->value, true),
-            default   => $setting->value,
+        return match ($cached['type']) {
+            'boolean' => (bool) $cached['value'],
+            'integer' => (int) $cached['value'],
+            'json'    => json_decode($cached['value'], true),
+            default   => $cached['value'],
         };
     }
 

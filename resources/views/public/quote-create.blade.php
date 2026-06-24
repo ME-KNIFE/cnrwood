@@ -9,7 +9,7 @@
         $catName     = $product->category?->getTranslation('name', app()->getLocale());
         $primary     = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
         $imgUrl      = $primary ? \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) : null;
-        $title       = __('quote.product_h1', ['name' => \$prodName]) . ' — CNRWOOD';
+        $title       = __('quote.product_h1', ['name' => $prodName]) . ' — CNRWOOD';
         $metaDescription = $prodName . ' için CNRWOOD\'dan ücretsiz ve bağlayıcı olmayan teklif alın.';
         $formAction  = route('public.quote.product.store', ['slug' => $product->slug]);
     } else {
