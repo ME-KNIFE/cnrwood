@@ -49,29 +49,29 @@
             <div>
                 <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">{{ __('nav.products') }}</h3>
                 <ul class="mt-5 space-y-2.5 text-sm">
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ahşap Sandık</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">İhracat Ambalajı</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Kapı Sereni</a></li>
+                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ah&#351;ap Sand&#305;k</a></li>
+                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">&#304;hracat Ambalaj&#305;</a></li>
+                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Kap&#305; Sereni</a></li>
                     <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Kereste &amp; Levha</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ahşap Yapılar</a></li>
-                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">Mağaza Ürünleri</a></li>
+                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ah&#351;ap Yap&#305;lar</a></li>
+                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">Ma&#287;aza &#220;r&#252;nleri</a></li>
                 </ul>
             </div>
 
             {{-- Quick links --}}
             <div>
-                <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">Hızlı Erişim</h3>
+                <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">H&#305;zl&#305; Eri&#351;im</h3>
                 <ul class="mt-5 space-y-2.5 text-sm">
                     <li><a href="{{ route('public.quote.create') }}"   class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.quote_link') }}</a></li>
                     <li><a href="{{ route('public.sandik') }}"         class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.sandik_link') }}</a></li>
-                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.shop') ?? 'Mağaza' }}</a></li>
+                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.shop') }}</a></li>
                     <li><a href="{{ route('public.projects.index') }}" class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.projects') }}</a></li>
                     <li><a href="{{ route('public.fairs.index') }}"    class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.fairs') }}</a></li>
                 </ul>
                 {{-- ISPM badge --}}
                 <div class="mt-6 flex items-center gap-2 rounded-sm border border-cream/15 bg-wood-deep/60 px-3 py-2.5">
                     <svg class="h-4 w-4 shrink-0 text-wood-natural" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span class="text-xs font-medium text-cream/80">ISPM 15 Sertifikalı<br>İhracat Ambalajı</span>
+                    <span class="text-xs font-medium text-cream/80">ISPM 15 Sertifikal&#305;<br>&#304;hracat Ambalaj&#305;</span>
                 </div>
             </div>
 
@@ -85,3 +85,4 @@
         </div>
     </div>
 </footer>
+
