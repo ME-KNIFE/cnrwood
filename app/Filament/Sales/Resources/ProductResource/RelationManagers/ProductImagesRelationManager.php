@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\ProductResource\RelationManagers;
+namespace App\Filament\Sales\Resources\ProductResource\RelationManagers;
 
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
@@ -53,7 +50,7 @@ class ProductImagesRelationManager extends RelationManager
             Toggle::make('is_primary')
                 ->label('Birincil Görsel')
                 ->default(false)
-                ->helperText('Listelerde ve ürün sayfasında ilk gösterilecek görsel.'),
+                ->helperText('Listelerde ilk gösterilecek görsel.'),
 
             Toggle::make('is_active')
                 ->label('Yayında')
@@ -104,12 +101,7 @@ class ProductImagesRelationManager extends RelationManager
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
+        // Note: Sales role cannot delete images — use admin panel for deletion.
     }
 }

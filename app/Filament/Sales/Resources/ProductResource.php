@@ -3,6 +3,7 @@
 namespace App\Filament\Sales\Resources;
 
 use App\Filament\Sales\Resources\ProductResource\Pages;
+use App\Filament\Sales\Resources\ProductResource\RelationManagers\ProductImagesRelationManager;
 use App\Models\Product;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -114,7 +115,9 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ProductImagesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -4,6 +4,9 @@
     $name      = $product->getTranslation('name', $locale) ?? '\u2014';
     $catName   = $product->category?->getTranslation('name', $locale) ?? null;
     $primary   = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
+    // Phase 15A.1: only active images shown publicly
+    $activeImages = $product->images->where('is_active', true);
+    $primary   = $activeImages->firstWhere('is_primary', true) ?? $activeImages->first();
     $imgUrl    = $primary ? \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) : null;
     $isBuyable = $product->isBuyable();
     $priceTxt  = $isBuyable ? $product->getDisplayPrice() : null;

@@ -15,8 +15,10 @@
         ? strip_tags(\Illuminate\Support\Str::limit($shortDesc, 160))
         : ($description ? strip_tags(\Illuminate\Support\Str::limit($description, 160)) : $name);
 
-    $primary = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
-    $gallery = $product->images->sortBy('sort_order');
+    // Phase 15A.1: only active images shown publicly
+    $activeImages = $product->images->where('is_active', true);
+    $primary = $activeImages->firstWhere('is_primary', true) ?? $activeImages->first();
+    $gallery = $activeImages->sortBy('sort_order');
 
     $mailtoSubject = rawurlencode('Teklif Talebi - ' . $name . ' (' . $product->sku . ')');
 @endphp

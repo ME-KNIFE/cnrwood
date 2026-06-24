@@ -13,10 +13,12 @@ class ProductImage extends Model
         'alt_text',
         'sort_order',
         'is_primary',
+        'is_active',   // Phase 15A.1
     ];
 
     protected $casts = [
         'is_primary' => 'boolean',
+        'is_active'  => 'boolean', // Phase 15A.1
         'alt_text'   => 'array',
     ];
 
