@@ -229,3 +229,6 @@
         </aside>
     </div>
 
+</section>
+
+@endsection

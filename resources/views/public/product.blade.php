@@ -85,9 +85,9 @@
 {!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
 </script>
 
-<section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
+<section class="bg-wood-100 border-b border-wood-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <nav class="text-sm text-[#8B5A2B]">
+        <nav class="text-sm text-wood-500">
             <a href="{{ route('home') }}" class="hover:underline">{{ __('breadcrumb.home') }}</a>
             <span class="mx-1">/</span>
             <a href="{{ route('public.products') }}" class="hover:underline">{{ __('breadcrumb.products') }}</a>
@@ -96,7 +96,7 @@
                 <a href="{{ route('public.category', $product->category->slug) }}" class="hover:underline">{{ $catName }}</a>
             @endif
             <span class="mx-1">/</span>
-            <span class="text-[#3E2006]">{{ $name }}</span>
+            <span class="text-wood-800">{{ $name }}</span>
         </nav>
     </div>
 </section>
@@ -106,13 +106,13 @@
 
         {{-- GALLERY --}}
         <div>
-            <div class="aspect-[4/3] bg-white border border-[#E6DFD2] rounded-lg overflow-hidden flex items-center justify-center">
+            <div class="aspect-[4/3] bg-white border border-wood-200 rounded-lg overflow-hidden flex items-center justify-center">
                 @if ($primary)
                     <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($primary->url) }}"
                          alt="{{ $name }}"
                          class="w-full h-full object-cover">
                 @else
-                    <div class="text-[#8B5A2B]/50">
+                    <div class="text-wood-500/50">
                         <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -124,7 +124,7 @@
             @if ($gallery->count() > 1)
                 <div class="grid grid-cols-5 gap-2 mt-3">
                     @foreach ($gallery as $img)
-                        <div class="aspect-square bg-white border border-[#E6DFD2] rounded overflow-hidden">
+                        <div class="aspect-square bg-white border border-wood-200 rounded overflow-hidden">
                             <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($img->url) }}"
                                  alt="{{ is_array($img->alt_text) ? ($img->alt_text[$locale] ?? $name) : $name }}"
                                  class="w-full h-full object-cover">
@@ -138,34 +138,34 @@
         <div>
             @if ($catName && $product->category)
                 <a href="{{ route('public.category', $product->category->slug) }}"
-                   class="text-xs uppercase tracking-wider text-[#8B5A2B] hover:text-[#3E2006]">
+                   class="text-xs uppercase tracking-wider text-wood-500 hover:text-wood-800">
                     {{ $catName }}
                 </a>
             @endif
 
-            <h1 class="text-3xl sm:text-4xl font-bold text-[#3E2006] mt-2 leading-tight">{{ $name }}</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold text-wood-800 mt-2 leading-tight">{{ $name }}</h1>
 
             @if ($product->sku)
-                <p class="text-sm text-[#555555] mt-2">SKU: <span class="font-mono">{{ $product->sku }}</span></p>
+                <p class="text-sm text-neutral-500 mt-2">SKU: <span class="font-mono">{{ $product->sku }}</span></p>
             @endif
 
             @if ($shortDesc)
-                <p class="text-[#555555] mt-4 leading-relaxed">{{ $shortDesc }}</p>
+                <p class="text-neutral-500 mt-4 leading-relaxed">{{ $shortDesc }}</p>
             @endif
 
             {{-- ════════════════════════════════════════════════════════════
                  PRICE / CTA BLOCK — STRICTLY BRANCHED BY product_type.
                  quote_only MUST NEVER show price, stock, or cart.
                  ════════════════════════════════════════════════════════════ --}}
-            <div class="mt-8 p-6 bg-[#F5F0E8] rounded-lg border border-[#E6DFD2]">
+            <div class="mt-8 p-6 bg-wood-100 rounded-lg border border-wood-200">
 
                 @if ($isBuyable)
                     {{-- ── BUYABLE PRODUCT ── --}}
                     @if ($priceTxt)
                         <div class="flex items-baseline gap-3 mb-4">
-                            <span class="text-3xl font-bold text-[#2C5F2E]">{{ $priceTxt }}</span>
+                            <span class="text-3xl font-bold text-wood-800">{{ $priceTxt }}</span>
                             @if ($product->compare_at_price && $product->compare_at_price > $product->price)
-                                <span class="text-lg text-[#555555] line-through">
+                                <span class="text-lg text-neutral-500 line-through">
                                     {{ number_format($product->compare_at_price, 2, ',', '.') }} TL
                                 </span>
                             @endif
@@ -174,16 +174,16 @@
 
                     <div class="mb-4">
                         @if ($product->isInStock())
-                            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#2C5F2E]">
-                                <span class="w-2 h-2 rounded-full bg-[#2C5F2E]"></span>
+                            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-success">
+                                <span class="w-2 h-2 rounded-full bg-success"></span>
                                 {{ __('product.in_stock_short') }}
                                 @if ($product->isLowStock())
-                                    <span class="text-[#555555] font-normal">({{ __('product.low_stock', ['count' => $product->stock_quantity]) }})</span>
+                                    <span class="text-neutral-500 font-normal">({{ __('product.low_stock', ['count' => $product->stock_quantity]) }})</span>
                                 @endif
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#555555]">
-                                <span class="w-2 h-2 rounded-full bg-[#555555]"></span>
+                            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-500">
+                                <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
                                 {{ __('product.out_of_stock_short') }}
                             </span>
                         @endif
@@ -203,12 +203,12 @@
                             @if ($product->variants->isNotEmpty())
                                 <div class="mb-4">
                                     <label for="product_variant_id"
-                                           class="block text-sm font-medium text-[#3E2006] mb-1">
+                                           class="block text-sm font-medium text-wood-800 mb-1">
                                         {{ __('product.variant_label') }}
                                     </label>
                                     <select id="product_variant_id"
                                             name="product_variant_id"
-                                            class="w-full border border-[#E6DFD2] rounded px-3 py-2 bg-white text-[#3E2006] text-sm">
+                                            class="w-full border border-wood-200 rounded px-3 py-2 bg-white text-wood-800 text-sm">
                                         @foreach ($product->variants as $v)
                                             @php
                                                 $vn = is_array($v->name) ? ($v->name[$locale] ?? $v->name['tr'] ?? '—') : ($v->name ?? '—');
@@ -227,20 +227,17 @@
                             <div class="flex items-end gap-3 mb-4">
                                 <div>
                                     <label for="quantity"
-                                           class="block text-sm font-medium text-[#3E2006] mb-1">
+                                           class="block text-sm font-medium text-wood-800 mb-1">
                                         {{ __('product.quantity') }}
                                     </label>
                                     <input type="number" id="quantity" name="quantity"
                                            value="1" min="1" max="99"
-                                           class="w-20 border border-[#E6DFD2] rounded px-3 py-2 bg-white
-                                                  text-[#3E2006] text-sm text-center">
+                                           class="w-20 border border-wood-200 rounded px-3 py-2 bg-white text-wood-800 text-sm text-center">
                                 </div>
                             </div>
 
                             <button type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
-                                           text-base font-semibold rounded bg-[#2C5F2E] hover:bg-[#214a23]
-                                           text-white transition-colors">
+                                    class="btn-cart btn-lg w-full">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -250,37 +247,34 @@
                         </form>
                     @else
                         <button type="button" disabled
-                                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3
-                                       text-base font-semibold rounded bg-[#555555] text-white
-                                       opacity-50 cursor-not-allowed">
+                                class="btn-cart btn-lg w-full" disabled>
                             {{ __('product.out_of_stock') }}
                         </button>
                     @endif
 
-                    <p class="text-xs text-[#555555] text-center mt-2">
+                    <p class="text-xs text-neutral-500 text-center mt-2">
                         {{ __('product.or_call') }}
-                        <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
+                        <a href="tel:+902627512120" class="text-info hover:underline">+90 262 751 21 20</a>
                     </p>
 
                 @else
                     {{-- ── QUOTE-ONLY PRODUCT — NO PRICE, NO STOCK, NO CART ── --}}
                     <div class="mb-4">
-                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#1F497D] bg-[#1F497D]/10 px-3 py-1 rounded-full">
+                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-info bg-info/10 px-3 py-1 rounded-full">
                             {{ __('product.quote_only_badge') }}
                         </span>
                     </div>
 
-                    <p class="text-[#555555] mb-5 leading-relaxed">
+                    <p class="text-neutral-500 mb-5 leading-relaxed">
                         {{ __('product.quote_only_desc') }}
                     </p>
 
                     <a href="{{ route('public.quote.product.create', $product->slug) }}"
-                       class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold rounded
-                              bg-[#1F497D] hover:bg-[#173a64] text-white transition-colors shadow-md">
+                       class="btn-primary btn-lg w-full">
                         {{ __('product.request_quote') }}
                     </a>
-                    <p class="text-xs text-[#555555] text-center mt-2">
-                        {{ __('product.or_call') }} <a href="tel:+902627512120" class="text-[#1F497D] hover:underline">+90 262 751 21 20</a>
+                    <p class="text-xs text-neutral-500 text-center mt-2">
+                        {{ __('product.or_call') }} <a href="tel:+902627512120" class="text-info hover:underline">+90 262 751 21 20</a>
                     </p>
                 @endif
 
@@ -292,9 +286,9 @@
 
     {{-- DESCRIPTION --}}
     @if ($description)
-        <div class="mt-16 pt-10 border-t border-[#E6DFD2]">
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-4">{{ __('product.description') }}</h2>
-            <div class="prose prose-sm max-w-none text-[#333333] leading-relaxed whitespace-pre-line">
+        <div class="mt-16 pt-10 border-t border-wood-200">
+            <h2 class="text-2xl font-bold text-wood-800 mb-4">{{ __('product.description') }}</h2>
+            <div class="prose prose-sm max-w-none text-neutral-800 leading-relaxed whitespace-pre-line">
                 {{ $description }}
             </div>
         </div>
@@ -302,8 +296,8 @@
 
     {{-- RELATED --}}
     @if ($related->isNotEmpty())
-        <div class="mt-16 pt-10 border-t border-[#E6DFD2]">
-            <h2 class="text-2xl font-bold text-[#3E2006] mb-6">{{ __('product.related') }}</h2>
+        <div class="mt-16 pt-10 border-t border-wood-200">
+            <h2 class="text-2xl font-bold text-wood-800 mb-6">{{ __('product.related') }}</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($related as $rel)
                     @include('partials.product-card', ['product' => $rel])

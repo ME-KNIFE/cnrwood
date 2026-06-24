@@ -4,11 +4,12 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
+    /* -- Fonts ---------------------------------------------------------------- */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --font-heading: 'Oswald', ui-sans-serif, system-ui, sans-serif;
 
-    /* CNRWOOD brand palette */
+    /* -- Legacy CNRWOOD aliases (keep for backward-compat with existing Blade) - */
     --color-wood-deep:    #3e2006;
     --color-wood-medium:  #6b3a1f;
     --color-wood-natural: #8b5a2b;
@@ -16,4 +17,222 @@
     --color-forest:       #2c5f2e;
     --color-steel:        #1f497d;
     --color-whatsapp:     #25d366;
+
+    /* == Phase 14C.1 -- CNRWOOD Design Tokens ================================= */
+
+    /* Wood scale
+       Generates utilities: bg-wood-50 ... bg-wood-950 / text-wood-* / border-wood-* */
+    --color-wood-50:  #FAF7F2;
+    --color-wood-100: #F5F0E8;
+    --color-wood-200: #E8DCC9;
+    --color-wood-300: #D4BE9C;
+    --color-wood-400: #B88D5E;
+    --color-wood-500: #8B5A2B;
+    --color-wood-600: #6F471F;
+    --color-wood-700: #573717;
+    --color-wood-800: #3E2006;
+    --color-wood-900: #2A1604;
+    --color-wood-950: #1A0D02;
+
+    /* Neutral warm-gray scale
+       Generates utilities: bg-neutral-50 ... text-neutral-900 etc.
+       Safe: Blade files use bg-gray-* (different scale, unaffected)          */
+    --color-neutral-0:   #FFFFFF;
+    --color-neutral-50:  #FAFAF9;
+    --color-neutral-100: #F4F2EF;
+    --color-neutral-200: #E7E3DD;
+    --color-neutral-300: #D2CCC2;
+    --color-neutral-400: #A8A096;
+    --color-neutral-500: #7C7468;
+    --color-neutral-600: #5C554B;
+    --color-neutral-700: #443E36;
+    --color-neutral-800: #2B2722;
+    --color-neutral-900: #1A1714;
+
+    /* Semantic status colors
+       Generates utilities: bg-success, text-error, border-warning, etc.     */
+    --color-success: #1DA851;
+    --color-warning: #B8841F;
+    --color-error:   #B3261E;
+    --color-info:    #1E3A5F;
+}
+
+/*
+ * Phase 14C.1 -- CNRWOOD Design Token CSS Custom Properties
+ *
+ * Canonical token names from docs/design/DESIGN_TOKENS.md for var() usage.
+ * Blue and green kept out of @theme to avoid overriding TW built-in scales
+ * (bg-blue-100, text-blue-700, bg-green-50 actively used in existing Blade).
+ * Radius and shadow kept out of @theme to avoid overriding rounded-* / shadow-*
+ * utilities used site-wide.
+ */
+:root {
+    /* Wood */
+    --wood-50:  #FAF7F2;
+    --wood-100: #F5F0E8;
+    --wood-200: #E8DCC9;
+    --wood-300: #D4BE9C;
+    --wood-400: #B88D5E;
+    --wood-500: #8B5A2B;
+    --wood-600: #6F471F;
+    --wood-700: #573717;
+    --wood-800: #3E2006;
+    --wood-900: #2A1604;
+    --wood-950: #1A0D02;
+
+    /* Blue CTA (brand navy -- not Tailwind's bright blue scale) */
+    --blue-50:  #EEF3F8;
+    --blue-100: #D4E0EE;
+    --blue-200: #A9C0DC;
+    --blue-400: #4B739E;
+    --blue-600: #1E3A5F;
+    --blue-700: #182F4D;
+    --blue-800: #122339;
+
+    /* WhatsApp / success green (brand green -- not Tailwind's green scale) */
+    --green-500: #25D366;
+    --green-600: #1DA851;
+    --green-700: #178A43;
+
+    /* Neutral warm-gray */
+    --neutral-0:   #FFFFFF;
+    --neutral-50:  #FAFAF9;
+    --neutral-100: #F4F2EF;
+    --neutral-200: #E7E3DD;
+    --neutral-300: #D2CCC2;
+    --neutral-400: #A8A096;
+    --neutral-500: #7C7468;
+    --neutral-600: #5C554B;
+    --neutral-700: #443E36;
+    --neutral-800: #2B2722;
+    --neutral-900: #1A1714;
+
+    /* Semantic */
+    --success: #1DA851;
+    --warning: #B8841F;
+    --error:   #B3261E;
+    --info:    #1E3A5F;
+
+    /* Radius */
+    --radius-sm:   3px;
+    --radius-md:   6px;
+    --radius-lg:   12px;
+    --radius-pill: 9999px;
+
+    /* Shadow (wood-tinted rgba) */
+    --shadow-sm: 0 1px 3px rgba(42, 22, 4, .08), 0 1px 2px rgba(42, 22, 4, .06);
+    --shadow-md: 0 4px 8px rgba(42, 22, 4, .10), 0 2px 4px rgba(42, 22, 4, .06);
+    --shadow-lg: 0 12px 24px rgba(42, 22, 4, .12), 0 4px 8px rgba(42, 22, 4, .06);
+}
+
+/*
+ * Phase 14C.1 -- CNRWOOD Button Components
+ *
+ * Use these classes instead of raw hex arbitrary values on all buttons.
+ * Apply sizing with: default (md = h-11 / 44px), add .btn-sm or .btn-lg.
+ *
+ *   .btn-primary    Blue CTA  -- Teklif Al, Gönder
+ *   .btn-secondary  Wood outline -- secondary actions
+ *   .btn-ghost      Transparent -- cancel / tertiary
+ *   .btn-whatsapp   WhatsApp green -- WhatsApp action ONLY
+ *   .btn-cart       Wood-800 fill -- Sepete Ekle (buyable products)
+ */
+@layer components {
+    .btn-primary,
+    .btn-secondary,
+    .btn-ghost,
+    .btn-whatsapp,
+    .btn-cart {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.25;
+        border-radius: var(--radius-sm);
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+        text-decoration: none;
+    }
+
+    /* Disabled state shared across all buttons */
+    .btn-primary:disabled,
+    .btn-secondary:disabled,
+    .btn-ghost:disabled,
+    .btn-whatsapp:disabled,
+    .btn-cart:disabled {
+        opacity: 0.42;
+        cursor: not-allowed;
+    }
+
+    /* Focus ring shared across all buttons */
+    .btn-primary:focus-visible,
+    .btn-secondary:focus-visible,
+    .btn-ghost:focus-visible,
+    .btn-whatsapp:focus-visible,
+    .btn-cart:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--blue-600) 28%, transparent);
+        outline-offset: 2px;
+    }
+
+    /* Primary -- brand navy, white text. Used for: Teklif Al, Gönder, quote CTA */
+    .btn-primary {
+        background-color: var(--blue-600);
+        color: #fff;
+        box-shadow: var(--shadow-sm);
+    }
+    .btn-primary:hover:not(:disabled) {
+        background-color: var(--blue-700);
+    }
+
+    /* Secondary -- wood outline, transparent fill */
+    .btn-secondary {
+        background-color: transparent;
+        border-color: var(--wood-500);
+        color: var(--wood-800);
+    }
+    .btn-secondary:hover:not(:disabled) {
+        background-color: var(--wood-100);
+    }
+
+    /* Ghost -- no border, transparent fill */
+    .btn-ghost {
+        background-color: transparent;
+        color: var(--wood-700);
+    }
+    .btn-ghost:hover:not(:disabled) {
+        background-color: color-mix(in srgb, var(--wood-200) 40%, transparent);
+    }
+
+    /* WhatsApp -- green, dark text. Use ONLY for WhatsApp contact action */
+    .btn-whatsapp {
+        background-color: var(--green-500);
+        color: #0A3D1C;
+    }
+    .btn-whatsapp:hover:not(:disabled) {
+        background-color: var(--green-600);
+    }
+
+    /* Cart -- wood-800 fill, white text. Used for: Sepete Ekle on buyable products */
+    .btn-cart {
+        background-color: var(--wood-800);
+        color: #fff;
+        box-shadow: var(--shadow-sm);
+    }
+    .btn-cart:hover:not(:disabled) {
+        background-color: var(--wood-700);
+    }
+
+    /* Size modifiers */
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
 }
