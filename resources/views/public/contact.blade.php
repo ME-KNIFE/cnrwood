@@ -7,6 +7,16 @@
 
 @section('content')
 
+@php
+    use App\Models\Setting;
+    $phoneContact   = Setting::get('phone_primary', '+90 262 751 21 20');
+    $emailContact   = Setting::get('email_primary', 'info@cnrwood.com');
+    $addressStreet  = Setting::get('address_street', 'Pelitli Mah. Pelitli Yolu Cad. No: 137/A');
+    $addressCity    = Setting::get('address_city', 'Gebze');
+    $addressRegion  = Setting::get('address_region', 'Kocaeli');
+    $mapsUrl        = Setting::get('maps_link_url', 'https://www.google.com/maps/search/?api=1&query=CNR+Ahsap+Pelitli+Gebze+Kocaeli');
+@endphp
+
 <section class="bg-[#F5F0E8] border-b border-[#E6DFD2]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="text-sm text-[#8B5A2B] mb-3">
@@ -143,14 +153,11 @@
                         </span>
                         <div>
                             <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">{{ __('contact.address_label') }}</p>
-                            <p class="text-[#3E2006]">
-                                Pelitli Mah. Pelitli Yolu Cad.<br>
-                                No: 137/A, Gebze / Kocaeli
-                            </p>
-                            <a href="https://www.google.com/maps/search/?api=1&query=CNR+Ahsap+Pelitli+Gebze+Kocaeli"
+                            <p class="text-[#3E2006]">{{ $addressStreet }},<br>{{ $addressCity }} / {{ $addressRegion }}</p>
+                            <a href="{{ $mapsUrl }}"
                                target="_blank" rel="noopener noreferrer"
                                class="inline-block mt-1 text-xs text-[#1F497D] hover:underline">
-                                {{ __('contact.map_link') }} →
+                                {{ __('contact.map_link') }} &rarr;
                             </a>
                         </div>
                     </li>
@@ -163,7 +170,7 @@
                         </span>
                         <div>
                             <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">Telefon</p>
-                            <a href="tel:+902627512120" class="text-[#3E2006] hover:underline font-medium">+90 262 751 21 20</a>
+                            <a href="tel:{{ preg_replace('/[^+0-9]/', '', $phoneContact) }}" class="text-[#3E2006] hover:underline font-medium">{{ $phoneContact }}</a>
                         </div>
                     </li>
 
@@ -175,7 +182,7 @@
                         </span>
                         <div>
                             <p class="text-xs uppercase tracking-wider text-[#8B5A2B] mb-0.5">E-posta</p>
-                            <a href="mailto:info@cnrwood.com" class="text-[#3E2006] hover:underline font-medium">info@cnrwood.com</a>
+                            <a href="mailto:{{ $emailContact }}" class="text-[#3E2006] hover:underline font-medium">{{ $emailContact }}</a>
                         </div>
                     </li>
 

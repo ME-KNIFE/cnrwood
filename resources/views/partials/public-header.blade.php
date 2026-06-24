@@ -1,4 +1,10 @@
 @php
+    use App\Models\Setting;
+    $phoneHeader    = Setting::get('phone_primary', '+90 262 751 21 20');
+    $emailHeader    = Setting::get('email_primary', 'info@cnrwood.com');
+    $addressDisplay = Setting::get('address_display', 'Gebze OSB, Kocaeli');
+    $ispm15Badge    = Setting::get('ispm15_badge_tr', 'ISPM 15 Sertifikali Ihracat Ambalaji');
+    $foundingYear   = Setting::get('founding_year', '1998');
     $navLinks = [
         ['label' => __('nav.home'),      'url' => route('home'),                   'active' => request()->routeIs('home')],
         ['label' => __('nav.corporate'), 'url' => route('public.corporate'),       'active' => request()->routeIs('public.corporate') || request()->routeIs('public.about')],
@@ -20,21 +26,21 @@
             <div class="flex items-center gap-6">
                 <span class="inline-flex items-center gap-1.5">
                     <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 7 12 7s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
-                    Gebze OSB, Kocaeli
+                    {{ $addressDisplay }}
                 </span>
-                <a href="tel:+902627512120" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
+                <a href="tel:{{ preg_replace('/[^+0-9]/', '', $phoneHeader) }}" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
                     <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                    +90 262 751 21 20
+                    {{ $phoneHeader }}
                 </a>
-                <a href="mailto:info@cnrwood.com" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
+                <a href="mailto:{{ $emailHeader }}" class="inline-flex items-center gap-1.5 transition-colors hover:text-cream">
                     <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    info@cnrwood.com
+                    {{ $emailHeader }}
                 </a>
             </div>
             <div class="flex items-center gap-5">
                 <span class="inline-flex items-center gap-1.5 font-medium text-cream/90">
                     <svg class="h-3.5 w-3.5 text-wood-natural shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    ISPM 15 Sertifikalı İhracat Ambalajı
+                    {{ $ispm15Badge }}
                 </span>
                 <div class="flex items-center overflow-hidden rounded-sm border border-cream/25 text-[11px] font-semibold">
                     <a href="{{ route('locale.switch', 'tr') }}"
@@ -62,7 +68,7 @@
                         CNR<span class="text-wood-natural">WOOD</span>
                     </span>
                     <span class="hidden sm:block mt-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8B5A2B]">
-                        Ahşap Ambalaj &amp; Üretim · Est. 1998
+                        Ahşap Ambalaj &amp; Üretim · Est. {{ $foundingYear }}
                     </span>
                 </span>
             </a>

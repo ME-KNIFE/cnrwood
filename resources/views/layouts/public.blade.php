@@ -22,22 +22,33 @@
     <meta property="og:site_name" content="CNRWOOD">
     <meta property="og:locale" content="tr_TR">
 
-    {{-- Minimal Organization + LocalBusiness JSON-LD (static, safe) --}}
+    {{-- Organization JSON-LD: values managed via Admin > Site Ayarları --}}
+    @php
+        use App\Models\Setting;
+        $orgPhone   = Setting::get('phone_primary', '+90 262 751 21 20');
+        $orgEmail   = Setting::get('email_primary', 'info@cnrwood.com');
+        $orgStreet  = Setting::get('address_street', 'Pelitli Mah. Pelitli Yolu Cad. No: 137/A');
+        $orgCity    = Setting::get('address_city', 'Gebze');
+        $orgRegion  = Setting::get('address_region', 'Kocaeli');
+        $orgFounded = Setting::get('founding_year', '1998');
+        $orgLegal   = Setting::get('seo_org_legal_name', 'CNR Ahsap Sanayi ve Ticaret');
+        $orgName    = Setting::get('site_name', 'CNRWOOD');
+    @endphp
     <script type="application/ld+json">
     {!! json_encode([
         '@context'      => 'https://schema.org',
         '@type'         => 'Organization',
-        'name'          => 'CNRWOOD',
-        'legalName'     => 'CNR Ahşap Sanayi ve Ticaret',
+        'name'          => $orgName,
+        'legalName'     => $orgLegal,
         'url'           => url('/'),
-        'foundingDate'  => '1998',
-        'telephone'     => '+90 262 751 21 20',
-        'email'         => 'info@cnrwood.com',
+        'foundingDate'  => $orgFounded,
+        'telephone'     => $orgPhone,
+        'email'         => $orgEmail,
         'address'       => [
             '@type'           => 'PostalAddress',
-            'streetAddress'   => 'Pelitli Mah. Pelitli Yolu Cad. No: 137/A',
-            'addressLocality' => 'Gebze',
-            'addressRegion'   => 'Kocaeli',
+            'streetAddress'   => $orgStreet,
+            'addressLocality' => $orgCity,
+            'addressRegion'   => $orgRegion,
             'addressCountry'  => 'TR',
         ],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
