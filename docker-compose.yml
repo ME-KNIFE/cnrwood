@@ -77,19 +77,14 @@ services:
     networks:
       - cnrwood
     healthcheck:
-      test:
-        - CMD
-        - mysqladmin
-        - ping
-        - -h
-        - "127.0.0.1"
-        - -u
-        - root
-        - --password=${DB_ROOT_PASSWORD:-root_secret}
+      # `mysqladmin ping` returns success as soon as the server answers,
+      # even with an "Access denied" reply — that's exactly what we want
+      # while the data dir is still initializing on first boot.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 20s
+      retries: 20
+      start_period: 90s
 
   redis:
     image: redis:7-alpine
