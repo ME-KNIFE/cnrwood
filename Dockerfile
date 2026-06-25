@@ -9,7 +9,11 @@ FROM node:20-alpine AS assets
 WORKDIR /app
 
 COPY package*.json vite.config.js ./
-RUN npm ci
+# Use `npm install` rather than `npm ci`: Vite 8 pulls Rollup, which uses
+# platform-specific optional native deps (@rollup/rollup-*). A lockfile
+# generated on Windows/macOS lacks the linux-musl variant Alpine needs,
+# and `npm ci` refuses to reconcile that. `npm install` resolves it.
+RUN npm install --no-audit --no-fund --loglevel=error
 
 COPY resources ./resources
 COPY public ./public
