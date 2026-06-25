@@ -23,12 +23,19 @@ FROM composer:2 AS vendor
 WORKDIR /app
 
 COPY composer.json composer.lock ./
+# ext-intl / ext-exif / ext-gd live in the runtime image, not in composer:2.
+# Ignore them here so `composer install` resolves the lock file successfully;
+# the final runtime stage provides the real extensions.
 RUN composer install \
         --no-dev \
         --no-interaction \
         --no-scripts \
         --prefer-dist \
-        --optimize-autoloader
+        --optimize-autoloader \
+        --ignore-platform-req=ext-intl \
+        --ignore-platform-req=ext-exif \
+        --ignore-platform-req=ext-gd \
+        --ignore-platform-req=ext-pcntl
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Stage 3: Runtime image (PHP-FPM + nginx via supervisord)
