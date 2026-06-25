@@ -60,9 +60,11 @@ services:
     container_name: cnrwood-mysql
     restart: unless-stopped
     command:
-      - --default-authentication-plugin=caching_sha2_password
+      # NOTE: --default-authentication-plugin was REMOVED in MySQL 8.4
+      # (caching_sha2_password is the default). Do not re-add it.
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+      - --mysql-native-password=ON
     environment:
       MYSQL_DATABASE: ${DB_DATABASE:-cnrwood}
       MYSQL_USER: ${DB_USERNAME:-cnrwood}
