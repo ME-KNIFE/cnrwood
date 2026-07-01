@@ -131,7 +131,7 @@
             <div>
                 <span class="cnr-f-col-head">Ürün Grupları</span>
                 <ul class="cnr-f-list">
-                    <li><a href="{{ route('public.category', 'ahsap-sandik') }}">Ahşap Sandık</a></li>
+                    <li><a href="{{ route('public.ahsap-sandik') }}">Ahşap Sandık</a></li>
                     <li><a href="{{ route('public.category', 'ihracat-ambalaj') }}">İhracat Ambalajı</a></li>
                     <li><a href="{{ route('public.category', 'agir-yuk-sandiklari') }}">Ağır Yük ve Makine Sandıkları</a></li>
                     <li><a href="{{ route('public.category', 'palet-kereste') }}">Palet &amp; Kereste</a></li>

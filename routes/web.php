@@ -57,6 +57,8 @@ Route::get('/hizmetler',            [PublicController::class, 'services'])->name
 Route::get('/isil-islemli-ahsap',   [PublicController::class, 'isil'])->name('public.isil');
 // Strategic direct page: Kapı Sereni product group — stable URL, no category DB dependency
 Route::get('/kapi-sereni',          [PublicController::class, 'kapiSereni'])->name('public.kapi-sereni');
+// Strategic landing page: Ahşap Sandık — industrial crate & packaging solutions
+Route::get('/ahsap-sandik',         [PublicController::class, 'ahsapSandik'])->name('public.ahsap-sandik');
 
 // ─── Phase 11B — Public blog ────────────────────────────────────────────────
 Route::get('/blog',          [BlogController::class, 'index'])->name('public.blog.index');

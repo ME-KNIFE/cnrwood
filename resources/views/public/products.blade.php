@@ -277,21 +277,21 @@ body { background-color: #0a0a0a !important; color: #e5e2e1; }
                             : null;
                         // Category-based fallback image (shown when product has no uploaded image)
                         $pFallbackMap = [
-                            'ahsap-sandik'      => 'ihracat-ambalaji.jpg',
-                            'sandik-ve-ambalaj' => 'ihracat-ambalaji.jpg',
-                            'ihracat-ambalaj'   => 'ihracat-ambalaji.jpg',
-                            'ozel-ambalaj'      => 'project-packaging.jpg',
-                            'osb-sandik'        => 'heavy-duty-crate.jpg',
-                            'palet'             => 'hero-factory.jpg',
-                            'euro-palet'        => 'hero-factory.jpg',
-                            'ispm15-palet'      => 'hero-factory.jpg',
-                            'ozel-palet'        => 'hero-factory.jpg',
-                            'kagit-ve-karton'   => 'project-packaging.jpg',
-                            'oluklu-mukavva'    => 'project-packaging.jpg',
-                            'masif-karton'      => 'project-packaging.jpg',
-                            'diger-ambalaj'     => 'project-packaging.jpg',
+                            'ahsap-sandik'      => 'products/fallbacks/sandik.jpg',
+                            'sandik-ve-ambalaj' => 'products/fallbacks/sandik.jpg',
+                            'ihracat-ambalaj'   => 'products/fallbacks/ihracat-ambalaji.jpg',
+                            'ozel-ambalaj'      => 'products/fallbacks/sandik.jpg',
+                            'osb-sandik'        => 'products/fallbacks/agir-yuk-sandik.jpg',
+                            'palet'             => 'products/fallbacks/palet.jpg',
+                            'euro-palet'        => 'products/fallbacks/palet.jpg',
+                            'ispm15-palet'      => 'products/fallbacks/palet.jpg',
+                            'ozel-palet'        => 'products/fallbacks/palet.jpg',
+                            'kagit-ve-karton'   => 'products/fallbacks/default.jpg',
+                            'oluklu-mukavva'    => 'products/fallbacks/default.jpg',
+                            'masif-karton'      => 'products/fallbacks/default.jpg',
+                            'diger-ambalaj'     => 'products/fallbacks/default.jpg',
                         ];
-                        $pFallback = asset('images/cnrwood/' . ($pFallbackMap[$pCatSlug] ?? 'hero-factory.jpg'));
+                        $pFallback = asset('images/cnrwood/' . ($pFallbackMap[$pCatSlug] ?? 'products/fallbacks/default.jpg'));
                         // Business rule: NEVER show price for quote_only products
                         $pPrice   = $product->isBuyable() ? $product->getDisplayPrice() : null;
                     @endphp

@@ -253,4 +253,14 @@ class PublicController extends Controller
             'sitePage' => SitePage::findBySlug('kapi-sereni'),
         ]);
     }
+
+    /**
+     * Strategic landing page: Ahşap Sandık — industrial crate & packaging solutions.
+     * Direct URL /ahsap-sandik — no price, no cart, no quote calculation.
+     * CTAs lead to Teknik Ön Değerlendirme (sandik) and quote request.
+     */
+    public function ahsapSandik()
+    {
+        return view('public.ahsap-sandik');
+    }
 }

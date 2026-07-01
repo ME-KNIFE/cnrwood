@@ -106,7 +106,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
 .cnr-hero-bg-img {
     position: absolute; inset: 0;
     background-color: #1a2e1a;
-    background-image: url('{{ asset('images/cnrwood/hero-factory.jpg') }}'),
+    background-image: url('{{ asset('images/cnrwood/homepage/hero-factory.jpg') }}'),
                       linear-gradient(135deg, #1a2e1a 0%, #0a0a0a 100%);
     background-size: cover; background-position: center;
     opacity: 0.55;
@@ -219,8 +219,8 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
 .cnr-spec-img {
     min-height: 320px;
     background-color: #1a2e1a;
-    background-image: url('{{ asset('images/cnrwood/heavy-duty-crate.jpg') }}'),
-                      url('{{ asset('images/cnrwood/project-packaging.jpg') }}'),
+    background-image: url('{{ asset('images/cnrwood/ahsap-sandik/hero.jpg') }}'),
+                      url('{{ asset('images/cnrwood/ahsap-sandik/factory-packaging.jpg') }}'),
                       linear-gradient(135deg, #1a2e1a 0%, #0a0a0a 100%);
     background-size: cover; background-position: center;
     position: relative; flex-shrink: 0;
@@ -526,7 +526,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
             {{-- [5] Large card: tag → "ÖNE ÇIKAN ÇÖZÜM" --}}
             <div class="cnr-bento-card cnr-bento-main cnr-bento-card-main cnr-sr" style="--cnr-sd:0s">
                 <div class="cnr-bento-img"
-                     style="background-image:url('{{ asset('images/cnrwood/heavy-duty-crate.jpg') }}'),linear-gradient(135deg,#1a2e1a 0%,#0a0a0a 100%)">
+                     style="background-image:url('{{ asset('images/cnrwood/ahsap-sandik/hero.jpg') }}'),linear-gradient(135deg,#1a2e1a 0%,#0a0a0a 100%)">
                 </div>
                 <div class="cnr-bento-grad"></div>
                 <div class="cnr-bento-body-lg">
@@ -543,7 +543,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
             {{-- [5] Side: OSB — updated description --}}
             <div class="cnr-bento-card cnr-bento-side cnr-sr" style="--cnr-sd:0.08s">
                 <div class="cnr-bento-img"
-                     style="background-image:url('{{ asset('images/cnrwood/osb-kontrplak.jpg') }}'),linear-gradient(135deg,#2a1a0a 0%,#0a0a0a 100%)">
+                     style="background-image:url('{{ asset('images/cnrwood/levha-kereste/osb-kontrplak.jpg') }}'),linear-gradient(135deg,#2a1a0a 0%,#0a0a0a 100%)">
                 </div>
                 <div class="cnr-bento-grad"></div>
                 <div class="cnr-bento-body-sm">
@@ -555,7 +555,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
             {{-- [5] Side: İhracat — updated description --}}
             <div class="cnr-bento-card cnr-bento-side cnr-sr" style="--cnr-sd:0.16s">
                 <div class="cnr-bento-img"
-                     style="background-image:url('{{ asset('images/cnrwood/ihracat-ambalaji.jpg') }}'),linear-gradient(135deg,#1a1a2a 0%,#0a0a0a 100%)">
+                     style="background-image:url('{{ asset('images/cnrwood/ahsap-sandik/ihracat-ambalaji.jpg') }}'),linear-gradient(135deg,#1a1a2a 0%,#0a0a0a 100%)">
                 </div>
                 <div class="cnr-bento-grad"></div>
                 <div class="cnr-bento-body-sm">
@@ -567,7 +567,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
             {{-- [5] Side: Kapı Sereni — title stripped "& Kereste", updated desc --}}
             <div class="cnr-bento-card cnr-bento-side cnr-sr" style="--cnr-sd:0.24s">
                 <div class="cnr-bento-img"
-                     style="background-image:url('{{ asset('images/cnrwood/kapi-sereni.jpg') }}'),linear-gradient(135deg,#1a2a1a 0%,#0a0a0a 100%)">
+                     style="background-image:url('{{ asset('images/cnrwood/kapi-sereni/hero.jpg') }}'),linear-gradient(135deg,#1a2a1a 0%,#0a0a0a 100%)">
                 </div>
                 <div class="cnr-bento-grad"></div>
                 <div class="cnr-bento-body-sm">
@@ -579,7 +579,7 @@ body { background-color: #0a0a0a; color: #e5e2e1; }
             {{-- [5] Side: Isıl İşlemli — updated description --}}
             <div class="cnr-bento-card cnr-bento-side cnr-sr" style="--cnr-sd:0.32s">
                 <div class="cnr-bento-img"
-                     style="background-image:url('{{ asset('images/cnrwood/isil-islemli-ahsap.jpg') }}'),linear-gradient(135deg,#2a2010 0%,#0a0a0a 100%)">
+                     style="background-image:url('{{ asset('images/cnrwood/isil-islemli/hero.jpg') }}'),linear-gradient(135deg,#2a2010 0%,#0a0a0a 100%)">
                 </div>
                 <div class="cnr-bento-grad"></div>
                 <div class="cnr-bento-body-sm">

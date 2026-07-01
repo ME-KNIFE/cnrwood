@@ -14,8 +14,8 @@
         ],
         [
             'label'  => 'Ahşap Sandık',
-            'url'    => route('public.category', 'ahsap-sandik'),
-            'active' => request()->routeIs('public.category') && request()->route('slug') === 'ahsap-sandik',
+            'url'    => route('public.ahsap-sandik'),
+            'active' => request()->routeIs('public.ahsap-sandik'),
         ],
         [
             'label'  => 'Kapı Sereni',
@@ -67,7 +67,7 @@
             'label'    => 'Ambalaj & Sandık Çözümleri',
             'groupUrl' => route('public.products', ['grup' => 'ambalaj-sandik']),
             'items'    => [
-                ['label' => 'Ahşap Sandık',                'url' => route('public.category', 'ahsap-sandik')],              // ✓
+                ['label' => 'Ahşap Sandık',                'url' => route('public.ahsap-sandik')],                           // ✓ strategic page
                 ['label' => 'İhracat Ambalajı',            'url' => route('public.category', 'ihracat-ambalaj')],           // ✓ ✎ was ihracat-ambalaji
                 ['label' => 'Ağır Yük & Makine Sandıkları','url' => route('public.category', 'sandik-ve-ambalaj')],        // ↩ → parent category
                 ['label' => 'Kafes Sandık',                'url' => route('public.category', 'sandik-ve-ambalaj')],        // ↩ → parent category
@@ -461,7 +461,7 @@
 
         {{-- Logo --}}
         <a href="{{ route('home') }}" class="cnr-hdr-logo" aria-label="CNRWOOD Ana Sayfa">
-            <img src="{{ asset('images/cnrwood/logo-horizontal-dark-header.png') }}" alt="CNRWOOD" width="160" height="40">
+            <img src="{{ asset('images/cnrwood/brand/logo-horizontal-dark-header.png') }}" alt="CNRWOOD" width="160" height="40">
         </a>
 
         {{-- Desktop Nav: Ana Sayfa | Ürünler▾ | Ahşap Sandık | Kapı Sereni | Isıl İşlemli Ahşap | Projeler | Kurumsal | İletişim --}}
@@ -534,7 +534,7 @@
 
     <div class="cnr-ov-head">
         <a href="{{ route('home') }}" aria-label="CNRWOOD Ana Sayfa" style="display:inline-flex;align-items:center">
-            <img src="{{ asset('images/cnrwood/logo-horizontal-dark-header.png') }}" alt="CNRWOOD"
+            <img src="{{ asset('images/cnrwood/brand/logo-horizontal-dark-header.png') }}" alt="CNRWOOD"
                  style="height:34px;width:auto;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.45))">
         </a>
         <button class="cnr-ov-close" id="cnr-ov-close" aria-label="Kapat" type="button">
