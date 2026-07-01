@@ -33,12 +33,19 @@ class ProductImageTest extends TestCase
     public function test_product_card_uses_fallback_when_no_images(): void
     {
         $product = Product::factory()->buyable()->create();
-        // No images attached
+        // No images attached — listing card must render a category fallback <img>,
+        // not the old SVG placeholder.
 
         $response = $this->get(route('public.products'));
         $response->assertStatus(200);
-        // SVG placeholder path element should render (no <img> for this product)
-        $response->assertSee('M4 16l4.586', escape: false);
+
+        // Fallback <img> must be present with the expected src path and class
+        $response->assertSee('<img', escape: false);
+        $response->assertSee('images/cnrwood/', escape: false);
+        $response->assertSee('class="fallback"', escape: false);
+
+        // Old SVG placeholder must NOT appear on listing cards
+        $response->assertDontSee('M4 16l4.586', escape: false);
     }
 
     public function test_inactive_image_is_not_shown_publicly(): void

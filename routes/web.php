@@ -50,9 +50,13 @@ Route::middleware('throttle:5,1')->group(function () {
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('public.sitemap');
 
 // ─── Phase 7E — Public content pages (read-only, no DB writes) ─────────────
-Route::get('/kurumsal',         [PublicController::class, 'corporate'])->name('public.corporate');
-Route::get('/hakkimizda',       [PublicController::class, 'about'])->name('public.about');
-Route::get('/hizmetler',        [PublicController::class, 'services'])->name('public.services');
+Route::get('/kurumsal',             [PublicController::class, 'corporate'])->name('public.corporate');
+Route::get('/hakkimizda',           [PublicController::class, 'about'])->name('public.about');
+Route::get('/hizmetler',            [PublicController::class, 'services'])->name('public.services');
+// Strategic capability page: heat treatment / ISPM 15 — NOT a product page
+Route::get('/isil-islemli-ahsap',   [PublicController::class, 'isil'])->name('public.isil');
+// Strategic direct page: Kapı Sereni product group — stable URL, no category DB dependency
+Route::get('/kapi-sereni',          [PublicController::class, 'kapiSereni'])->name('public.kapi-sereni');
 
 // ─── Phase 11B — Public blog ────────────────────────────────────────────────
 Route::get('/blog',          [BlogController::class, 'index'])->name('public.blog.index');
@@ -105,9 +109,12 @@ Route::prefix('siparis')->name('checkout.')->group(function () {
 Route::prefix('hesabim')->name('account.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/giris',   [AuthController::class, 'loginForm'])->name('login');
-        Route::post('/giris',  [AuthController::class, 'login'])->name('login.submit');
         Route::get('/kayit',   [AuthController::class, 'registerForm'])->name('register');
-        Route::post('/kayit',  [AuthController::class, 'register'])->name('register.submit');
+
+        Route::middleware('throttle:5,1')->group(function () {
+            Route::post('/giris',  [AuthController::class, 'login'])->name('login.submit');
+            Route::post('/kayit',  [AuthController::class, 'register'])->name('register.submit');
+        });
     });
 
     Route::post('/cikis', [AuthController::class, 'logout'])->name('logout');
@@ -161,3 +168,8 @@ Route::prefix('sepet')->name('cart.')->group(function () {
         Route::post('/{item}/sil',         [CartController::class, 'remove'])->name('remove');
     });
 });
+
+// ─── Design Preview (INTERNAL ONLY — not for production) ────────────────────
+// noindex meta is set inside the view. This route must never be committed as a
+// permanent feature — remove before final production deploy.
+Route::get('/design-preview', fn () => view('public.design-preview'))->name('design.preview');

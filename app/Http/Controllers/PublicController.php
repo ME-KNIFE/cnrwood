@@ -50,7 +50,15 @@ class PublicController extends Controller
 
     public function products(Request $request)
     {
-        // Whitelisted, validated GET params only.
+        // ── Group filter (from mega-dropdown group-title links) ──────────────
+        // Maps ?grup= slugs to category/product_type restrictions.
+        // Only whitelisted values accepted — anything else is silently dropped.
+        $grup = (string) $request->query('grup', '');
+        if (! in_array($grup, ['e-ticaret', 'ambalaj-sandik', 'levha-kereste', 'ahsap-yapilar'], true)) {
+            $grup = '';
+        }
+
+        // ── Existing filters ─────────────────────────────────────────────────
         $type = $request->query('tip');
         if (! in_array($type, ['buyable', 'quote_only'], true)) {
             $type = null;
@@ -61,7 +69,53 @@ class PublicController extends Controller
 
         $query = Product::active()->with(['category', 'images']);
 
-        if ($type !== null) {
+        // ── Apply grup restrictions ──────────────────────────────────────────
+        $grupNoData = false; // true when the grup has no DB category support yet
+
+        switch ($grup) {
+            case 'e-ticaret':
+                // Products available for online purchase — overrides tip param.
+                $query->buyable();
+                $type = 'buyable'; // keep view filter state consistent
+                break;
+
+            case 'ambalaj-sandik':
+                // DB categories: sandik-ve-ambalaj root + its children only.
+                // Palet excluded — belongs to e-ticaret group if buyable.
+                $rootCats = ProductCategory::active()
+                    ->where('slug', 'sandik-ve-ambalaj')
+                    ->with(['children' => fn ($q) => $q->active()])
+                    ->get();
+
+                $catIds = [];
+                foreach ($rootCats as $root) {
+                    $catIds[] = $root->id;
+                    foreach ($root->children as $child) {
+                        $catIds[] = $child->id;
+                    }
+                }
+
+                if (! empty($catIds)) {
+                    $query->whereIn('product_category_id', $catIds);
+                } else {
+                    // Categories not seeded yet — safe empty result + flag view
+                    $grupNoData = true;
+                    $query->where('id', 0);
+                }
+                break;
+
+            case 'levha-kereste':
+            case 'ahsap-yapilar':
+                // No DB categories exist for these groups in ProductCategorySeeder.
+                // View shows a professional "coming soon" state instead of empty grid.
+                $grupNoData = true;
+                $query->where('id', 0);
+                break;
+        }
+
+        // ── Apply remaining filters ──────────────────────────────────────────
+        // e-ticaret already forced buyable above — skip tip to avoid conflict.
+        if ($grup !== 'e-ticaret' && $type !== null) {
             $query->where('product_type', $type);
         }
 
@@ -98,6 +152,8 @@ class PublicController extends Controller
             'selectedType'  => $type,
             'selectedSlug'  => $categorySlug,
             'searchTerm'    => $search,
+            'selectedGrup'  => $grup,
+            'grupNoData'    => $grupNoData,
         ]);
     }
 
@@ -174,5 +230,27 @@ class PublicController extends Controller
     public function sandik()
     {
         return view('public.sandik');
+    }
+
+    /**
+     * Strategic capability page: heat treatment / ISPM 15.
+     * This is NOT a product page — no price, no cart.
+     */
+    public function isil()
+    {
+        return view('public.isil-islemli', [
+            'sitePage' => SitePage::findBySlug('isil-islemli-ahsap'),
+        ]);
+    }
+
+    /**
+     * Strategic landing page: Kapı Sereni product group.
+     * Direct URL /kapi-sereni — independent of category DB records.
+     */
+    public function kapiSereni()
+    {
+        return view('public.kapi-sereni', [
+            'sitePage' => SitePage::findBySlug('kapi-sereni'),
+        ]);
     }
 }

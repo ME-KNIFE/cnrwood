@@ -1,97 +1,172 @@
 @php
     use App\Models\Setting;
-    $phoneFooter   = Setting::get('phone_primary', '+90 262 751 21 20');
-    $emailFooter   = Setting::get('email_primary', 'info@cnrwood.com');
-    $addressStreet = Setting::get('address_street', 'Pelitli Mah. Pelitli Yolu Cad. No: 137/A');
-    $addressCity   = Setting::get('address_city', 'Gebze');
-    $addressRegion = Setting::get('address_region', 'Kocaeli');
-    $ispm15Footer  = Setting::get('ispm15_badge_tr', 'ISPM 15 Sertifikali Ihracat Ambalaji');
+    $emailFooter = Setting::get('email_primary', 'info@cnrwood.com');
 @endphp
-<footer class="bg-[#2a1604] text-cream">
-    <div class="mx-auto max-w-7xl px-4 py-14 lg:px-8">
-        <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+<style>
+/* ── CNRWOOD Industrial Footer ─────────────────────────────── */
+#cnr-footer {
+    background-color: #1c1b1b;
+    border-top: 1px solid rgba(51,51,51,0.20);
+    padding-top: 80px;
+    padding-bottom: 40px;
+    font-family: 'Inter', 'Instrument Sans', system-ui, sans-serif;
+}
+#cnr-footer .cnr-f-wrap {
+    max-width: 1280px; margin: 0 auto; padding: 0 64px;
+}
+#cnr-footer .cnr-f-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+}
+#cnr-footer .cnr-f-brand-name {
+    font-family: 'Oswald', 'Hanken Grotesk', sans-serif;
+    font-size: 24px; font-weight: 700; line-height: 32px;
+    color: #aecfa8; margin-bottom: 24px;
+    display: block; text-decoration: none;
+}
+#cnr-footer .cnr-f-tagline {
+    font-size: 14px; line-height: 20px;
+    color: #c3c8be; margin-bottom: 24px; max-width: 22rem;
+}
+#cnr-footer .cnr-f-icons { display: flex; gap: 12px; }
+#cnr-footer .cnr-f-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 9999px;
+    background: rgba(51,51,51,0.30);
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none; color: #c3c8be;
+}
+#cnr-footer .cnr-f-icon:hover { background-color: #aecfa8; color: #1b361b; }
+#cnr-footer .cnr-f-icon svg { width: 18px; height: 18px; }
+#cnr-footer .cnr-f-col-head {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px; font-weight: 600;
+    color: #f4f4f4;
+    text-transform: uppercase; letter-spacing: 0.10em;
+    margin-bottom: 24px; display: block;
+}
+#cnr-footer .cnr-f-list { list-style: none; padding: 0; margin: 0; }
+#cnr-footer .cnr-f-list li { margin-bottom: 12px; }
+#cnr-footer .cnr-f-list a {
+    font-size: 14px; color: #c3c8be;
+    text-decoration: none; transition: color 0.2s;
+}
+#cnr-footer .cnr-f-list a:hover { color: #aecfa8; }
+#cnr-footer .cnr-f-contact-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 16px;
+}
+#cnr-footer .cnr-f-contact-icon {
+    flex-shrink: 0; width: 20px; height: 20px;
+    color: #aecfa8; margin-top: 1px;
+}
+#cnr-footer .cnr-f-contact-item span,
+#cnr-footer .cnr-f-contact-item a {
+    font-size: 14px; color: #c3c8be; text-decoration: none; transition: color 0.2s;
+}
+#cnr-footer .cnr-f-contact-item a:hover { color: #aecfa8; }
+#cnr-footer .cnr-f-bottom {
+    max-width: 1280px; margin: 0 auto; padding: 32px 64px 0;
+    border-top: 1px solid rgba(51,51,51,0.10);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: space-between; gap: 16px;
+}
+#cnr-footer .cnr-f-copy {
+    font-size: 12px; color: #c3c8be;
+}
+#cnr-footer .cnr-f-legal {
+    display: flex; gap: 24px; font-size: 12px;
+}
+#cnr-footer .cnr-f-legal a { color: #c3c8be; text-decoration: none; transition: color 0.2s; }
+#cnr-footer .cnr-f-legal a:hover { color: #aecfa8; }
+@media (min-width: 768px) {
+    #cnr-footer .cnr-f-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    #cnr-footer .cnr-f-bottom { flex-direction: row; }
+}
+@media (max-width: 767px) {
+    #cnr-footer .cnr-f-wrap { padding: 0 20px; }
+    #cnr-footer .cnr-f-bottom { padding: 32px 20px 0; }
+}
+</style>
 
-            {{-- Brand + contact --}}
+<footer id="cnr-footer" role="contentinfo">
+    <div class="cnr-f-wrap">
+        <div class="cnr-f-grid">
+
+            {{-- Brand column --}}
             <div>
-                <a href="{{ route('home') }}" class="inline-block font-heading text-2xl font-bold tracking-wide">
-                    CNR<span class="text-wood-natural">WOOD</span>
-                </a>
-                <p class="mt-4 text-sm leading-relaxed text-cream/70">
-                    {{ __('footer.tagline') }}
+                <a href="{{ route('home') }}" class="cnr-f-brand-name">CNRWOOD</a>
+                <p class="cnr-f-tagline">
+                    1998'den bu yana endüstriyel ahşap çözümlerinde güvenilir lojistik ve ambalaj ihtiyaçlarına yönelik üretim çözümleri sunuyoruz.
                 </p>
-                <ul class="mt-6 space-y-3 text-sm text-cream/75">
-                    <li class="flex items-start gap-3">
-                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-wood-natural" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 7 12 7s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
-                        <span>{{ $addressStreet }}, {{ $addressCity }} / {{ $addressRegion }}</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="h-4 w-4 shrink-0 text-wood-natural" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                        <a href="tel:{{ preg_replace('/[^+0-9]/', '', $phoneFooter) }}" class="hover:text-cream transition-colors">{{ $phoneFooter }}</a>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <svg class="h-4 w-4 shrink-0 text-wood-natural" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        <a href="mailto:{{ $emailFooter }}" class="hover:text-cream transition-colors">{{ $emailFooter }}</a>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-wood-natural" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>{{ __('footer.hours') }}</span>
-                    </li>
+                <div class="cnr-f-icons">
+                    <a href="{{ route('public.contact') }}" class="cnr-f-icon" aria-label="İletişim">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                    </a>
+                    <a href="mailto:{{ $emailFooter }}" class="cnr-f-icon" aria-label="E-posta">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </a>
+                    <a href="{{ route('public.contact') }}" class="cnr-f-icon" aria-label="Konum">
+                        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Hızlı Linkler --}}
+            <div>
+                <span class="cnr-f-col-head">Hızlı Linkler</span>
+                <ul class="cnr-f-list">
+                    <li><a href="{{ route('home') }}">Ana Sayfa</a></li>
+                    <li><a href="{{ route('public.about') }}">Hakkımızda</a></li>
+                    <li><a href="{{ route('public.products') }}">Ürün Kataloğu</a></li>
+                    <li><a href="{{ route('public.sandik') }}">Teknik Ön Değerlendirme</a></li>
+                    <li><a href="{{ route('public.projects.index') }}">Projeler</a></li>
+                    <li><a href="{{ route('public.contact') }}">Bize Ulaşın</a></li>
                 </ul>
             </div>
 
-            {{-- Navigation --}}
+            {{-- Ürün Grupları --}}
             <div>
-                <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">{{ __('footer.quick_links') }}</h3>
-                <ul class="mt-5 space-y-2.5 text-sm">
-                    <li><a href="{{ route('home') }}"                    class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.home') }}</a></li>
-                    <li><a href="{{ route('public.corporate') }}"        class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.corporate') }}</a></li>
-                    <li><a href="{{ route('public.services') }}"         class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.services') }}</a></li>
-                    <li><a href="{{ route('public.products') }}"         class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.all_products_link') }}</a></li>
-                    <li><a href="{{ route('public.sandik') }}"           class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.sandik_link') }}</a></li>
-                    <li><a href="{{ route('public.projects.index') }}"   class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.projects') }}</a></li>
-                    <li><a href="{{ route('public.blog.index') }}"       class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.blog') }}</a></li>
-                    <li><a href="{{ route('public.contact') }}"          class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.contact') }}</a></li>
+                <span class="cnr-f-col-head">Ürün Grupları</span>
+                <ul class="cnr-f-list">
+                    <li><a href="{{ route('public.category', 'ahsap-sandik') }}">Ahşap Sandık</a></li>
+                    <li><a href="{{ route('public.category', 'ihracat-ambalaj') }}">İhracat Ambalajı</a></li>
+                    <li><a href="{{ route('public.category', 'agir-yuk-sandiklari') }}">Ağır Yük ve Makine Sandıkları</a></li>
+                    <li><a href="{{ route('public.category', 'palet-kereste') }}">Palet &amp; Kereste</a></li>
+                    <li><a href="{{ route('public.kapi-sereni') }}">Kapı Sereni</a></li>
                 </ul>
             </div>
 
-            {{-- Products --}}
+            {{-- İletişim --}}
             <div>
-                <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">{{ __('nav.products') }}</h3>
-                <ul class="mt-5 space-y-2.5 text-sm">
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ah&#351;ap Sand&#305;k</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">&#304;hracat Ambalaj&#305;</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Kap&#305; Sereni</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Kereste &amp; Levha</a></li>
-                    <li><a href="{{ route('public.products') }}" class="text-cream/70 transition-colors hover:text-wood-natural">Ah&#351;ap Yap&#305;lar</a></li>
-                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">Ma&#287;aza &#220;r&#252;nleri</a></li>
-                </ul>
-            </div>
-
-            {{-- Quick links --}}
-            <div>
-                <h3 class="font-heading text-sm font-bold uppercase tracking-widest text-cream">H&#305;zl&#305; Eri&#351;im</h3>
-                <ul class="mt-5 space-y-2.5 text-sm">
-                    <li><a href="{{ route('public.quote.create') }}"   class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.quote_link') }}</a></li>
-                    <li><a href="{{ route('public.sandik') }}"         class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('footer.sandik_link') }}</a></li>
-                    <li><a href="{{ route('public.products') }}?tip=buyable" class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.shop') }}</a></li>
-                    <li><a href="{{ route('public.projects.index') }}" class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.projects') }}</a></li>
-                    <li><a href="{{ route('public.fairs.index') }}"    class="text-cream/70 transition-colors hover:text-wood-natural">{{ __('nav.fairs') }}</a></li>
-                </ul>
-                {{-- ISPM badge --}}
-                <div class="mt-6 flex items-center gap-2 rounded-sm border border-cream/15 bg-wood-deep/60 px-3 py-2.5">
-                    <svg class="h-4 w-4 shrink-0 text-wood-natural" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    <span class="text-xs font-medium text-cream/80">{{ $ispm15Footer }}</span>
+                <span class="cnr-f-col-head">İletişim</span>
+                <div class="cnr-f-contact-item">
+                    <svg class="cnr-f-contact-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>Gebze, Kocaeli, Türkiye</span>
+                </div>
+                <div class="cnr-f-contact-item">
+                    <svg class="cnr-f-contact-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+                    <a href="{{ route('public.contact') }}">İletişim Hattı İçin Tıklayın</a>
+                </div>
+                <div class="cnr-f-contact-item">
+                    <svg class="cnr-f-contact-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <span>{{ $emailFooter }}</span>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="border-t border-cream/10">
-        <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-cream/60 sm:flex-row lg:px-8">
-            <p>&copy; {{ date('Y') }} {{ __('footer.copyright') }}</p>
-            <p>{{ __('footer.since') }}</p>
+    {{-- Bottom bar --}}
+    <div class="cnr-f-bottom">
+        <div class="cnr-f-copy">
+            © {{ date('Y') }} CNRWOOD. Tüm Hakları Saklıdır. ISPM 15 süreçlerine uygun üretim çözümleri sunulur.
+        </div>
+        <div class="cnr-f-legal">
+            <a href="{{ route('home') }}">Gizlilik Politikası</a>
+            <a href="{{ route('home') }}">KVKK</a>
         </div>
     </div>
 </footer>
-
