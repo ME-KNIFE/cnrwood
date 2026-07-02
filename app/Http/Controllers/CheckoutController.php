@@ -118,15 +118,23 @@ class CheckoutController extends Controller
 
         session(['cart_count' => 0]);
 
-        // For credit card: redirect to Iyzico 3DS payment initiation form
-        if ($paymentMethod === 'kredi_karti') {
+        // Decide the post-order redirect from the order that was actually
+        // persisted, not the raw request/local variable — keeps this branch
+        // correct even if payment_method is ever normalized/defaulted
+        // differently upstream. Order::isKrediKarti()/isHavaleEft() are the
+        // single source of truth used everywhere else in the app.
+        if ($order->isKrediKarti()) {
+            // For credit card: redirect to Iyzico 3DS payment initiation form
             // Store pending order ID for guest auth in PaymentController
             session(['pending_order_id' => $order->id]);
 
             return view('public.payment-card-form', ['order' => $order]);
         }
 
-        // For havale/EFT: show success page directly
+        // Havale/EFT (and any other non-card method): order is created with
+        // payment_status 'beklemede' (pending bank transfer) by OrderService;
+        // send the customer straight to the order-received page — never the
+        // card entry form.
         session(['checkout_order_id' => $order->id]);
 
         return redirect()->route('checkout.success');

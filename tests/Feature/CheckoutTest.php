@@ -130,9 +130,100 @@ class CheckoutTest extends TestCase
         $this->assertEquals(0, $product->fresh()->stock_quantity);
     }
 
-    private function checkoutPayload(): array
+    /**
+     * Regression test: selecting "Kredi / Banka Kartı" must land the customer
+     * on the card-entry view, never on the bank-transfer order-received page.
+     */
+    public function test_checkout_with_credit_card_redirects_to_card_payment_page(): void
     {
-        return [
+        $user    = User::factory()->create();
+        $product = Product::factory()->buyable()->create();
+
+        $this->actingAs($user);
+
+        $this->post('/sepet/ekle', [
+            'product_id' => $product->id,
+            'quantity'   => 1,
+        ]);
+
+        $response = $this->withSession(['checkout_token' => self::TOKEN])
+            ->post('/siparis/olustur', $this->checkoutPayload(['payment_method' => 'kredi_karti']));
+
+        // Card flow renders the card-entry view directly (200, not a redirect).
+        $response->assertOk();
+        $response->assertViewIs('public.payment-card-form');
+        $response->assertViewHas('order', fn ($order) => $order->isKrediKarti());
+    }
+
+    /**
+     * Regression test for the reported production bug: selecting "Havale / EFT"
+     * must redirect to the order-received page, never to the card payment view.
+     */
+    public function test_checkout_with_bank_transfer_redirects_to_order_success(): void
+    {
+        $user    = User::factory()->create();
+        $product = Product::factory()->buyable()->create();
+
+        $this->actingAs($user);
+
+        $this->post('/sepet/ekle', [
+            'product_id' => $product->id,
+            'quantity'   => 1,
+        ]);
+
+        $response = $this->withSession(['checkout_token' => self::TOKEN])
+            ->post('/siparis/olustur', $this->checkoutPayload(['payment_method' => 'havale_eft']));
+
+        $response->assertRedirect(route('checkout.success'));
+
+        $order = \App\Models\Order::latest('id')->first();
+        $this->assertNotNull($order);
+        $this->assertTrue($order->isHavaleEft());
+        $this->assertSame('beklemede', $order->payment_status);
+    }
+
+    /**
+     * The order actually persisted must record whichever payment method the
+     * customer picked — this is what the redirect decision is now keyed on.
+     */
+    public function test_order_stores_the_selected_payment_method(): void
+    {
+        $cardUser    = User::factory()->create();
+        $cardProduct = Product::factory()->buyable()->create();
+
+        $this->actingAs($cardUser);
+        $this->post('/sepet/ekle', ['product_id' => $cardProduct->id, 'quantity' => 1]);
+        $this->withSession(['checkout_token' => self::TOKEN])
+            ->post('/siparis/olustur', $this->checkoutPayload([
+                'payment_method' => 'kredi_karti',
+                'customer_email' => 'card@example.com',
+            ]));
+
+        $this->assertDatabaseHas('orders', [
+            'customer_email' => 'card@example.com',
+            'payment_method' => 'kredi_karti',
+        ]);
+
+        $eftUser    = User::factory()->create();
+        $eftProduct = Product::factory()->buyable()->create();
+
+        $this->actingAs($eftUser);
+        $this->post('/sepet/ekle', ['product_id' => $eftProduct->id, 'quantity' => 1]);
+        $this->withSession(['checkout_token' => self::TOKEN])
+            ->post('/siparis/olustur', $this->checkoutPayload([
+                'payment_method' => 'havale_eft',
+                'customer_email' => 'eft@example.com',
+            ]));
+
+        $this->assertDatabaseHas('orders', [
+            'customer_email' => 'eft@example.com',
+            'payment_method' => 'havale_eft',
+        ]);
+    }
+
+    private function checkoutPayload(array $overrides = []): array
+    {
+        return array_merge([
             'checkout_token' => self::TOKEN,
             'customer_name'  => 'Test Müşteri',
             'customer_email' => 'test@example.com',
@@ -141,6 +232,6 @@ class CheckoutTest extends TestCase
             'phone'          => '05001234567',
             'address_line1'  => 'Test Sokak No: 1',
             'city'           => 'İstanbul',
-        ];
+        ], $overrides);
     }
 }
