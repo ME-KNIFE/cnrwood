@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Stage 1: Build front-end assets with Vite
