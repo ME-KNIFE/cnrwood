@@ -281,6 +281,53 @@
     flex-shrink: 0; z-index: 1;
 }
 
+/* Cart link (icon + count badge) — desktop only; mobile gets the same link
+   inside the full-screen overlay (#cnr-ov) so it's never lost, just moved. */
+.cnr-hdr-cart {
+    position: relative; display: none; align-items: center;
+    padding: 6px; color: rgba(195,200,190,0.75);
+    text-decoration: none; transition: color 0.2s;
+}
+@media (min-width: 1280px) { .cnr-hdr-cart { display: inline-flex; } }
+.cnr-hdr-cart:hover { color: #f4f4f4; }
+.cnr-hdr-cart-badge {
+    position: absolute; top: 0; right: 0;
+    min-width: 15px; height: 15px; padding: 0 3px;
+    display: flex; align-items: center; justify-content: center;
+    background: #aecfa8; color: #1b361b;
+    font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 9px; font-weight: 700;
+    border-radius: 999px; line-height: 1;
+}
+
+/* Account link (guest) / dropdown (authenticated) */
+.cnr-hdr-account-wrap {
+    display: none; position: relative; align-items: center; gap: 8px;
+}
+@media (min-width: 1280px) { .cnr-hdr-account-wrap { display: inline-flex; } }
+#cnr-dd-account {
+    position: absolute; top: calc(100% + 14px); right: 0;
+    min-width: 180px; background: rgba(11,11,11,0.97);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(51,51,51,0.28);
+    border-top: 2px solid rgba(174,207,168,0.20);
+    border-radius: 0 0 10px 10px;
+    padding: 8px; opacity: 0; pointer-events: none; z-index: 500;
+    transform: translateY(-6px);
+    transition: opacity 0.20s ease, transform 0.20s ease;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.55);
+}
+#cnr-dd-account.is-open { opacity: 1; pointer-events: all; transform: translateY(0); }
+#cnr-dd-account a,
+#cnr-dd-account .cnr-dd-account-link {
+    display: block; width: 100%; text-align: left; box-sizing: border-box;
+    padding: 8px 10px; font-family: 'Inter', sans-serif; font-size: 13px;
+    color: rgba(195,200,190,0.82); text-decoration: none;
+    background: none; border: none; cursor: pointer; border-radius: 4px;
+    transition: color 0.18s, background 0.18s;
+}
+#cnr-dd-account a:hover,
+#cnr-dd-account .cnr-dd-account-link:hover { color: #f4f4f4; background: rgba(255,255,255,0.06); }
+
 /* Language switcher */
 .cnr-lang-sw {
     display: none; align-items: center; gap: 0;
@@ -435,7 +482,12 @@
     border-bottom: 1px solid rgba(166,124,0,0.28); transition: opacity 0.2s;
 }
 .cnr-ov-cta:hover { opacity: 0.88; }
-.cnr-ov-util { display: flex; align-items: center; gap: 14px; }
+.cnr-ov-util { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; row-gap: 10px; }
+.cnr-ov-util form { margin: 0; }
+.cnr-ov-util-link.cnr-ov-util-btn {
+    background: none; border: none; cursor: pointer; padding: 0;
+    font: inherit; letter-spacing: inherit;
+}
 .cnr-ov-util-link {
     display: inline-flex; align-items: center; gap: 7px;
     font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
@@ -494,8 +546,47 @@
 
         </nav>
 
-        {{-- Right: lang switcher + CTA + hamburger --}}
+        {{-- Right: cart + account + lang switcher + CTA + hamburger --}}
         <div class="cnr-hdr-right">
+
+            {{-- Cart (desktop) — always visible, badge shows session cart count --}}
+            <a href="{{ route('cart.index') }}" class="cnr-hdr-cart" aria-label="Sepetim">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+                </svg>
+                @if ((int) session('cart_count', 0) > 0)
+                    <span class="cnr-hdr-cart-badge">{{ (int) session('cart_count') > 99 ? '99+' : (int) session('cart_count') }}</span>
+                @endif
+            </a>
+
+            {{-- Account (desktop): guest → login/register links; authenticated → dropdown --}}
+            <div class="cnr-hdr-account-wrap">
+                @auth
+                    <button
+                        class="cnr-dd-trigger"
+                        id="cnr-acct-trigger"
+                        type="button"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="cnr-dd-account"
+                    >
+                        Hesabım
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                    <div id="cnr-dd-account" role="menu" aria-label="Hesap Menüsü">
+                        <a href="{{ route('account.dashboard') }}" role="menuitem">Hesabım</a>
+                        <a href="{{ route('account.orders') }}" role="menuitem">Siparişlerim</a>
+                        <form method="POST" action="{{ route('account.logout') }}">
+                            @csrf
+                            <button type="submit" class="cnr-dd-account-link" role="menuitem">Çıkış Yap</button>
+                        </form>
+                    </div>
+                @else
+                    <a href="{{ route('account.login') }}" class="cnr-hn">Giriş Yap</a>
+                    <a href="{{ route('account.register') }}" class="cnr-hn">Kayıt Ol</a>
+                @endauth
+            </div>
+
             <div class="cnr-lang-sw" aria-label="Dil seçimi">
                 <a href="{{ route('locale.switch', 'tr') }}" class="{{ $currentLocale === 'tr' ? 'on' : '' }}">TR</a>
                 <span class="cnr-lang-sep">/</span>
@@ -593,16 +684,30 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
         <div class="cnr-ov-util">
+            {{-- Cart — always visible, same /sepet link as desktop --}}
+            <a href="{{ route('cart.index') }}" class="cnr-ov-util-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+                </svg>
+                Sepetim{{ (int) session('cart_count', 0) > 0 ? ' (' . (int) session('cart_count') . ')' : '' }}
+            </a>
+
             @auth
                 <a href="{{ route('account.dashboard') }}" class="cnr-ov-util-link">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Hesabım
                 </a>
+                <a href="{{ route('account.orders') }}" class="cnr-ov-util-link">Siparişlerim</a>
+                <form method="POST" action="{{ route('account.logout') }}">
+                    @csrf
+                    <button type="submit" class="cnr-ov-util-link cnr-ov-util-btn">Çıkış Yap</button>
+                </form>
             @else
                 <a href="{{ route('account.login') }}" class="cnr-ov-util-link">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Giriş Yap
                 </a>
+                <a href="{{ route('account.register') }}" class="cnr-ov-util-link">Kayıt Ol</a>
             @endauth
             <div class="cnr-ov-lang">
                 <a href="{{ route('locale.switch', 'tr') }}" class="{{ $currentLocale === 'tr' ? 'on' : '' }}">TR</a>
@@ -669,6 +774,48 @@
         document.addEventListener('click', function (e) {
             if (!ddTrigger.contains(e.target) && !ddPanel.contains(e.target)) {
                 hideDd();
+            }
+        });
+    }
+
+    /* ── Hesabım dropdown (desktop, authenticated users only) ── */
+    var acctTrigger = document.getElementById('cnr-acct-trigger');
+    var acctPanel   = document.getElementById('cnr-dd-account');
+    var acctHideTimer;
+
+    function showAcct() {
+        clearTimeout(acctHideTimer);
+        acctPanel.classList.add('is-open');
+        acctTrigger.classList.add('dd-open');
+        acctTrigger.setAttribute('aria-expanded', 'true');
+    }
+    function hideAcct() {
+        acctHideTimer = setTimeout(function () {
+            acctPanel.classList.remove('is-open');
+            acctTrigger.classList.remove('dd-open');
+            acctTrigger.setAttribute('aria-expanded', 'false');
+        }, 140);
+    }
+
+    if (acctTrigger && acctPanel) {
+        acctTrigger.addEventListener('mouseenter', showAcct);
+        acctTrigger.addEventListener('mouseleave', hideAcct);
+        acctTrigger.addEventListener('click', function () {
+            acctPanel.classList.contains('is-open') ? hideAcct() : showAcct();
+        });
+        acctPanel.addEventListener('mouseenter', showAcct);
+        acctPanel.addEventListener('mouseleave', hideAcct);
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && acctPanel.classList.contains('is-open')) {
+                hideAcct();
+                acctTrigger.focus();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!acctTrigger.contains(e.target) && !acctPanel.contains(e.target)) {
+                hideAcct();
             }
         });
     }
