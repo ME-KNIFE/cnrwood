@@ -389,7 +389,7 @@
 
                     <div class="border-t border-[#E6DFD2] pt-4 space-y-2 text-sm mb-4">
                         <div class="flex justify-between">
-                            <span class="text-[#555555]">{{ __('cart.subtotal_items', ['count' => \$cart->getItemCount()]) }}</span>
+                            <span class="text-[#555555]">{{ __('cart.subtotal_items', ['count' => $cart->getItemCount()]) }}</span>
                             <span class="font-medium text-[#3E2006]">
                                 {{ number_format($cart->getSubtotal(), 2, ',', '.') }} TL
                             </span>
