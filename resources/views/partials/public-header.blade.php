@@ -113,7 +113,9 @@
 /* ===================================================================
    CNRWOOD Industrial Header v2 — Stitch + mega-dropdown
    Dark obsidian, backdrop-blur, green primary CTA
-   Nav: 8 items at 12px / 7px padding fits comfortably at 1280px
+   Nav + cart + account only render together at >=1400px, where the
+   1360px-capped wrap has enough room for all of them without overlap;
+   below that the hamburger/mobile overlay carries the same links.
    =================================================================== */
 
 #cnr-hdr {
@@ -136,7 +138,7 @@
 
 /* Wrapper */
 .cnr-hdr-wrap {
-    max-width: 1280px; margin: 0 auto; padding: 0 64px;
+    max-width: 1360px; margin: 0 auto; padding: 0 64px;
     height: 100%; display: flex; align-items: center;
     justify-content: space-between; position: relative;
 }
@@ -154,13 +156,17 @@
 }
 @media (max-width: 767px) { .cnr-hdr-logo img { height: 34px; } }
 
-/* ── Desktop nav — absolute centered ─────────────────────────── */
+/* ── Desktop nav — real flex participant, not absolute-centered ──
+   Was position:absolute + viewport-centered, which ignored how much
+   room the right-side actions actually took and visually overlapped
+   them once cart/account controls were added. Now it's a normal flex
+   child (flex:1) between the logo and right actions, so it can only
+   ever share space with its siblings, never overlap them. ─────── */
 .cnr-hdr-nav {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
     display: none; align-items: center; gap: 0;
+    flex: 1 1 auto; justify-content: center; min-width: 0;
 }
-@media (min-width: 1280px) { .cnr-hdr-nav { display: flex; } }
+@media (min-width: 1400px) { .cnr-hdr-nav { display: flex; } }
 
 /* Base nav link */
 .cnr-hn {
@@ -288,7 +294,7 @@
     padding: 6px; color: rgba(195,200,190,0.75);
     text-decoration: none; transition: color 0.2s;
 }
-@media (min-width: 1280px) { .cnr-hdr-cart { display: inline-flex; } }
+@media (min-width: 1400px) { .cnr-hdr-cart { display: inline-flex; } }
 .cnr-hdr-cart:hover { color: #f4f4f4; }
 .cnr-hdr-cart-badge {
     position: absolute; top: 0; right: 0;
@@ -299,11 +305,13 @@
     border-radius: 999px; line-height: 1;
 }
 
-/* Account link (guest) / dropdown (authenticated) */
+/* Account dropdown trigger — single compact control for both guest
+   (Giriş Yap / Kayıt Ol) and authenticated (Hesabım / Siparişlerim /
+   Çıkış Yap) states, instead of two separate text links for guests. */
 .cnr-hdr-account-wrap {
     display: none; position: relative; align-items: center; gap: 8px;
 }
-@media (min-width: 1280px) { .cnr-hdr-account-wrap { display: inline-flex; } }
+@media (min-width: 1400px) { .cnr-hdr-account-wrap { display: inline-flex; } }
 #cnr-dd-account {
     position: absolute; top: calc(100% + 14px); right: 0;
     min-width: 180px; background: rgba(11,11,11,0.97);
@@ -365,7 +373,7 @@
     padding: 8px 6px; background: none; border: none;
     cursor: pointer; margin-left: 4px; flex-shrink: 0;
 }
-@media (min-width: 1280px) { .cnr-burger { display: none; } }
+@media (min-width: 1400px) { .cnr-burger { display: none; } }
 .cnr-burger span {
     display: block; width: 22px; height: 1.5px;
     background: rgba(255,255,255,0.60);
@@ -559,32 +567,34 @@
                 @endif
             </a>
 
-            {{-- Account (desktop): guest → login/register links; authenticated → dropdown --}}
+            {{-- Account (desktop): one compact dropdown trigger for both
+                 guest (Giriş Yap / Kayıt Ol) and authenticated (Hesabım /
+                 Siparişlerim / Çıkış Yap) states — keeps the header slim. --}}
             <div class="cnr-hdr-account-wrap">
-                @auth
-                    <button
-                        class="cnr-dd-trigger"
-                        id="cnr-acct-trigger"
-                        type="button"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        aria-controls="cnr-dd-account"
-                    >
-                        Hesabım
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div id="cnr-dd-account" role="menu" aria-label="Hesap Menüsü">
+                <button
+                    class="cnr-dd-trigger"
+                    id="cnr-acct-trigger"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="cnr-dd-account"
+                >
+                    @auth Hesabım @else Hesap @endauth
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div id="cnr-dd-account" role="menu" aria-label="Hesap Menüsü">
+                    @auth
                         <a href="{{ route('account.dashboard') }}" role="menuitem">Hesabım</a>
                         <a href="{{ route('account.orders') }}" role="menuitem">Siparişlerim</a>
                         <form method="POST" action="{{ route('account.logout') }}">
                             @csrf
                             <button type="submit" class="cnr-dd-account-link" role="menuitem">Çıkış Yap</button>
                         </form>
-                    </div>
-                @else
-                    <a href="{{ route('account.login') }}" class="cnr-hn">Giriş Yap</a>
-                    <a href="{{ route('account.register') }}" class="cnr-hn">Kayıt Ol</a>
-                @endauth
+                    @else
+                        <a href="{{ route('account.login') }}" role="menuitem">Giriş Yap</a>
+                        <a href="{{ route('account.register') }}" role="menuitem">Kayıt Ol</a>
+                    @endauth
+                </div>
             </div>
 
             <div class="cnr-lang-sw" aria-label="Dil seçimi">
@@ -778,7 +788,7 @@
         });
     }
 
-    /* ── Hesabım dropdown (desktop, authenticated users only) ── */
+    /* ── Account dropdown (desktop, guest + authenticated) ── */
     var acctTrigger = document.getElementById('cnr-acct-trigger');
     var acctPanel   = document.getElementById('cnr-dd-account');
     var acctHideTimer;

@@ -75,4 +75,22 @@ class PublicHeaderTest extends TestCase
         $response->assertSee('cnr-hdr-cart-badge', false);
         $response->assertSee('>3<', false);
     }
+
+    /**
+     * Regression test: guest login/register used to render as two separate
+     * always-visible top-level nav-style links (class="cnr-hn"), which
+     * combined with the cart icon overlapped the centered desktop nav.
+     * They must now live inside the single compact #cnr-dd-account
+     * dropdown trigger instead.
+     */
+    public function test_guest_login_register_are_inside_compact_dropdown_not_separate_hn_links(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('class="cnr-hn">Giriş Yap', false);
+        $response->assertDontSee('class="cnr-hn">Kayıt Ol', false);
+        $response->assertSee('id="cnr-acct-trigger"', false);
+        $response->assertSee('id="cnr-dd-account"', false);
+    }
 }
